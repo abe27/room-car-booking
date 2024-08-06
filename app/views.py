@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout
+from django.contrib.auth import authenticate, login, logout
 from company_department.models import Company, Department
 from user.models import Employee
 from django.contrib.auth.hashers import make_password
+from django.contrib import messages
 
 
 # Create your views here.
@@ -22,48 +23,65 @@ def sign_in(request):
     if request.user.is_authenticated:
         return redirect("/")
     else:
+        if request.method == "POST":
+            username = request.POST.get("username")
+            password = request.POST.get("password")
+
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                return redirect("/")
+            else:
+                messages.error(request, "Invalid username or password.")
+
         return render(request, "accounts/signin/index.html")
 
 
 def sign_up(request):
-    if request.method == "POST":
-        firstname = request.POST.get("firstname")
-        lastname = request.POST.get("lastname")
-        emp_id = request.POST.get("emp_id")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm_password")
-        fccorp_id = request.POST.get("fccorp_id")
-        fcdept_id = request.POST.get("fcdept_id")
+    if request.user.is_authenticated:
+        return redirect("/")
+    else:
+        if request.method == "POST":
+            firstname = request.POST.get("firstname")
+            lastname = request.POST.get("lastname")
+            emp_id = request.POST.get("emp_id")
+            username = request.POST.get("username")
+            email = request.POST.get("email")
+            password = request.POST.get("password")
+            confirm_password = request.POST.get("confirm_password")
+            fccorp_id = request.POST.get("fccorp_id")
+            fcdept_id = request.POST.get("fcdept_id")
 
-        if password == confirm_password:
-            try:
-                company = Company.objects.get(id=fccorp_id)
-                department = Department.objects.get(id=fcdept_id)
+            if password == confirm_password:
+                try:
+                    company = Company.objects.get(id=fccorp_id)
+                    department = Department.objects.get(id=fcdept_id)
 
-                user = Employee.objects.create(
-                    first_name=firstname,
-                    last_name=lastname,
-                    username=emp_id,
-                    email=email,
-                    password=make_password(password),
-                    fccorp=company,
-                    fcdept=department,
-                )
-                return redirect("signin")
-            except Company.DoesNotExist:
-                # Handle company not found error
-                pass
-            except Department.DoesNotExist:
-                # Handle department not found error
-                pass
+                    user = Employee.objects.create(
+                        first_name=firstname,
+                        last_name=lastname,
+                        emp_id=emp_id,
+                        username=username,
+                        email=email,
+                        password=make_password(password),
+                        fccorp=company,
+                        fcdept=department,
+                    )
+                    return redirect("signin")
+                except Company.DoesNotExist:
+                    # Handle company not found error
+                    pass
+                except Department.DoesNotExist:
+                    # Handle department not found error
+                    pass
 
-    companies = Company.objects.all()
-    departments = Department.objects.all()
+        companies = Company.objects.all()
+        departments = Department.objects.all()
 
-    context = {
-        "companies": companies,
-        "departments": departments,
-    }
+        context = {
+            "companies": companies,
+            "departments": departments,
+        }
 
-    return render(request, "accounts/signup/index.html", context=context)
+        return render(request, "accounts/signup/index.html", context=context)

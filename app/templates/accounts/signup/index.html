@@ -22,77 +22,79 @@
                 <div class="card-body p-md-5 text-black">
                   <h3 class="mb-5 text-uppercase">Employee registration form</h3>
 
-                  <div class="row">
-                    <div class="col-md-6 mb-4">
-                      <div data-mdb-input-init class="form-outline">
-                        <input type="text" id="firstname" name="firstname" class="form-control form-control-lg" />
-                        <label class="form-label" for="firstname">First name</label>
+                  <form method="POST" action="{% url 'signup' %}">
+                    {% csrf_token %}
+                    <div class="row">
+                      <div class="col-md-6 mb-4">
+                        <div data-mdb-input-init class="form-outline">
+                          <input type="text" id="firstname" name="firstname" class="form-control form-control-lg" required />
+                          <label class="form-label" for="firstname">First name</label>
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-4">
+                        <div data-mdb-input-init class="form-outline">
+                          <input type="text" id="lastname" name="lastname" class="form-control form-control-lg" required />
+                          <label class="form-label" for="lastname">Last name</label>
+                        </div>
                       </div>
                     </div>
-                    <div class="col-md-6 mb-4">
-                      <div data-mdb-input-init class="form-outline">
-                        <input type="text" id="lastname" name="lastname" class="form-control form-control-lg" />
-                        <label class="form-label" for="lastname">Last name</label>
+
+                    <div data-mdb-input-init class="form-outline mb-4">
+                      <input type="text" id="emp_id" name="emp_id" class="form-control form-control-lg" required />
+                      <label class="form-label" for="emp_id">Employee ID</label>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6 mb-4">
+                        <select class="form-select" aria-label="Company select" id="id_fccorp" name="fccorp_id" required>
+                          <option selected>Choose a company</option>
+                          {% for company in companies %}
+                            <option value="{{ company.id }}">{{ company.fcname }}</option>
+                          {% endfor %}
+                        </select>
+                        <label class="form-label" for="id_fccorp">Company</label>
+                      </div>
+                      <div class="col-md-6 mb-4">
+                        <select class="form-select" aria-label="Department select" id="id_fcdept" name="fcdept_id" required>
+                          <option selected>Choose a department</option>
+                          {% for department in departments %}
+                            <option value="{{ department.id }}">{{ department.fcname }}</option>
+                          {% endfor %}
+                        </select>
+                        <label class="form-label" for="id_fcdept">Department</label>
                       </div>
                     </div>
-                  </div>
 
-                  <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="text" id="emp_id" name="emp_id" class="form-control form-control-lg" />
-                    <label class="form-label" for="emp_id">Employee ID</label>
-                  </div>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                      <input type="email" id="email" name="email" class="form-control form-control-lg" required />
+                      <label class="form-label" for="email">Email</label>
+                    </div>
 
-                  <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="email" id="email" name="email" class="form-control form-control-lg" />
-                    <label class="form-label" for="email">Email</label>
-                  </div>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                      <input type="text" id="username" name="username" class="form-control form-control-lg" required />
+                      <label class="form-label" for="username">Username</label>
+                    </div>
 
-                  <div class="row">
-                    <div class="col-md-6 mb-4">
-                      <div data-mdb-input-init class="form-outline">
-                        <input type="password" id="password" class="form-control form-control-lg" />
-                        {% comment %} <i class="bi bi-eye-slash" id="togglePassword"></i> {% endcomment %}
-                        <label class="form-label" for="password">Password</label>
+                    <div class="row">
+                      <div class="col-md-6 mb-4">
+                        <div data-mdb-input-init class="form-outline">
+                          <input type="password" id="password" name="password" class="form-control form-control-lg" required />
+                          <label class="form-label" for="password">Password</label>
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-4">
+                        <div data-mdb-input-init class="form-outline">
+                          <input type="password" id="confirm_password" name="confirm_password" class="form-control form-control-lg" required />
+                          <label class="form-label" for="confirm_password">Confirm Password</label>
+                        </div>
                       </div>
                     </div>
-                    <div class="col-md-6 mb-4">
-                      <div data-mdb-input-init class="form-outline">
-                        <input type="password" id="confirm_password" class="form-control form-control-lg" />
-                        <label class="form-label" for="confirm_password">Confirm Password</label>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div class="row">
-                    <div class="col-md-6 mb-4">
-                      <select class="form-select" aria-label="Company select" id="id_fccorp">
-                        <option selected>Choose a company</option>
-                        {% for company in companies %}
-                          <option value="{{ company.id }}">{{ company.fcname }}</option>
-                        {% endfor %}
-                      </select>
-                      <label class="form-label" for="id_fccorp">Company</label>
+                    <div class="d-flex justify-content-end pt-3">
+                      <button type="reset" class="btn btn-light btn-lg">Reset all</button>
+                      <button type="submit" class="btn btn-dark btn-lg ms-2">Signup</button>
                     </div>
-                    <div class="col-md-6 mb-4">
-                      <select class="form-select" aria-label="Department select" id="id_fcdept">
-                        <option selected>Choose a department</option>
-                        {% for department in departments %}
-                          <option value="{{ department.id }}">{{ department.fcname }}</option>
-                        {% endfor %}
-                      </select>
-                      <label class="form-label" for="id_fcdept">Department</label>
-                    </div>
-                  </div>
-
-                  {% comment %} <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="text" id="form3Example9" class="form-control form-control-lg" />
-                    <label class="form-label" for="form3Example9">DOB</label>
-                  </div> {% endcomment %}
-
-                  <div class="d-flex justify-content-end pt-3">
-                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-light btn-lg">Reset all</button>
-                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg ms-2">Signup</button>
-                  </div>
+                  </form>
                 </div>
               </div>
             </div>
