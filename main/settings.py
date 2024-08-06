@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-==zjf7m(=@gt$b18^#@+3gyhm(ofk3fw89pf^5lw^qjsgn648d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "user",
     "company_department",
     "room",
+    "app"
 ]
 
 AUTH_USER_MODEL = "user.Employee"
@@ -121,6 +122,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+# STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
