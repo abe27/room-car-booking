@@ -1,0 +1,146 @@
+[
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ01",
+            "fcname": "<ไม่ระบุ>",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ02",
+            "fcname": "ผลิต 1",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ03",
+            "fcname": "ผลิต 2",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ04",
+            "fcname": "ควบคุมคุณภาพ",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ05",
+            "fcname": "บุคคล",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ06",
+            "fcname": "จัดส่ง",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ07",
+            "fcname": "จัดซื้อ",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ08",
+            "fcname": "วิศวกรรม DMT",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ09",
+            "fcname": "บัญชี",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ0A",
+            "fcname": "การตลาด",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ0B",
+            "fcname": "วางแผน",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ0C",
+            "fcname": "เพิ่มผลผลิต",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ0D",
+            "fcname": "ซ่อมบำรุง",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ0E",
+            "fcname": "ความปลอดภัย",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ0F",
+            "fcname": "วิศวกรรม PE",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ0G",
+            "fcname": "ควบคุมการผลิต",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "Eu4dBJ0H",
+            "fcname": "ระบบผลิต",
+            "fccorp": 2
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "LUrL3i01",
+            "fcname": "ควบคุมเอกสาร",
+            "fccorp": 2
+        }
+    }
+]

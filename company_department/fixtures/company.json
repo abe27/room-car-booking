@@ -1,0 +1,18 @@
+[
+    {
+        "model": "company_department.company",
+        "pk": 1,
+        "fields": {
+            "fcskid": "H2ZFEv02",
+            "fcname": "บริษัท วี.ซี.เอส (ไทยแลนด์) จำกัด"
+        }
+    },
+    {
+        "model": "company_department.company",
+        "pk": 2,
+        "fields": {
+            "fcskid": "Eu4cjh01",
+            "fcname": "บริษัท บี.วี.เอส. แมนูแฟคเจอริ่ง จำกัด"
+        }
+    }
+]

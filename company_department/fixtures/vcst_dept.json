@@ -1,0 +1,146 @@
+[
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP02",
+            "fcname": "IT",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP03",
+            "fcname": "วิศวกรรมผลิต",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP04",
+            "fcname": "<ไม่ระบุ>",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP05",
+            "fcname": "ประธานกรรมการ",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP06",
+            "fcname": "กรรมการผู้จัดการ",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP07",
+            "fcname": "ฝ่ายบริหาร",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP08",
+            "fcname": "ทรัพยากรบุคคล",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP09",
+            "fcname": "บัญชีและการเงิน",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP0A",
+            "fcname": "ควบคุมและวางแผน",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP0B",
+            "fcname": "จัดซื้อจัดหา",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP0C",
+            "fcname": "การตลาด",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP0D",
+            "fcname": "ฝ่ายผลิต",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP0E",
+            "fcname": "คุณภาพ",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP0F",
+            "fcname": "วิศวกรรม",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP0G",
+            "fcname": "SUPCONTACK",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP0H",
+            "fcname": "ไคเซน",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "H2ZFcP0I",
+            "fcname": "PC",
+            "fccorp": 1
+        }
+    },
+    {
+        "model": "company_department.department",
+        "fields": {
+            "fcskid": "K93waH01",
+            "fcname": "PI",
+            "fccorp": 1
+        }
+    }
+]
