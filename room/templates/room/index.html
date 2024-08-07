@@ -14,37 +14,7 @@
 
 {% block content %}
   <div class="wrapper d-flex align-items-stretch">
-    <nav id="sidebar">
-      <div class="p-4 pt-5">
-        <a href="#" class="img logo rounded-circle mb-5" style="background-image: url({% static 'images/logo.jpg' %});"></a>
-        <ul class="list-unstyled components mb-5">
-          {% comment %} <li class="active">
-            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
-            <ul class="collapse list-unstyled" id="homeSubmenu">
-              <li>
-                <a href="#">Home 1</a>
-              </li>
-              <li>
-                <a href="#">Home 2</a>
-              </li>
-              <li>
-                <a href="#">Home 3</a>
-              </li>
-            </ul>
-          </li> {% endcomment %}
-          <li>
-            <a>ห้องประชุม A</a>
-          </li>
-          <li>
-            <a>ห้องประชุม B</a>
-          </li>
-          <li>
-            <a>ห้องประชุม C</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
+    {% include 'room/sidebar.html' %}
     <!-- Page Content -->
     <div id="content" class="p-4 p-md-5">
       {% include 'room/navbar.html' %}

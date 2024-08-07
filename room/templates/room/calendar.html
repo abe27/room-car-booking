@@ -1,9 +1,44 @@
 <div id="calendar"></div>
 
+<!-- Include modal template -->
+{% include 'room/modal_event.html' %}
+
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     var calendarEl = document.getElementById('calendar')
+    var selectedRoomId = null
+  
+    function setRoomId(id) {
+      selectedRoomId = id
+      fetchBookings(id) // ดึงข้อมูลเหตุการณ์จากฐานข้อมูล
+    }
+  
+    function fetchBookings(roomId) {
+      $.ajax({
+        url: '{% url "fetch_bookings" %}',
+        method: 'GET',
+        data: { room_id: roomId },
+        success: function (response) {
+          console.log(response.bookings) // ตรวจสอบข้อมูลที่ได้รับ
+          var bookings = JSON.parse(response.bookings)
+          calendar.removeAllEvents() // ลบเหตุการณ์เก่า
+          calendar.addEventSource(
+            bookings.map(function (booking) {
+              return {
+                title: booking.title,
+                start: booking.start_date, // ISO 8601 format
+                end: booking.end_date, // ISO 8601 format
+                description: booking.description
+              }
+            })
+          )
+        }
+      })
+    }
   
     var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
@@ -14,25 +49,63 @@
         addEventButton: {
           text: 'add event...',
           click: function () {
-            var dateStr = prompt('Enter a date in YYYY-MM-DD format')
-            var date = new Date(dateStr + 'T00:00:00') // will be in local time
-  
-            if (!isNaN(date.valueOf())) {
-              // valid?
-              calendar.addEvent({
-                title: 'dynamic event',
-                start: date,
-                allDay: true
-              })
-              alert('Great. Now, update your database...')
+            if (selectedRoomId) {
+              $('#eventModal').modal('show')
             } else {
-              alert('Invalid date.')
+              alert('Please select a room first.')
             }
           }
         }
-      }
+      },
+      //events: function (fetchInfo, successCallback, failureCallback) {
+        //if (selectedRoomId) {
+          //fetchBookings(selectedRoomId) // ดึงข้อมูลเหตุการณ์เมื่อปฏิทินโหลด
+        //}
+      //}
     })
   
     calendar.render()
+  
+    $('#eventForm').on('submit', function (e) {
+      e.preventDefault()
+      if (!selectedRoomId) {
+        alert('Please select a room first.')
+        return
+      }
+  
+      var formData = $(this).serializeArray()
+      var eventData = {
+        title: formData.find((field) => field.name === 'title').value,
+        start: formData.find((field) => field.name === 'start_date').value,
+        end: formData.find((field) => field.name === 'end_date').value,
+        description: formData.find((field) => field.name === 'description').value
+      }
+  
+      $.ajax({
+        url: '{% url "save_booking" %}',
+        method: 'POST',
+        data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          title: eventData.title,
+          description: eventData.description,
+          start_date: eventData.start,
+          end_date: eventData.end,
+          room_id: selectedRoomId // ส่ง room_id เพื่อบันทึกข้อมูล
+        },
+        success: function (response) {
+          alert('Booking saved successfully!')
+          fetchBookings(selectedRoomId) // ดึงข้อมูลใหม่เพื่ออัปเดตปฏิทิน
+          $('#eventModal').modal('hide')
+        },
+        error: function (error) {
+          alert('Error saving booking.')
+        }
+      })
+    })
+  
+    $('.room-link').on('click', function () {
+      var roomId = $(this).data('room-id')
+      setRoomId(roomId)
+    })
   })
 </script>
