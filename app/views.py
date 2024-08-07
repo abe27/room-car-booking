@@ -85,6 +85,3 @@ def sign_up(request):
         }
 
         return render(request, "accounts/signup/index.html", context=context)
-    
-def room(request):
-    return render(request, "room/index.html")

@@ -22,4 +22,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("app.urls")),
     path("user/", include("user.urls")),  # Make sure this line is included
+    path("room/", include("room.urls")),
 ]
