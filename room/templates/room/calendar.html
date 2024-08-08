@@ -35,7 +35,8 @@
                 title: booking.title,
                 start: booking.start_date, // ISO 8601 format
                 end: booking.end_date, // ISO 8601 format
-                description: booking.description
+                description: booking.description,
+                color: booking.color // ใส่สีของเหตุการณ์
               }
             })
           )
@@ -44,6 +45,8 @@
     }
   
     var calendar = new FullCalendar.Calendar(calendarEl, {
+      timeZone: 'UTC',
+      dayMaxEvents: true, // allow "more" link when too many events
       initialView: 'dayGridMonth',
       headerToolbar: {
         center: 'addEventButton'
@@ -66,8 +69,16 @@
       //}
       //}
     })
-  
     calendar.render()
+
+    //รับค่า id ของ
+    document.getElementById('color').addEventListener('input', function () {
+      var selectedColorOption = document.querySelector(`#colors option[value="${this.value}"]`)
+      if (selectedColorOption) {
+        var colorId = selectedColorOption.getAttribute('data-id')
+        document.getElementById('color_id').value = colorId
+      }
+    })
   
     $('#eventForm').on('submit', function (e) {
       e.preventDefault()
@@ -81,7 +92,8 @@
         title: formData.find((field) => field.name === 'title').value,
         start: formData.find((field) => field.name === 'start_date').value,
         end: formData.find((field) => field.name === 'end_date').value,
-        description: formData.find((field) => field.name === 'description').value
+        description: formData.find((field) => field.name === 'description').value,
+        color: formData.find((field) => field.name === 'color_id') ? formData.find((field) => field.name === 'color_id').value : '' // ส่ง color_id
       }
   
       $.ajax({
@@ -93,7 +105,8 @@
           description: eventData.description,
           start_date: eventData.start,
           end_date: eventData.end,
-          room_id: selectedRoomId // ส่ง room_id เพื่อบันทึกข้อมูล
+          room_id: selectedRoomId, // ส่ง room_id เพื่อบันทึกข้อมูล
+          color: eventData.color // ส่ง color
         },
         success: function (response) {
           alert('Booking saved successfully!')
