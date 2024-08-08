@@ -54,29 +54,58 @@ def fetch_bookings(request):
 @csrf_exempt
 def save_booking(request):
     if request.method == "POST":
-        data = request.POST
-        title = data.get("title")
-        description = data.get("description")
-        start_date = data.get("start_date")
-        end_date = data.get("end_date")
-        room_id = data.get("room_id")
-        color_id = data.get("color")
+        try:
+            data = request.POST
+            title = data.get("title")
+            description = data.get("description")
+            start_date = data.get("start_date")
+            end_date = data.get("end_date")
+            room_id = data.get("room_id")
+            color_id = data.get("color")
 
-        room = Room.objects.get(id=room_id)
-        employee = request.user
+            if not room_id or not color_id:
+                return JsonResponse(
+                    {"status": "Room ID and Color ID are required."},
+                    status=400,
+                )
 
-        # Get the Color instance using color_id
-        color = Color.objects.get(id=color_id) if color_id else None
+            print(f"Room ID: {room_id}, Color ID: {color_id}")
 
-        Booking.objects.create(
-            room=room,
-            employee=employee,
-            title=title,
-            description=description,
-            start_date=start_date,
-            end_date=end_date,
-            color=color,
-        )
+            try:
+                room = Room.objects.get(id=room_id)
+            except Room.DoesNotExist:
+                return JsonResponse(
+                    {"status": "Room not found."},
+                    status=404,
+                )
 
-        return JsonResponse({"status": "Booking saved successfully!"})
+            try:
+                color = Color.objects.get(id=color_id)
+            except Color.DoesNotExist:
+                return JsonResponse(
+                    {"status": "The selected color is not available in the list."},
+                    status=400,
+                )
+
+            employee = request.user
+
+            Booking.objects.create(
+                room=room,
+                employee=employee,
+                title=title,
+                description=description,
+                start_date=start_date,
+                end_date=end_date,
+                color=color,
+            )
+
+            return JsonResponse({"status": "Booking saved successfully!"}, status=200)
+
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            return JsonResponse(
+                {"status": f"An unexpected error occurred: {str(e)}"},
+                status=500,
+            )
+
     return JsonResponse({"status": "Invalid request"}, status=400)

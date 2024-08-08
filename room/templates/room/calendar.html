@@ -1,5 +1,14 @@
 <div id="calendar" class="d-none"></div>
 
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="colorToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">The selected color is not available in the list.</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
 <!-- Include modal template -->
 {% include 'room/modal_event.html' %}
 
@@ -11,6 +20,8 @@
   document.addEventListener('DOMContentLoaded', function () {
     var calendarEl = document.getElementById('calendar')
     const sidebarCollapse = document.getElementById('sidebarCollapse')
+    const toastEl = document.getElementById('colorToast')
+    const toast = new bootstrap.Toast(toastEl, { delay: 5000 })
   
     var selectedRoomId = null
   
@@ -70,8 +81,8 @@
       //}
     })
     calendar.render()
-
-    //รับค่า id ของ
+  
+    //รับค่า id ของ color
     document.getElementById('color').addEventListener('input', function () {
       var selectedColorOption = document.querySelector(`#colors option[value="${this.value}"]`)
       if (selectedColorOption) {
@@ -109,12 +120,17 @@
           color: eventData.color // ส่ง color
         },
         success: function (response) {
-          alert('Booking saved successfully!')
+          //alert('Booking saved successfully!')
           fetchBookings(selectedRoomId) // ดึงข้อมูลใหม่เพื่ออัปเดตปฏิทิน
           $('#eventModal').modal('hide')
+          $('#eventForm')[0].reset() // รีเซ็ตฟอร์มหลังจากส่งข้อมูลสำเร็จ
+          $('#color_id').val('') // รีเซ็ตค่า hidden field
         },
         error: function (error) {
-          alert('Error saving booking.')
+          if (error.status === 400) {
+            toast.show()
+          }
+          console.log(error)
         }
       })
     })
