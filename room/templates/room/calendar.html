@@ -1,34 +1,26 @@
 <div id="calendar" class="d-none"></div>
 
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-  <div id="colorToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="d-flex">
-      <div class="toast-body">The selected color is not available in the list.</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  </div>
-</div>
-
-<!-- Include modal template -->
+<!-- Include modal and toast template -->
+{% include 'room/toast.html' %}
 {% include 'room/modal_event.html' %}
+{% include 'room/modal_detail.html' %}
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    var calendarEl = document.getElementById('calendar')
-    const sidebarCollapse = document.getElementById('sidebarCollapse')
-    const toastEl = document.getElementById('colorToast')
-    const toast = new bootstrap.Toast(toastEl, { delay: 5000 })
-  
+  $(document).ready(function () {
+    var calendarEl = $('#calendar')[0]
+    var colorToast = new bootstrap.Toast($('#colorToast')[0], { delay: 5000 })
+    var dateToast = new bootstrap.Toast($('#dateToast')[0], { delay: 5000 })
     var selectedRoomId = null
   
     function setRoomId(id) {
       selectedRoomId = id
-      fetchBookings(id) // ดึงข้อมูลเหตุการณ์จากฐานข้อมูล
-      calendar.render() // บังคับให้ปฏิทินทำการเรนเดอร์ใหม่
+      fetchBookings(id)
+      calendar.render()
     }
   
     function fetchBookings(roomId) {
@@ -37,17 +29,16 @@
         method: 'GET',
         data: { room_id: roomId },
         success: function (response) {
-          console.log(response.bookings) // ตรวจสอบข้อมูลที่ได้รับ
           var bookings = JSON.parse(response.bookings)
-          calendar.removeAllEvents() // ลบเหตุการณ์เก่า
+          calendar.removeAllEvents()
           calendar.addEventSource(
             bookings.map(function (booking) {
               return {
                 title: booking.title,
-                start: booking.start_date, // ISO 8601 format
-                end: booking.end_date, // ISO 8601 format
+                start: booking.start_date,
+                end: booking.end_date,
                 description: booking.description,
-                color: booking.color // ใส่สีของเหตุการณ์
+                color: booking.color
               }
             })
           )
@@ -57,10 +48,25 @@
   
     var calendar = new FullCalendar.Calendar(calendarEl, {
       timeZone: 'UTC',
-      dayMaxEvents: true, // allow "more" link when too many events
+      eventTimeFormat: { hour: 'numeric', minute: '2-digit' },
+      dayMaxEvents: true,
       initialView: 'dayGridMonth',
       headerToolbar: {
-        center: 'addEventButton'
+        left: 'title prev,next today',
+        center: 'addEventButton',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      // Setting the date format for the date picker and calendar
+      views: {
+        dayGridMonth: {
+          titleFormat: { year: 'numeric', month: 'long' } // Month in Thai format
+        },
+        timeGridWeek: {
+          titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
+        },
+        timeGridDay: {
+          titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
+        }
       },
       customButtons: {
         addEventButton: {
@@ -73,38 +79,48 @@
             }
           }
         }
+      },
+      eventClick: function (info) {
+        var eventObject = info.event
+        console.log(eventObject.start)
+        $('#eventDetailTitle').text(eventObject.title)
+        $('#eventDetailDescription').text(eventObject.extendedProps.description)
+        $('#eventDetailStart').text(formatDateTime(eventObject.start))
+        $('#eventDetailEnd').text(formatDateTime(eventObject.end))
+        // กำหนดสีพื้นหลังตามที่ได้รับจาก eventObject
+        $('#eventDetailColor').css('background-color', eventObject.backgroundColor).text(eventObject.backgroundColor)
+        $('#eventDetailModal').modal('show')
       }
-      //events: function (fetchInfo, successCallback, failureCallback) {
-      //if (selectedRoomId) {
-      //fetchBookings(selectedRoomId) // ดึงข้อมูลเหตุการณ์เมื่อปฏิทินโหลด
-      //}
-      //}
     })
-    calendar.render()
   
-    //รับค่า id ของ color
-    document.getElementById('color').addEventListener('input', function () {
-      var selectedColorOption = document.querySelector(`#colors option[value="${this.value}"]`)
-      if (selectedColorOption) {
-        var colorId = selectedColorOption.getAttribute('data-id')
-        document.getElementById('color_id').value = colorId
+    function formatDateTime(date) {
+      return moment.utc(date).format('DD MMMM YYYY, HH:mm A') // Convert UTC to local timezone and format as "Day Month Year, Hour:Minute" (24-hour format)
+    }
+  
+    $('#color').on('input', function () {
+      var selectedColorOption = $(`#colors option[value="${this.value}"]`)
+      if (selectedColorOption.length) {
+        $('#color_id').val(selectedColorOption.data('id'))
       }
     })
   
     $('#eventForm').on('submit', function (e) {
       e.preventDefault()
-      if (!selectedRoomId) {
-        alert('Please select a room first.')
+      var formData = $(this).serializeArray()
+      var startDate = formData.find((field) => field.name === 'start_date').value
+      var endDate = formData.find((field) => field.name === 'end_date').value
+  
+      if (startDate === endDate) {
+        dateToast.show()
         return
       }
   
-      var formData = $(this).serializeArray()
       var eventData = {
         title: formData.find((field) => field.name === 'title').value,
-        start: formData.find((field) => field.name === 'start_date').value,
-        end: formData.find((field) => field.name === 'end_date').value,
+        start: startDate,
+        end: endDate,
         description: formData.find((field) => field.name === 'description').value,
-        color: formData.find((field) => field.name === 'color_id') ? formData.find((field) => field.name === 'color_id').value : '' // ส่ง color_id
+        color: formData.find((field) => field.name === 'color_id') ? formData.find((field) => field.name === 'color_id').value : ''
       }
   
       $.ajax({
@@ -116,19 +132,18 @@
           description: eventData.description,
           start_date: eventData.start,
           end_date: eventData.end,
-          room_id: selectedRoomId, // ส่ง room_id เพื่อบันทึกข้อมูล
-          color: eventData.color // ส่ง color
+          room_id: selectedRoomId,
+          color: eventData.color
         },
         success: function (response) {
-          //alert('Booking saved successfully!')
-          fetchBookings(selectedRoomId) // ดึงข้อมูลใหม่เพื่ออัปเดตปฏิทิน
+          fetchBookings(selectedRoomId)
           $('#eventModal').modal('hide')
-          $('#eventForm')[0].reset() // รีเซ็ตฟอร์มหลังจากส่งข้อมูลสำเร็จ
-          $('#color_id').val('') // รีเซ็ตค่า hidden field
+          $('#eventForm')[0].reset()
+          $('#color_id').val('')
         },
         error: function (error) {
           if (error.status === 400) {
-            toast.show()
+            colorToast.show()
           }
           console.log(error)
         }
@@ -140,10 +155,10 @@
       setRoomId(roomId)
     })
   
-    sidebarCollapse.addEventListener('click', function () {
+    $('#sidebarCollapse').on('click', function () {
       setTimeout(function () {
         calendar.render()
-      }, 300) // รอการเคลื่อนไหวของ sidebar
+      }, 300)
     })
   })
 </script>
