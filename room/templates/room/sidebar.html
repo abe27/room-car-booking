@@ -5,8 +5,8 @@
     <a href="#" class="img logo rounded-circle mb-5" style="background-image: url({% static 'images/logo.jpg' %});"></a>
     <ul class="list-unstyled components mb-5">
       {% for room in rooms %}
-        <li id="room-{{ room.id }}">
-          <a href="#{{ room.id }}" class="room-link" data-room-id="{{ room.id }}">{{ room.name }}</a>
+        <li id="room-{{ room.id }}" class="{% if room.id == first_room.id %}active{% endif %}">
+          <a href="#{{ room.id }}" class="room-link" data-room-id="{{ room.id }}" data-room-name="{{ room.name }}">{{ room.name }}</a>
         </li>
       {% endfor %}
     </ul>
@@ -16,6 +16,7 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const roomLinks = document.querySelectorAll('.room-link')
+    const roomTitle = document.getElementById('room-title')
   
     roomLinks.forEach((link) => {
       link.addEventListener('click', function (event) {
@@ -29,9 +30,18 @@
   
         // เพิ่มคลาส active ให้กับ <li> ที่ถูกคลิก
         const roomId = this.getAttribute('data-room-id')
+        const roomName = this.getAttribute('data-room-name')
         const targetLi = document.getElementById(`room-${roomId}`)
+        const calendar = document.getElementById(`calendar`)
         if (targetLi) {
           targetLi.classList.add('active')
+          calendar.classList.remove('d-none')
+          calendar.classList.add('d-block')
+        }
+  
+        // เปลี่ยนชื่อห้องประชุมใน <h2>
+        if (roomTitle) {
+          roomTitle.textContent = roomName
         }
       })
     })

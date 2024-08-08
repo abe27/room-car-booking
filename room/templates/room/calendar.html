@@ -1,4 +1,4 @@
-<div id="calendar"></div>
+<div id="calendar" class="d-none"></div>
 
 <!-- Include modal template -->
 {% include 'room/modal_event.html' %}
@@ -10,11 +10,14 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     var calendarEl = document.getElementById('calendar')
+    const sidebarCollapse = document.getElementById('sidebarCollapse')
+  
     var selectedRoomId = null
   
     function setRoomId(id) {
       selectedRoomId = id
       fetchBookings(id) // ดึงข้อมูลเหตุการณ์จากฐานข้อมูล
+      calendar.render() // บังคับให้ปฏิทินทำการเรนเดอร์ใหม่
     }
   
     function fetchBookings(roomId) {
@@ -56,11 +59,11 @@
             }
           }
         }
-      },
+      }
       //events: function (fetchInfo, successCallback, failureCallback) {
-        //if (selectedRoomId) {
-          //fetchBookings(selectedRoomId) // ดึงข้อมูลเหตุการณ์เมื่อปฏิทินโหลด
-        //}
+      //if (selectedRoomId) {
+      //fetchBookings(selectedRoomId) // ดึงข้อมูลเหตุการณ์เมื่อปฏิทินโหลด
+      //}
       //}
     })
   
@@ -106,6 +109,12 @@
     $('.room-link').on('click', function () {
       var roomId = $(this).data('room-id')
       setRoomId(roomId)
+    })
+  
+    sidebarCollapse.addEventListener('click', function () {
+      setTimeout(function () {
+        calendar.render()
+      }, 300) // รอการเคลื่อนไหวของ sidebar
     })
   })
 </script>
