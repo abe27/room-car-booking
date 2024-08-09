@@ -72,7 +72,6 @@ def save_booking(request):
             start_date_obj = parse_datetime(start_date)
             end_date_obj = parse_datetime(end_date)
             if start_date_obj == end_date_obj:
-                print("Test")
                 return JsonResponse(
                     {"status": "Start date and end date cannot be the same."},
                     status=400,
@@ -80,6 +79,19 @@ def save_booking(request):
             if end_date_obj < start_date_obj:
                 return JsonResponse(
                     {"status": "End date cannot be earlier than start date."},
+                    status=400,
+                )
+
+            # Check if there are any bookings with status sequence 1 during the requested time period
+            conflicting_bookings = Booking.objects.filter(
+                room=room,
+                status__sequence=1,
+                start_date__lt=end_date_obj,
+                end_date__gt=start_date_obj,
+            )
+            if conflicting_bookings.exists():
+                return JsonResponse(
+                    {"status": "The selected time slot is not available."},
                     status=400,
                 )
 
@@ -91,8 +103,8 @@ def save_booking(request):
                 employee=employee,
                 title=title,
                 description=description,
-                start_date=start_date,
-                end_date=end_date,
+                start_date=start_date_obj,
+                end_date=end_date_obj,
                 status=status,
             )
 
