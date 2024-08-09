@@ -14,16 +14,14 @@ def room(request):
     return render(request, "room/home/index.html", context)
 
 
-def booking(request):
-    user_company = request.user.fccorp
-    room_id = request.GET.get("room_id")  # รับค่า room_id จาก query parameters
-
-    rooms = Room.objects.filter(company=user_company, id=room_id)
+def booking(request, room_id):
+    room_id = int(room_id)  # แปลงเป็น int
+    rooms = Room.objects.filter(id=room_id)
     # กรองการจองที่ตรงกับห้อง
     bookings = Booking.objects.filter(room__in=rooms)
-
     # Convert datetime fields to string format
     booking_data = []
+    
     for booking in bookings:
         booking_data.append(
             {

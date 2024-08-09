@@ -35,11 +35,7 @@
               <div class="postcard__bar"></div>
               <div class="postcard__preview-txt">{{ room.detail }}</div>
               <ul class="postcard__tagbox">
-                <form action="{% url 'booking' %}" method="post">
-                  {% csrf_token %}
-                  <input type="hidden" name="room_id" value="{{ room.id }}" />
-                  <button class="btn btn-primary" type="submit"><i class="fas fa-tag mr-2"></i>Booking</button>
-                </form>
+                <a href="{% url 'booking' room.id %}" class="btn btn-primary text-white"><i class="fas fa-tag mr-2"></i>Booking</a>
                 <button class="btn btn-success ms-2"><i class="fas fa-play mr-2"></i>View Room</button>
               </ul>
             </div>
