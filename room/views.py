@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from .models import Room, Booking, Status
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.utils.dateparse import parse_datetime
 
 
 def room(request):
@@ -65,6 +66,20 @@ def save_booking(request):
                 return JsonResponse(
                     {"status": "Room not found."},
                     status=404,
+                )
+
+            # Validate dates
+            start_date_obj = parse_datetime(start_date)
+            end_date_obj = parse_datetime(end_date)
+            if start_date_obj == end_date_obj:
+                return JsonResponse(
+                    {"status": "Start date and end date cannot be the same."},
+                    status=400,
+                )
+            if end_date_obj < start_date_obj:
+                return JsonResponse(
+                    {"status": "End date cannot be earlier than start date."},
+                    status=400,
                 )
 
             employee = request.user

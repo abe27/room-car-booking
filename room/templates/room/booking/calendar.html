@@ -112,49 +112,32 @@
       var startDate = formData.find((field) => field.name === 'start_date').value
       var endDate = formData.find((field) => field.name === 'end_date').value
   
-      if (startDate === endDate) {
-        $('#dateToast .toast-body').text('Start date and end date cannot be the same.')
-        var dateToast = new bootstrap.Toast($('#dateToast')[0], { delay: 5000 })
-        dateToast.show()
-        return
-      }
-  
-      // Check if endDate is before startDate
-      if (moment(endDate).isBefore(moment(startDate))) {
-        $('#dateToast .toast-body').text('End date cannot be earlier than start date.')
-        var dateToast = new bootstrap.Toast($('#dateToast')[0], { delay: 5000 })
-        dateToast.show()
-        return
-      }
-  
-      var eventData = {
-        title: formData.find((field) => field.name === 'title').value,
-        start: startDate,
-        end: endDate,
-        description: formData.find((field) => field.name === 'description').value
-      }
-  
       $.ajax({
         url: '{% url "save_booking" %}',
         method: 'POST',
         data: {
           csrfmiddlewaretoken: '{{ csrf_token }}',
-          title: eventData.title,
-          description: eventData.description,
-          start_date: eventData.start,
-          end_date: eventData.end,
+          title: formData.find((field) => field.name === 'title').value,
+          description: formData.find((field) => field.name === 'description').value,
+          start_date: startDate,
+          end_date: endDate,
           room_id: selectedRoomId
-          //color: eventData.color
         },
         success: function (response) {
-          fetchBookings(selectedRoomId)
-          $('#eventModal').modal('hide')
-          $('#eventForm')[0].reset()
+          if (response.status === 'Booking saved successfully!') {
+            fetchBookings(selectedRoomId)
+            $('#eventModal').modal('hide')
+            $('#eventForm')[0].reset()
+          } else {
+            $('#dateToast .toast-body').text(response.status)
+            var dateToast = new bootstrap.Toast($('#dateToast')[0], { delay: 5000 })
+            dateToast.show()
+          }
         },
         error: function (error) {
-          if (error.status === 400) {
-            colorToast.show()
-          }
+          $('#dateToast .toast-body').text('An unexpected error occurred.')
+          var dateToast = new bootstrap.Toast($('#dateToast')[0], { delay: 5000 })
+          dateToast.show()
           console.log(error)
         }
       })
