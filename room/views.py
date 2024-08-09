@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Room, Booking
+from .models import Room, Booking, Status
 from django.views.decorators.csrf import csrf_exempt
 import json
 
@@ -18,29 +18,17 @@ def room(request):
 def booking(request):
     room_id = request.GET.get("room_id")
     rooms = Room.objects.filter(id=room_id)
-    # กรองการจองที่ตรงกับห้อง
-    bookings = Booking.objects.filter(room__in=rooms)
-    # Convert datetime fields to string format
-    booking_data = []
-
-    for booking in bookings:
-        booking_data.append(
-            {
-                "title": booking.title,
-            }
-        )
-
     context = {
         "rooms": rooms,
-        "bookings": booking_data,
     }
     return render(request, "room/booking/index.html", context)
 
 
 def fetch_bookings(request):
     room_id = request.GET.get("room_id")
-    # print("room id: ", room_id)
-    bookings = Booking.objects.filter(room_id=room_id)
+    # ดึง Status ที่มี sequence เท่ากับ 0 หรือ 1
+    statuses = Status.objects.filter(sequence__in=[0, 1])
+    bookings = Booking.objects.filter(room_id=room_id, status__in=statuses)
     booking_data = []
     for booking in bookings:
         booking_data.append(
@@ -80,6 +68,7 @@ def save_booking(request):
                 )
 
             employee = request.user
+            status = Status.objects.get(sequence=0)
 
             Booking.objects.create(
                 room=room,
@@ -88,6 +77,7 @@ def save_booking(request):
                 description=description,
                 start_date=start_date,
                 end_date=end_date,
+                status=status,
             )
 
             return JsonResponse({"status": "Booking saved successfully!"}, status=200)
