@@ -135,7 +135,7 @@
           }
         },
         error: function (error) {
-          $('#dateToast .toast-body').text('An unexpected error occurred.')
+          $('#dateToast .toast-body').text(error.responseJSON.status)
           var dateToast = new bootstrap.Toast($('#dateToast')[0], { delay: 5000 })
           dateToast.show()
           console.log(error)

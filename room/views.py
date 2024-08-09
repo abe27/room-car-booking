@@ -72,6 +72,7 @@ def save_booking(request):
             start_date_obj = parse_datetime(start_date)
             end_date_obj = parse_datetime(end_date)
             if start_date_obj == end_date_obj:
+                print("Test")
                 return JsonResponse(
                     {"status": "Start date and end date cannot be the same."},
                     status=400,
