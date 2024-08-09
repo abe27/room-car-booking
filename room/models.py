@@ -6,6 +6,7 @@ from user.models import Employee
 # Create your models here.
 class Room(models.Model):
     name = models.CharField(max_length=255, default="", blank=True)
+    detail = models.TextField(default="", blank=True)
     image = models.CharField(max_length=255, default="", blank=True)
     company = models.ForeignKey(
         Company,
@@ -19,8 +20,9 @@ class Room(models.Model):
         return f"{self.name}"
 
 
-class Color(models.Model):
+class Status(models.Model):
     name = models.CharField(max_length=255, default="", blank=True)
+    color = models.CharField(max_length=255, default="", blank=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -31,16 +33,31 @@ class Booking(models.Model):
         Room, on_delete=models.SET_NULL, related_name="bookings", blank=True, null=True
     )
     employee = models.ForeignKey(
-        Employee, on_delete=models.CASCADE, related_name="bookings"
+        Employee,
+        on_delete=models.SET_NULL,
+        related_name="bookings_employee",
+        blank=True,
+        null=True,
     )
     title = models.CharField(max_length=255, default="", blank=True)
     description = models.TextField(default="", blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    flag = models.CharField(max_length=255, default="", blank=True)
-    color = models.ForeignKey(
-        Color, on_delete=models.SET_NULL, related_name="bookings", blank=True, null=True
+    status = models.ForeignKey(
+        Status,
+        on_delete=models.SET_NULL,
+        related_name="bookings",
+        blank=True,
+        null=True,
     )
+    approver = models.ForeignKey(
+        Employee,
+        on_delete=models.SET_NULL,
+        related_name="bookings_approver",
+        blank=True,
+        null=True,
+    )
+    remark = models.CharField(max_length=255, default="", blank=True)
 
     def __str__(self):
         return f"{self.title}"

@@ -14,7 +14,7 @@ def sign_out(request):
 
 def index(request):
     if request.user.is_authenticated:
-        return render(request, "home/index.html")
+        return render(request, "app/home/index.html")
     else:
         return redirect("signin")
 
@@ -35,7 +35,7 @@ def sign_in(request):
             else:
                 messages.error(request, "Invalid username or password.")
 
-        return render(request, "accounts/signin/index.html")
+        return render(request, "app/accounts/signin/index.html")
 
 
 def sign_up(request):
@@ -84,4 +84,4 @@ def sign_up(request):
             "departments": departments,
         }
 
-        return render(request, "accounts/signup/index.html", context=context)
+        return render(request, "app/accounts/signup/index.html", context=context)

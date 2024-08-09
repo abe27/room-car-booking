@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Room, Color, Booking
+from .models import Room, Status, Booking
 
 
 class RoomAdmin(admin.ModelAdmin):
@@ -7,17 +7,17 @@ class RoomAdmin(admin.ModelAdmin):
     ordering = ["-name"]
 
 
-class ColorAdmin(admin.ModelAdmin):
+class StatusAdmin(admin.ModelAdmin):
     list_display = ["name"]
     ordering = ["-name"]
 
 
 class BookingAdmin(admin.ModelAdmin):
-    list_display = ["title", "description", "start_date", "end_date", "flag"]
+    list_display = ["title", "description", "start_date", "end_date", "status", "approver", "remark"]
     ordering = ["-title"]
 
 
 # Register your models here.
 admin.site.register(Room, RoomAdmin)
-admin.site.register(Color, ColorAdmin)
+admin.site.register(Status, StatusAdmin)
 admin.site.register(Booking, BookingAdmin)
