@@ -18,7 +18,11 @@
     <!-- Page Content -->
     <div id="content" class="p-4 p-md-5">
       {% include 'room/booking/navbar.html' %}
-      <h2 id="room-title" class="mb-4">กรุณาเลือกห้องประชุม</h2>
+
+      {% for room in rooms %}
+        <h2 id="room-title" class="mb-4">{{room.name}}</h2>
+      {% endfor %}
+
       {% include 'room/booking/calendar.html' %}
     </div>
   </div>

@@ -10,33 +10,30 @@ def room(request):
     rooms = Room.objects.filter(company=user_company)
     context = {
         "rooms": rooms,
+        "default_room": rooms[0] if rooms.exists() else None,  # เพิ่ม default_room
     }
     return render(request, "room/home/index.html", context)
 
 
-def booking(request, room_id):
-    room_id = int(room_id)  # แปลงเป็น int
+def booking(request):
+    room_id = request.GET.get("room_id")
     rooms = Room.objects.filter(id=room_id)
     # กรองการจองที่ตรงกับห้อง
     bookings = Booking.objects.filter(room__in=rooms)
     # Convert datetime fields to string format
     booking_data = []
-    
+
     for booking in bookings:
         booking_data.append(
             {
                 "title": booking.title,
-                "start_date": booking.start_date.isoformat(),  # Convert datetime to ISO format
-                "end_date": booking.end_date.isoformat(),  # Convert datetime to ISO format
-                "description": booking.description,
             }
         )
 
     context = {
         "rooms": rooms,
-        "bookings": json.dumps(booking_data),
+        "bookings": booking_data,
     }
-    print(context)
     return render(request, "room/booking/index.html", context)
 
 
@@ -48,12 +45,15 @@ def fetch_bookings(request):
     for booking in bookings:
         booking_data.append(
             {
+                "emp_id": booking.employee.emp_id,
                 "first_name": booking.employee.first_name,
                 "last_name": booking.employee.last_name,
                 "title": booking.title,
                 "start_date": booking.start_date.isoformat(),
                 "end_date": booking.end_date.isoformat(),
                 "description": booking.description,
+                "status": booking.status.name,
+                "color": booking.status.color,
             }
         )
     # print(booking_data)

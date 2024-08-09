@@ -1,4 +1,4 @@
-<div id="calendar" class="d-none"></div>
+<div id="calendar"></div>
 
 <!-- Include modal and toast template -->
 {% include 'room/booking/toast.html' %}
@@ -25,7 +25,7 @@
   
     function fetchBookings(roomId) {
       $.ajax({
-        url: '{% url "fetch_bookings" %}',
+        url: `{% url "fetch_bookings" %}`,
         method: 'GET',
         data: { room_id: roomId },
         success: function (response) {
@@ -37,11 +37,13 @@
                 title: booking.title,
                 start: booking.start_date,
                 end: booking.end_date,
-                //color: booking.color,
+                color: booking.color,
                 extendedProps: {
+                  emp_id: booking.emp_id,
                   firstname: booking.first_name,
                   lastname: booking.last_name,
-                  description: booking.description
+                  description: booking.description,
+                  status: booking.status
                 }
               }
             })
@@ -87,6 +89,7 @@
       eventClick: function (info) {
         var eventObject = info.event
         //console.log(eventObject.start)
+        $('#eventDetailEmployeeId').text(eventObject.extendedProps.emp_id)
         $('#eventDetailEmployeeName').text(eventObject.extendedProps.firstname + ' ' + eventObject.extendedProps.lastname)
         $('#eventDetailTitle').text(eventObject.title)
         $('#eventDetailDescription').text(eventObject.extendedProps.description)
@@ -94,7 +97,7 @@
         $('#eventDetailEnd').text(formatDateTime(eventObject.end))
         // กำหนดสีพื้นหลังตามที่ได้รับจาก eventObject
         //$('#eventDetailColor').css('background-color', eventObject.backgroundColor)
-        //$('#eventDetailColor').css('background-color', eventObject.backgroundColor).text(eventObject.backgroundColor)
+        $('#eventDetailStatus').css('background-color', eventObject.color).text(eventObject.extendedProps.status)
         $('#eventDetailModal').modal('show')
       }
     })
@@ -110,6 +113,16 @@
       var endDate = formData.find((field) => field.name === 'end_date').value
   
       if (startDate === endDate) {
+        $('#dateToast .toast-body').text('Start date and end date cannot be the same.')
+        var dateToast = new bootstrap.Toast($('#dateToast')[0], { delay: 5000 })
+        dateToast.show()
+        return
+      }
+  
+      // Check if endDate is before startDate
+      if (moment(endDate).isBefore(moment(startDate))) {
+        $('#dateToast .toast-body').text('End date cannot be earlier than start date.')
+        var dateToast = new bootstrap.Toast($('#dateToast')[0], { delay: 5000 })
         dateToast.show()
         return
       }
@@ -119,7 +132,6 @@
         start: startDate,
         end: endDate,
         description: formData.find((field) => field.name === 'description').value
-        //color: formData.find((field) => field.name === 'color_id') ? formData.find((field) => field.name === 'color_id').value : ''
       }
   
       $.ajax({
@@ -131,7 +143,7 @@
           description: eventData.description,
           start_date: eventData.start,
           end_date: eventData.end,
-          room_id: selectedRoomId,
+          room_id: selectedRoomId
           //color: eventData.color
         },
         success: function (response) {
@@ -147,6 +159,12 @@
         }
       })
     })
+  
+    // Add this section to set the room ID and load the calendar immediately
+    if ($('.room-link').length > 0) {
+      var firstRoomId = $('.room-link').first().data('room-id')
+      setRoomId(firstRoomId)
+    }
   
     $('.room-link').on('click', function () {
       var roomId = $(this).data('room-id')

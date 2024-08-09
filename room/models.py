@@ -23,6 +23,7 @@ class Room(models.Model):
 class Status(models.Model):
     name = models.CharField(max_length=255, default="", blank=True)
     color = models.CharField(max_length=255, default="", blank=True)
+    sequence = models.IntegerField(null=True, blank=True, unique=True)
 
     def __str__(self):
         return f"{self.name}"

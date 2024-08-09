@@ -6,14 +6,14 @@
     <ul class="list-unstyled components mb-5">
       {% for room in rooms %}
         <li id="room-{{ room.id }}" class="{% if room.id == first_room.id %}active{% endif %}">
-          <a href="#{{ room.id }}" class="room-link" data-room-id="{{ room.id }}" data-room-name="{{ room.name }}">{{ room.name }}</a>
+          <a href="#{{ room.id }}" class="room-link" data-room-id="{{ room.id }}" data-room-name="{{ room.name }}">จองห้องประชุม</a>
         </li>
       {% endfor %}
     </ul>
   </div>
 </nav>
 
-<script>
+{% comment %} <script>
   document.addEventListener('DOMContentLoaded', function () {
     const roomLinks = document.querySelectorAll('.room-link')
     const roomTitle = document.getElementById('room-title')
@@ -46,4 +46,4 @@
       })
     })
   })
-</script>
+</script> {% endcomment %}

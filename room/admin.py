@@ -8,12 +8,20 @@ class RoomAdmin(admin.ModelAdmin):
 
 
 class StatusAdmin(admin.ModelAdmin):
-    list_display = ["name"]
-    ordering = ["-name"]
+    list_display = ["name", "color", "sequence"]
+    ordering = ["-sequence"]
 
 
 class BookingAdmin(admin.ModelAdmin):
-    list_display = ["title", "description", "start_date", "end_date", "status", "approver", "remark"]
+    list_display = [
+        "title",
+        "description",
+        "start_date",
+        "end_date",
+        "status",
+        "approver",
+        "remark",
+    ]
     ordering = ["-title"]
 
 
