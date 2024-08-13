@@ -8,6 +8,11 @@ urlpatterns = [
     path("save_booking/", views.save_booking, name="save_booking"),
     path("history/", views.history, name="history"),
     path("approve/waiting/", views.waiting, name="waiting"),
+    path(
+        "approve-booking/<int:booking_id>/",
+        views.approve_booking,
+        name="approve_booking",
+    ),
     path("approve/approved/", views.approved, name="approved"),
     path("approve/rejected/", views.rejected, name="rejected"),
     path("approve/cancel/", views.cancel, name="cancel"),

@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {% endblock %}
 
 {% block content %}
@@ -29,6 +30,7 @@
               <th scope="col">Description</th>
               <th scope="col">Start Date</th>
               <th scope="col">End Date</th>
+              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -48,6 +50,12 @@
                 <td>{{ booking.description }}</td>
                 <td>{{ booking.start_date }}</td>
                 <td>{{ booking.end_date }}</td>
+                <td>
+                  <div>
+                    <button class="btn btn-success" onclick="handleAction('Approve', '{{ booking.id }}')">Approve</button>
+                    <button class="btn btn-danger" onclick="handleAction('Reject', '{{ booking.id }}')">Reject</button>
+                  </div>
+                </td>
               </tr>
             {% endfor %}
           </tbody>
@@ -55,4 +63,45 @@
       </div>
     </div>
   </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script>
+    function handleAction(action, bookingId) {
+      const actionText = action === 'Approve' ? 'approve this booking' : 'reject this booking'
+      Swal.fire({
+        title: `Are you sure you want to ${actionText}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: `Yes, ${action.toLowerCase()} it!`,
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          if (action === 'Approve') {
+            $.ajax({
+              url: `/room/approve-booking/${bookingId}/`,
+              method: 'POST',
+              data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+              },
+              success: function (data) {
+                if (data.status === 'Booking approved successfully!') {
+                  // SweetAlert2 success message
+                  Swal.fire('Approved!', 'The booking has been approved.', 'success')
+                  fetchBookings(selectedRoomId)
+                } else {
+                  Swal.fire('Error!', data.status, 'error')
+                }
+              },
+              error: function () {
+                Swal.fire('Error!', 'An unexpected error occurred.', 'error')
+              }
+            })
+          }
+          // Add similar logic for Reject action
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          Swal.fire('Cancelled', 'The booking remains unchanged.', 'error')
+        }
+      })
+    }
+  </script>
 {% endblock %}

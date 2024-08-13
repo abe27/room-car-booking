@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from .models import Room, Booking, Status
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.utils.dateparse import parse_datetime
+from django.contrib import messages
 
 
 def room(request):
@@ -227,3 +228,30 @@ def all_status(request):
             return redirect("/")
     else:
         return redirect("/")
+
+
+def approve_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    print(booking)
+
+    # Set the status to Approved
+    approved_status = get_object_or_404(Status, name="Approved")
+    booking.status = approved_status
+    booking.save()
+
+    # Reject other bookings that overlap with the approved booking
+    overlapping_bookings = Booking.objects.filter(
+        room=booking.room,
+        status__name="Waiting",
+        start_date__lt=booking.end_date,
+        end_date__gt=booking.start_date,
+    ).exclude(id=booking.id)
+
+    rejected_status = get_object_or_404(Status, name="Rejected")
+
+    for other_booking in overlapping_bookings:
+        other_booking.status = rejected_status
+        other_booking.save()
+
+    messages.success(request, "Booking approved successfully.")
+    return JsonResponse({"status": "Booking saved successfully!"}, status=200)
