@@ -8,11 +8,33 @@
         <a href="/room/booking?room_id={{ room.id }}" class="room-link" data-room-id="{{ room.id }}" data-room-name="{{ room.name }}">จองห้องประชุม</a>
       </li>
       <li id="history" class="{% if url == 'history' %}active{% endif %}">
-        <a href="/room/history?room_id=1">ประวัติการจอง</a>
+        <a href="/room/history?room_id={{ room.id }}">ประวัติการจอง</a>
       </li>
       <li id="profile" class="{% if url == 'profile' %}active{% endif %}">
         <a href="/profile">ประวัติส่วนตัว</a>
       </li>
+      {% if user.is_staff == True %}
+        <li>
+          <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">อนุมัติการจอง</a>
+          <ul class="collapse list-unstyled" id="pageSubmenu">
+            <li class="{% if url == 'waiting' %}active{% endif %}">
+              <a href="/room/approve/waiting?room_id={{ room.id }}">รอการอนุมัติ</a>
+            </li>
+            <li class="{% if url == 'approved' %}active{% endif %}">
+              <a href="/room/approve/approved?room_id={{ room.id }}">รายการที่อนุมัติ</a>
+            </li>
+            <li class="{% if url == 'rejected' %}active{% endif %}">
+              <a href="/room/approve/rejected?room_id={{ room.id }}">รายการที่ปฏิเสธ</a>
+            </li>
+            <li class="{% if url == 'cancel' %}active{% endif %}">
+              <a href="/room/approve/cancel?room_id={{ room.id }}">รายการที่ยกเลิก</a>
+            </li>
+            <li class="{% if url == 'all_status' %}active{% endif %}">
+              <a href="/room/approve/all?room_id={{ room.id }}">สถานะทั้งหมด</a>
+            </li>
+          </ul>
+        </li>
+      {% endif %}
       <li id="signout" class="{% if url == 'profile' %}active{% endif %}">
         <a href="/signout" class="text-danger">ออกจากระบบ</a>
       </li>

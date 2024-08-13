@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block title %}
-  History
+  Approve
 {% endblock %}
 
 {% block link %}
@@ -24,6 +24,7 @@
           <thead>
             <tr>
               <th scope="col">Status</th>
+              <th scope="col">Requester</th>
               <th scope="col">Title</th>
               <th scope="col">Description</th>
               <th scope="col">Start Date</th>
@@ -44,6 +45,7 @@
                 {% elif booking.status.name == 'Cancel' %}
                   <td class="text-secondary">{{ booking.status }}</td>
                 {% endif %}
+                <td>{{ booking.employee.first_name }}</td>
                 <td>{{ booking.title }}</td>
                 <td>{{ booking.description }}</td>
                 <td>{{ booking.start_date }}</td>

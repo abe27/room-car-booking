@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import Room, Booking, Status
 from django.views.decorators.csrf import csrf_exempt
@@ -7,26 +7,31 @@ from django.utils.dateparse import parse_datetime
 
 
 def room(request):
-    user_company = request.user.fccorp
-    rooms = Room.objects.filter(company=user_company)
-    context = {
-        "rooms": rooms,
-        "default_room": rooms[0] if rooms.exists() else None,  # เพิ่ม default_room
-    }
-    return render(request, "room/home/index.html", context)
+    if request.user.is_authenticated:
+        user_company = request.user.fccorp
+        rooms = Room.objects.filter(company=user_company)
+        context = {
+            "rooms": rooms,
+            "default_room": rooms[0] if rooms.exists() else None,  # เพิ่ม default_room
+        }
+        return render(request, "room/home/index.html", context)
+    else:
+        return redirect("/")
 
 
 def booking(request):
-    room_id = request.GET.get("room_id")
-    room = Room.objects.filter(id=room_id).first()
-    context = {"room": room, "url": "booking"}
-    return render(request, "room/booking/index.html", context)
+    if request.user.is_authenticated:
+        room_id = request.GET.get("room_id")
+        room = Room.objects.filter(id=room_id).first()
+        context = {"room": room, "url": "booking"}
+        return render(request, "room/booking/index.html", context)
+    else:
+        return redirect("/")
 
 
 def fetch_bookings(request):
     room_id = request.GET.get("room_id")
-    # ดึง Status ที่มี sequence เท่ากับ 0 หรือ 1
-    statuses = Status.objects.filter(sequence__in=[0, 1])
+    statuses = Status.objects.filter(name__in=["Waiting", "Approved"])
     bookings = Booking.objects.filter(room_id=room_id, status__in=statuses)
     booking_data = []
     for booking in bookings:
@@ -120,12 +125,105 @@ def save_booking(request):
 
 
 def history(request):
-    user_id = request.user.id
-    user_company = request.user.fccorp
-    room_id = request.GET.get("room_id")
-    room = Room.objects.filter(id=room_id).first()
-    bookings = Booking.objects.filter(room__company=user_company, employee__id=user_id).order_by('-created_at')
-    context = {"room": room, "bookings": bookings, "url": "history"}
-    for book in bookings:
-        print(book.status)
-    return render(request, "room/history/index.html", context)
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        user_company = request.user.fccorp
+        room_id = request.GET.get("room_id")
+        room = Room.objects.filter(id=room_id).first()
+        bookings = Booking.objects.filter(
+            room__company=user_company, employee__id=user_id
+        ).order_by("-created_at")
+        context = {"room": room, "bookings": bookings, "url": "history"}
+        return render(request, "room/history/index.html", context)
+    else:
+        return redirect("/")
+
+
+def waiting(request):
+    if request.user.is_authenticated:
+        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
+        if request.user.is_staff == True:
+            user_company = request.user.fccorp
+            room_id = request.GET.get("room_id")
+            room = Room.objects.filter(id=room_id).first()
+            bookings = Booking.objects.filter(
+                room__company=user_company, room=room, status__name="Waiting"
+            ).order_by("-created_at")
+            context = {"room": room, "bookings": bookings, "url": "waiting"}
+            return render(request, "room/waiting/index.html", context)
+        else:
+            return redirect("/")
+    else:
+        return redirect("/")
+
+
+def approved(request):
+    if request.user.is_authenticated:
+        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
+        if request.user.is_staff == True:
+            user_company = request.user.fccorp
+            room_id = request.GET.get("room_id")
+            room = Room.objects.filter(id=room_id).first()
+            bookings = Booking.objects.filter(
+                room__company=user_company, room=room, status__name="Approved"
+            ).order_by("-created_at")
+            context = {"room": room, "bookings": bookings, "url": "approved"}
+            return render(request, "room/approve/index.html", context)
+        else:
+            return redirect("/")
+    else:
+        return redirect("/")
+
+
+def rejected(request):
+    if request.user.is_authenticated:
+        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
+        if request.user.is_staff == True:
+            user_company = request.user.fccorp
+            room_id = request.GET.get("room_id")
+            room = Room.objects.filter(id=room_id).first()
+            bookings = Booking.objects.filter(
+                room__company=user_company, room=room, status__name="Rejected"
+            ).order_by("-created_at")
+            context = {"room": room, "bookings": bookings, "url": "rejected"}
+            return render(request, "room/approve/index.html", context)
+        else:
+            return redirect("/")
+    else:
+        return redirect("/")
+
+
+def cancel(request):
+    if request.user.is_authenticated:
+        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
+        if request.user.is_staff == True:
+            user_company = request.user.fccorp
+            room_id = request.GET.get("room_id")
+            room = Room.objects.filter(id=room_id).first()
+            bookings = Booking.objects.filter(
+                room__company=user_company, room=room, status__name="Cancel"
+            ).order_by("-created_at")
+            context = {"room": room, "bookings": bookings, "url": "cancel"}
+            return render(request, "room/approve/index.html", context)
+        else:
+            return redirect("/")
+    else:
+        return redirect("/")
+
+
+def all_status(request):
+    if request.user.is_authenticated:
+        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
+        if request.user.is_staff == True:
+            user_company = request.user.fccorp
+            room_id = request.GET.get("room_id")
+            room = Room.objects.filter(id=room_id).first()
+            bookings = Booking.objects.filter(
+                room__company=user_company, room=room
+            ).order_by("-created_at")
+            context = {"room": room, "bookings": bookings, "url": "all_status"}
+            return render(request, "room/approve/index.html", context)
+        else:
+            return redirect("/")
+    else:
+        return redirect("/")
