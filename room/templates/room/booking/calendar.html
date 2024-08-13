@@ -39,6 +39,7 @@
                 end: booking.end_date,
                 color: booking.color,
                 extendedProps: {
+                  id: booking.id,
                   emp_id: booking.emp_id,
                   firstname: booking.first_name,
                   lastname: booking.last_name,
@@ -89,6 +90,7 @@
       eventClick: function (info) {
         var eventObject = info.event
         //console.log(eventObject.start)
+        $('#eventDetailId').text(eventObject.extendedProps.id)
         $('#eventDetailEmployeeId').text(eventObject.extendedProps.emp_id)
         $('#eventDetailEmployeeName').text(eventObject.extendedProps.firstname + ' ' + eventObject.extendedProps.lastname)
         $('#eventDetailTitle').text(eventObject.title)

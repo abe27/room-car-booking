@@ -4,6 +4,35 @@
  * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+
+.text-warning {
+  color: #ffc107;
+}
+
+.text-danger {
+  color: #dc3545;
+}
+
+.text-info {
+  color: #17a2b8;
+}
+
+.text-success {
+  color: #28a745;
+}
+
+.text-light {
+  color: #f8f9fa;
+}
+
+.text-dark {
+  color: #343a40;
+}
+
+.text-secondary {
+  color: #868e96;
+}
+
 .color-box {
   width: 50px;
   height: 20px;

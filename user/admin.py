@@ -57,6 +57,7 @@ class EmployeeAdmin(UserAdmin):
         "display_groups",
         "fccorp",
         "fcdept",
+        "is_active",
         "is_staff",
         "is_superuser",
     )

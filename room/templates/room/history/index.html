@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+  History
+{% endblock %}
+
+{% block link %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+{% endblock %}
+
+{% block content %}
+  <div class="wrapper d-flex align-items-stretch">
+    {% include 'room/components/sidebar.html' %}
+    <!-- Page Content -->
+    <div id="content" class="p-4 p-md-5">
+      {% include 'room/components/navbar.html' %}
+      <h2 id="room-title" class="mb-4">{{ room.name }}</h2>
+      <div class="table-responsive card shadow-sm mt-3 p-3">
+        <table class="table table-borderless table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Title</th>
+              <th scope="col">Description</th>
+              <th scope="col">Start Date</th>
+              <th scope="col">End Date</th>
+              <th scope="col">Status</th>
+              <th scope="col">Approver</th>
+              <th scope="col">Remark</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for booking in bookings %}
+              <tr>
+                <td>{{ booking.title }}</td>
+                <td>{{ booking.description }}</td>
+                <td>{{ booking.start_date }}</td>
+                <td>{{ booking.end_date }}</td>
+                {% if booking.status.name == 'Waiting' %}
+                  <td class="text-warning">{{ booking.status }}</td>
+                {% elif booking.status.name == 'Approved' %}
+                  <td class="text-success">{{ booking.status }}</td>
+                {% elif booking.status.name == 'Rejected' %}
+                  <td class="text-danger">{{ booking.status }}</td>
+                {% elif booking.status.name == 'Cancel' %}
+                  <td class="text-secondary">{{ booking.status }}</td>
+                {% endif %}
+                <td>{{ booking.approver.first_name }}</td>
+                <td>{{ booking.remark }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

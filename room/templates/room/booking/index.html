@@ -14,14 +14,12 @@
 
 {% block content %}
   <div class="wrapper d-flex align-items-stretch">
-    {% include 'room/booking/sidebar.html' %}
+    {% include 'room/components/sidebar.html' %}
     <!-- Page Content -->
     <div id="content" class="p-4 p-md-5">
-      {% include 'room/booking/navbar.html' %}
+      {% include 'room/components/navbar.html' %}
 
-      {% for room in rooms %}
-        <h2 id="room-title" class="mb-4">{{room.name}}</h2>
-      {% endfor %}
+      <h2 id="room-title" class="mb-4">{{ room.name }}</h2>
 
       {% include 'room/booking/calendar.html' %}
     </div>

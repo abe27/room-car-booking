@@ -14,15 +14,28 @@ class StatusAdmin(admin.ModelAdmin):
 
 class BookingAdmin(admin.ModelAdmin):
     list_display = [
+        "id",
+        "room",
         "title",
         "description",
         "start_date",
         "end_date",
+        "created_at",
+        "updated_at",
         "status",
         "approver",
         "remark",
     ]
-    ordering = ["-title"]
+    list_filter = [
+        "room",
+        "start_date",
+        "end_date",
+        "created_at",
+        "updated_at",
+        "status",
+    ]
+    search_fields = ["id", "start_date", "end_date", "created_at", "title"]
+    ordering = ["-start_date", "-end_date", "-created_at"]
 
 
 # Register your models here.

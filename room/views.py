@@ -18,10 +18,8 @@ def room(request):
 
 def booking(request):
     room_id = request.GET.get("room_id")
-    rooms = Room.objects.filter(id=room_id)
-    context = {
-        "rooms": rooms,
-    }
+    room = Room.objects.filter(id=room_id).first()
+    context = {"room": room, "url": "booking"}
     return render(request, "room/booking/index.html", context)
 
 
@@ -34,6 +32,7 @@ def fetch_bookings(request):
     for booking in bookings:
         booking_data.append(
             {
+                "id": booking.pk,
                 "emp_id": booking.employee.emp_id,
                 "first_name": booking.employee.first_name,
                 "last_name": booking.employee.last_name,
@@ -118,3 +117,15 @@ def save_booking(request):
             )
 
     return JsonResponse({"status": "Invalid request"}, status=400)
+
+
+def history(request):
+    user_id = request.user.id
+    user_company = request.user.fccorp
+    room_id = request.GET.get("room_id")
+    room = Room.objects.filter(id=room_id).first()
+    bookings = Booking.objects.filter(room__company=user_company, employee__id=user_id).order_by('-created_at')
+    context = {"room": room, "bookings": bookings, "url": "history"}
+    for book in bookings:
+        print(book.status)
+    return render(request, "room/history/index.html", context)
