@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Company, Department
 
 class CompanyAdmin(admin.ModelAdmin) :
-    list_display = ['fcskid', 'fcname']
+    list_display = ['fcskid', 'fcname', "image"]
     ordering = ['-fcname']
     
 class DepartmentAdmin(admin.ModelAdmin) :

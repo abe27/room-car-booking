@@ -3,7 +3,7 @@ from .models import Room, Status, Booking
 
 
 class RoomAdmin(admin.ModelAdmin):
-    list_display = ["name", "company"]
+    list_display = ["name", "company", "image"]
     ordering = ["-name"]
 
 
