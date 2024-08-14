@@ -77,25 +77,34 @@
       }).then((result) => {
         if (result.isConfirmed) {
           if (action === 'Approve') {
-            $.ajax({
-              url: `/room/approve-booking/${bookingId}/`,
+            fetch(`/room/approve-booking/${bookingId}/`, {
               method: 'POST',
-              data: {
-                csrfmiddlewaretoken: '{{ csrf_token }}'
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
               },
-              success: function (data) {
-                if (data.status === 'Booking approved successfully!') {
-                  // SweetAlert2 success message
-                  Swal.fire('Approved!', 'The booking has been approved.', 'success')
-                  fetchBookings(selectedRoomId)
-                } else {
-                  Swal.fire('Error!', data.status, 'error')
-                }
-              },
-              error: function () {
-                Swal.fire('Error!', 'An unexpected error occurred.', 'error')
-              }
+              body: JSON.stringify({})
             })
+              .then((response) => {
+                if (response.status === 200) {
+                  // SweetAlert2 success message
+                  Swal.fire({
+                    title: 'Approved!',
+                    text: 'The booking has been approved.',
+                    icon: 'success'
+                  })
+                  setTimeout(function () {
+                    location.reload()
+                  }, 2000)
+                } else {
+                  return response.json().then((data) => {
+                    Swal.fire('Error!', data.status, 'error')
+                  })
+                }
+              })
+              .catch(() => {
+                Swal.fire('Error!', 'An unexpected error occurred.', 'error')
+              })
           }
           // Add similar logic for Reject action
         } else if (result.dismiss === Swal.DismissReason.cancel) {

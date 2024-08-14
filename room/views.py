@@ -3,8 +3,7 @@ from django.http import JsonResponse
 from .models import Room, Booking, Status
 from django.views.decorators.csrf import csrf_exempt
 import json
-from django.utils.dateparse import parse_datetime
-from django.contrib import messages
+from datetime import datetime
 
 
 def room(request):
@@ -74,8 +73,26 @@ def save_booking(request):
                 )
 
             # Validate dates
-            start_date_obj = parse_datetime(start_date)
-            end_date_obj = parse_datetime(end_date)
+            # Convert start_date to ISO format
+            # end_date_obj = parse_datetime(end_date)
+            try:
+                start_date_obj = datetime.strptime(start_date, "%d/%m/%Y %H:%M")
+                start_date_iso = start_date_obj.isoformat()
+            except ValueError:
+                return JsonResponse(
+                    {"status": "Invalid start date format."},
+                    status=400,
+                )
+
+            try:
+                end_date_obj = datetime.strptime(end_date, "%d/%m/%Y %H:%M")
+                end_date_iso = end_date_obj.isoformat()
+            except ValueError:
+                return JsonResponse(
+                    {"status": "Invalid end date format."},
+                    status=400,
+                )
+
             if start_date_obj == end_date_obj:
                 return JsonResponse(
                     {"status": "Start date and end date cannot be the same."},
@@ -90,7 +107,7 @@ def save_booking(request):
             # Check if there are any bookings with status sequence 1 during the requested time period
             conflicting_bookings = Booking.objects.filter(
                 room=room,
-                status__sequence=1,
+                status__name="Approved",
                 start_date__lt=end_date_obj,
                 end_date__gt=start_date_obj,
             )
@@ -108,8 +125,8 @@ def save_booking(request):
                 employee=employee,
                 title=title,
                 description=description,
-                start_date=start_date_obj,
-                end_date=end_date_obj,
+                start_date=start_date_iso,
+                end_date=end_date_iso,
                 status=status,
             )
 
@@ -149,7 +166,7 @@ def waiting(request):
             room = Room.objects.filter(id=room_id).first()
             bookings = Booking.objects.filter(
                 room__company=user_company, room=room, status__name="Waiting"
-            ).order_by("-created_at")
+            ).order_by("created_at")
             context = {"room": room, "bookings": bookings, "url": "waiting"}
             return render(request, "room/waiting/index.html", context)
         else:
@@ -231,12 +248,15 @@ def all_status(request):
 
 
 def approve_booking(request, booking_id):
+    # booking = Booking.objects.get(id=booking_id)
     booking = get_object_or_404(Booking, id=booking_id)
-    print(booking)
 
     # Set the status to Approved
     approved_status = get_object_or_404(Status, name="Approved")
     booking.status = approved_status
+
+    # Assign the approver as the current logged-in user
+    booking.approver = request.user
     booking.save()
 
     # Reject other bookings that overlap with the approved booking
@@ -253,5 +273,4 @@ def approve_booking(request, booking_id):
         other_booking.status = rejected_status
         other_booking.save()
 
-    messages.success(request, "Booking approved successfully.")
-    return JsonResponse({"status": "Booking saved successfully!"}, status=200)
+    return JsonResponse({"status": "Booking approved successfully!"}, status=200)

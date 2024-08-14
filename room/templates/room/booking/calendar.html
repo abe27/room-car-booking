@@ -125,8 +125,8 @@
           end_date: endDate,
           room_id: selectedRoomId
         },
-        success: function (response) {
-          if (response.status === 'Booking saved successfully!') {
+        success: function (response, textStatus, jqXHR) {
+          if (jqXHR.status === 200) {
             fetchBookings(selectedRoomId)
             $('#eventModal').modal('hide')
             $('#eventForm')[0].reset()

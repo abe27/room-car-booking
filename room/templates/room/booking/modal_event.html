@@ -1,3 +1,5 @@
+<script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
+
 <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -17,11 +19,11 @@
           </div>
           <div class="form-group">
             <label for="start_date">Start Date</label>
-            <input type="datetime-local" class="form-control" id="start_date" name="start_date" required />
+            <input class="form-control" id="start_date" name="start_date" required />
           </div>
           <div class="form-group">
             <label for="end_date">End Date</label>
-            <input type="datetime-local" class="form-control" id="end_date" name="end_date" required />
+            <input class="form-control" id="end_date" name="end_date" required />
           </div>
           <button type="submit" class="btn btn-primary">Save</button>
         </form>
@@ -29,3 +31,18 @@
     </div>
   </div>
 </div>
+
+<script>
+  $('#start_date').datetimepicker({
+    local: 'utc',
+    format: 'dd/mm/yyyy HH:MM',
+    footer: true,
+    modal: true
+  })
+  $('#end_date').datetimepicker({
+    local: 'utc',
+    format: 'dd/mm/yyyy HH:MM',
+    footer: true,
+    modal: true
+  })
+</script>
