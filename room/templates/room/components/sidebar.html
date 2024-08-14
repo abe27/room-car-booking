@@ -2,7 +2,7 @@
 
 <nav id="sidebar">
   <div class="p-4 pt-5">
-    <a href="#" class="img logo rounded-circle mb-5" style="background-image: url({% static 'images/logo.jpg' %});"></a>
+    <a href="#" class="img logo rounded-circle mb-5" style="background-image: url({{request.user.fccorp.image.url}});"></a>
     <ul class="list-unstyled components mb-5">
       <li id="room" class="{% if url == 'booking' %}active{% endif %}">
         <a href="/room/booking?room_id={{ room.id }}" class="room-link" data-room-id="{{ room.id }}" data-room-name="{{ room.name }}">จองห้องประชุม</a>

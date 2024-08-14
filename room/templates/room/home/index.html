@@ -8,41 +8,37 @@
 
 {% block content %}
   <section class="light">
-
     <div class="container py-2">
-
       <div class="h1 text-center text-dark" id="pageHeaderTitle">Room</div>
       {% for room in rooms %}
-        {% if forloop.counter|divisibleby:4 %}
-          <article class="postcard light yellow">
-        {% elif forloop.counter|divisibleby:3 %}
-          <article class="postcard light green">
-        {% elif forloop.counter|divisibleby:2 %}
-          <article class="postcard light red">
-        {% else %}
-          <article class="postcard light blue">
-        {% endif %}
-            <a class="postcard__img_link" href="#">
-              <img class="postcard__img" src="{{ room.image }}" alt="{{ room.name }}" />
-            </a>
-            <div class="postcard__text t-dark">
-              <h1 class="postcard__title"><a href="#">{{ room.name }}</a></h1>
-              <div class="postcard__subtitle small">
-                <time datetime="2020-05-25 12:00:00">
-                  <i class="fas fa-calendar-alt mr-2"></i>{{ room.company.name }}
-                </time>
-              </div>
-              <div class="postcard__bar"></div>
-              <div class="postcard__preview-txt">{{ room.detail }}</div>
-              <ul class="postcard__tagbox">
-                <form action="{% url 'booking' %}" method="get">
-                  <input type="hidden" name="room_id" value="{{ room.id }}" />
-                  <button class="btn btn-primary" type="submit"><i class="fas fa-tag mr-2"></i>Booking</button>
-                </form>
-                <button class="btn btn-success ms-2"><i class="fas fa-play mr-2"></i>View Room</button>
-              </ul>
+        <article class="postcard light 
+          {% if forloop.counter|divisibleby:4 %}
+            yellow
+          {% elif forloop.counter|divisibleby:3 %}
+            green
+          {% elif forloop.counter|divisibleby:2 %}
+            red
+          {% else %}
+            blue
+          {% endif %}
+        ">
+          <a class="postcard__img_link" href="#"><img class="postcard__img" src="{{ room.image.url }}" alt="{{ room.name }}" /></a>
+          <div class="postcard__text t-dark">
+            <h1 class="postcard__title"><a href="#">{{ room.name }}</a></h1>
+            <div class="postcard__subtitle small">
+              <i class="fas fa-calendar-alt mr-2"></i>{{ room.company.name }}
             </div>
-          </article>
+            <div class="postcard__bar"></div>
+            <div class="postcard__preview-txt">{{ room.detail }}</div>
+            <ul class="postcard__tagbox">
+              <form action="{% url 'booking' %}" method="get">
+                <input type="hidden" name="room_id" value="{{ room.id }}" />
+                <button class="btn btn-primary" type="submit"><i class="fas fa-tag mr-2"></i>Booking</button>
+              </form>
+              <button class="btn btn-success ms-2"><i class="fas fa-play mr-2"></i>View Room</button>
+            </ul>
+          </div>
+        </article>
       {% endfor %}
     </div>
   </section>

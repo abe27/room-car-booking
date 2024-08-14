@@ -4,6 +4,7 @@ from django.db import models
 class Company(models.Model):
     fcskid = models.CharField(max_length=10, default="", blank=True, unique=True)
     fcname = models.CharField(max_length=100, default="", blank=True)
+    image = models.ImageField(upload_to ='company/images/', default="", blank=True)
     def __str__(self) :
         return f"{self.fcname}"
 

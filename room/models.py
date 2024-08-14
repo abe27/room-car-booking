@@ -7,7 +7,7 @@ from user.models import Employee
 class Room(models.Model):
     name = models.CharField(max_length=255, default="", blank=True)
     detail = models.TextField(default="", blank=True)
-    image = models.CharField(max_length=255, default="", blank=True)
+    image = models.ImageField(upload_to ='room/images/', default="", blank=True)
     company = models.ForeignKey(
         Company,
         on_delete=models.SET_NULL,
@@ -15,6 +15,7 @@ class Room(models.Model):
         blank=True,
         null=True,
     )
+    sequence = models.IntegerField(null=True, blank=True, unique=True)
 
     def __str__(self):
         return f"{self.name}"
