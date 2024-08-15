@@ -2,11 +2,19 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import Employee
 from .form import EmployeeForm
+from django.urls import reverse
+from django.utils.html import format_html
 
 
 class EmployeeAdmin(UserAdmin):
     form = EmployeeForm  # ใช้ฟอร์มที่เราสร้างขึ้น
 
+    def password_reset_link(self, obj):
+        url = reverse('admin:auth_user_password_change', args=[obj.pk])
+        return format_html('<a href="{}">Reset Password</a>', url)
+
+    password_reset_link.short_description = 'Reset Password'
+    
     add_fieldsets = (
         (
             None,
@@ -18,7 +26,7 @@ class EmployeeAdmin(UserAdmin):
     )
 
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
+        (None, {"fields": ("username",)}),
         ("Personal info", {"fields": ("first_name", "last_name", "emp_id", "email")}),
         (
             "Additional info",
@@ -52,6 +60,7 @@ class EmployeeAdmin(UserAdmin):
     list_display = (
         "username",
         "email",
+        "password_reset_link",
         "first_name",
         "last_name",
         "display_groups",
