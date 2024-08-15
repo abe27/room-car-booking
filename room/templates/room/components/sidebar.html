@@ -15,8 +15,8 @@
       </li>
       {% if user.is_staff == True %}
         <li>
-          <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">อนุมัติการจอง</a>
-          <ul class="collapse list-unstyled" id="pageSubmenu">
+          <a href="#pageSubmenu1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">อนุมัติการจอง ({{room.name}})</a>
+          <ul class="collapse list-unstyled" id="pageSubmenu1">
             <li class="{% if url == 'waiting' %}active{% endif %}">
               <a href="/room/approve/waiting?room_id={{ room.id }}">รอการอนุมัติ</a>
             </li>
@@ -31,6 +31,26 @@
             </li>
             <li class="{% if url == 'all_status' %}active{% endif %}">
               <a href="/room/approve/all?room_id={{ room.id }}">สถานะทั้งหมด</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">อนุมัติการจอง (ทุกห้อง)</a>
+          <ul class="collapse list-unstyled" id="pageSubmenu2">
+            <li class="{% if url == 'all_waiting' %}active{% endif %}">
+              <a href="/room/approve/all_waiting?room_id={{ room.id }}">รอการอนุมัติ</a>
+            </li>
+            <li class="{% if url == 'all_approved' %}active{% endif %}">
+              <a href="/room/approve/all_approved?room_id={{ room.id }}">รายการที่อนุมัติ</a>
+            </li>
+            <li class="{% if url == 'all_rejected' %}active{% endif %}">
+              <a href="/room/approve/all_rejected?room_id={{ room.id }}">รายการที่ปฏิเสธ</a>
+            </li>
+            <li class="{% if url == 'all_cancel' %}active{% endif %}">
+              <a href="/room/approve/all_cancel?room_id={{ room.id }}">รายการที่ยกเลิก</a>
+            </li>
+            <li class="{% if url == 'all_all_status' %}active{% endif %}">
+              <a href="/room/approve/all_all?room_id={{ room.id }}">สถานะทั้งหมด</a>
             </li>
           </ul>
         </li>

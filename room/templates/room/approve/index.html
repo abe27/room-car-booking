@@ -18,12 +18,13 @@
     <!-- Page Content -->
     <div id="content" class="p-4 p-md-5">
       {% include 'room/components/navbar.html' %}
-      <h2 id="room-title" class="mb-4">{{ room.name }}</h2>
+      {% comment %} <h2 id="room-title" class="mb-4">{{ room.name }}</h2> {% endcomment %}
       <div class="table-responsive card shadow-sm mt-3 p-3">
         <table class="table table-borderless table-striped">
           <thead>
             <tr>
               <th scope="col">Status</th>
+              <th scope="col">Room</th>
               <th scope="col">Requester</th>
               <th scope="col">Title</th>
               <th scope="col">Description</th>
@@ -45,6 +46,7 @@
                 {% elif booking.status.name == 'Cancel' %}
                   <td class="text-secondary">{{ booking.status }}</td>
                 {% endif %}
+                <td>{{ booking.room.name }}</td>
                 <td>{{ booking.employee.first_name }}</td>
                 <td>{{ booking.title }}</td>
                 <td>{{ booking.description }}</td>

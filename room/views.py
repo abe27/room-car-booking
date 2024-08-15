@@ -274,3 +274,102 @@ def approve_booking(request, booking_id):
         other_booking.save()
 
     return JsonResponse({"status": "Booking approved successfully!"}, status=200)
+
+def reject_bookings(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    
+    # Set the status to Rejected
+    rejected_status = get_object_or_404(Status, name="Rejected")
+    booking.status = rejected_status
+    booking.save()
+    
+    return JsonResponse({"status": "Booking rejected successfully!"}, status=200)
+
+def all_waiting_bookings(request):
+    if request.user.is_authenticated:
+        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
+        if request.user.is_staff == True:
+            user_company = request.user.fccorp
+            room_id = request.GET.get("room_id")
+            room = Room.objects.filter(id=room_id).first()
+            bookings = Booking.objects.filter(
+                room__company=user_company, status__name="Waiting"
+            ).order_by("created_at")
+            context = {"room": room, "bookings": bookings, "url": "all_waiting"}
+            return render(request, "room/waiting/index.html", context)
+        else:
+            return redirect("/")
+    else:
+        return redirect("/")
+
+
+def all_approved_bookings(request):
+    if request.user.is_authenticated:
+        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
+        if request.user.is_staff == True:
+            user_company = request.user.fccorp
+            room_id = request.GET.get("room_id")
+            room = Room.objects.filter(id=room_id).first()
+            bookings = Booking.objects.filter(
+                room__company=user_company, status__name="Approved"
+            ).order_by("-created_at")
+            context = {"room": room, "bookings": bookings, "url": "all_approved"}
+            return render(request, "room/approve/index.html", context)
+        else:
+            return redirect("/")
+    else:
+        return redirect("/")
+
+
+def all_rejected_bookings(request):
+    if request.user.is_authenticated:
+        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
+        if request.user.is_staff == True:
+            user_company = request.user.fccorp
+            room_id = request.GET.get("room_id")
+            room = Room.objects.filter(id=room_id).first()
+            bookings = Booking.objects.filter(
+                room__company=user_company, status__name="Rejected"
+            ).order_by("-created_at")
+            context = {"room": room, "bookings": bookings, "url": "all_rejected"}
+            return render(request, "room/approve/index.html", context)
+        else:
+            return redirect("/")
+    else:
+        return redirect("/")
+
+
+def all_cancel_bookings(request):
+    if request.user.is_authenticated:
+        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
+        if request.user.is_staff == True:
+            user_company = request.user.fccorp
+            room_id = request.GET.get("room_id")
+            room = Room.objects.filter(id=room_id).first()
+            bookings = Booking.objects.filter(
+                room__company=user_company, status__name="Cancel"
+            ).order_by("-created_at")
+            context = {"room": room, "bookings": bookings, "url": "all_cancel"}
+            return render(request, "room/approve/index.html", context)
+        else:
+            return redirect("/")
+    else:
+        return redirect("/")
+
+
+def all_all_status_bookings(request):
+    if request.user.is_authenticated:
+        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
+        if request.user.is_staff == True:
+            user_company = request.user.fccorp
+            room_id = request.GET.get("room_id")
+            room = Room.objects.filter(id=room_id).first()
+            bookings = Booking.objects.filter(room__company=user_company).order_by(
+                "-created_at"
+            )
+            context = {"room": room, "bookings": bookings, "url": "all_all_status"}
+            return render(request, "room/approve/index.html", context)
+        else:
+            return redirect("/")
+    else:
+        return redirect("/")
