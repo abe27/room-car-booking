@@ -13,7 +13,7 @@
 {% block content %}
   <section class="light">
     <div class="container py-2">
-      <div class="h1 text-center text-dark" id="pageHeaderTitle">Room</div>
+      <div class="h1 text-center text-dark" id="pageHeaderTitle">ระบบจองห้องประชุมออนไลน์</div>
       {% for room in rooms %}
         <article class="postcard light 
           {% if forloop.counter|divisibleby:4 %}
@@ -41,7 +41,7 @@
               <i class="fas fa-calendar-alt mr-2"></i>{{ room.company.name }}
             </div>
             <div class="postcard__bar"></div>
-            {% comment %} <div class="postcard__preview-txt">{{ room.detail }}</div> {% endcomment %}
+            <div class="text-danger">{{ room.remark }}</div>
             <ul class="postcard__tagbox">
               <form action="{% url 'booking' %}" method="get">
                 <input type="hidden" name="room_id" value="{{ room.id }}" />
