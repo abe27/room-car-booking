@@ -11,7 +11,7 @@
         <a href="/room/history?room_id={{ room.id }}">ประวัติการจอง</a>
       </li>
       <li id="profile" class="{% if url == 'profile' %}active{% endif %}">
-        <a href="/profile">ประวัติส่วนตัว</a>
+        <a href="/profile?room_id={{ room.id }}">ประวัติส่วนตัว</a>
       </li>
       {% if user.is_staff == True %}
         <li>
