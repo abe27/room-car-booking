@@ -142,6 +142,16 @@ def save_booking(request):
     return JsonResponse({"status": "Invalid request"}, status=400)
 
 
+@csrf_exempt
+def cancel_booking(request):
+    booking_id = request.POST.get("id")
+    booking = get_object_or_404(Booking, id=booking_id, employee=request.user)
+    booking.status = Status.objects.get(name="Cancel")
+    booking.save()
+
+    return JsonResponse({"success": True})
+
+
 def history(request):
     if request.user.is_authenticated:
         user_id = request.user.id
@@ -275,15 +285,17 @@ def approve_booking(request, booking_id):
 
     return JsonResponse({"status": "Booking approved successfully!"}, status=200)
 
+
 def reject_bookings(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
-    
+
     # Set the status to Rejected
     rejected_status = get_object_or_404(Status, name="Rejected")
     booking.status = rejected_status
     booking.save()
-    
+
     return JsonResponse({"status": "Booking rejected successfully!"}, status=200)
+
 
 def all_waiting_bookings(request):
     if request.user.is_authenticated:
