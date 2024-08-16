@@ -60,7 +60,7 @@ class Booking(models.Model):
         blank=True,
         null=True,
     )
-    remark = models.CharField(max_length=255, default="", blank=True)
+    remark = models.TextField(default="", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

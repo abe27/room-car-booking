@@ -146,7 +146,7 @@ def save_booking(request):
 def cancel_booking(request):
     booking_id = request.POST.get("id")
     booking = get_object_or_404(Booking, id=booking_id, employee=request.user)
-    booking.status = Status.objects.get(name="Cancel")
+    booking.status = Status.objects.get(name="Canceled")
     booking.save()
 
     return JsonResponse({"success": True})
@@ -229,7 +229,7 @@ def cancel(request):
             room_id = request.GET.get("room_id")
             room = Room.objects.filter(id=room_id).first()
             bookings = Booking.objects.filter(
-                room__company=user_company, room=room, status__name="Cancel"
+                room__company=user_company, room=room, status__name="Canceled"
             ).order_by("-created_at")
             context = {"room": room, "bookings": bookings, "url": "cancel"}
             return render(request, "room/approve/index.html", context)
@@ -319,6 +319,30 @@ def reject_bookings(request, booking_id):
 
     return JsonResponse({"status": "Invalid request method."}, status=405)
 
+def staff_cancel_bookings(request, booking_id):
+    if request.method == "POST":
+        booking = get_object_or_404(Booking, id=booking_id)
+
+        # Get the status for Rejected
+        canceled_status = get_object_or_404(Status, name="Canceled")
+        booking.status = canceled_status
+
+        # Assign the approver as the current logged-in user
+        booking.approver = request.user
+
+        # Parse the JSON body to get the remark
+        data = json.loads(request.body)
+        remark = data.get("remark", "").strip()
+
+        if not remark:
+            return JsonResponse({"status": "Remark cannot be empty!"}, status=400)
+
+        booking.remark = remark
+        booking.save()
+
+        return JsonResponse({"status": "Booking canceled successfully!"}, status=200)
+
+    return JsonResponse({"status": "Invalid request method."}, status=405)
 
 def all_waiting_bookings(request):
     if request.user.is_authenticated:
@@ -382,7 +406,7 @@ def all_cancel_bookings(request):
             room_id = request.GET.get("room_id")
             room = Room.objects.filter(id=room_id).first()
             bookings = Booking.objects.filter(
-                room__company=user_company, status__name="Cancel"
+                room__company=user_company, status__name="Canceled"
             ).order_by("-created_at")
             context = {"room": room, "bookings": bookings, "url": "all_cancel"}
             return render(request, "room/approve/index.html", context)

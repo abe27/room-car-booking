@@ -43,7 +43,7 @@
                   <td class="text-success">{{ booking.status }}</td>
                 {% elif booking.status.name == 'Rejected' %}
                   <td class="text-danger">{{ booking.status }}</td>
-                {% elif booking.status.name == 'Cancel' %}
+                {% elif booking.status.name == 'Canceled' %}
                   <td class="text-secondary">{{ booking.status }}</td>
                 {% endif %}
                 <td>{{ booking.title }}</td>
