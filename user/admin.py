@@ -58,6 +58,7 @@ class EmployeeAdmin(UserAdmin):
     display_groups.short_description = "Groups"
 
     list_display = (
+        "id",
         "username",
         "email",
         "password_reset_link",
