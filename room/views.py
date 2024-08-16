@@ -267,6 +267,12 @@ def approve_booking(request, booking_id):
 
     # Assign the approver as the current logged-in user
     booking.approver = request.user
+    
+    # Parse the JSON body to get the remark
+    data = json.loads(request.body)
+    remark = data.get("remark", "").strip()
+    
+    booking.remark = remark
     booking.save()
 
     # Reject other bookings that overlap with the approved booking
@@ -281,20 +287,37 @@ def approve_booking(request, booking_id):
 
     for other_booking in overlapping_bookings:
         other_booking.status = rejected_status
+        other_booking.approver = request.user
+        other_booking.remark = "มีคนจองห้องนี้แล้ว"
         other_booking.save()
 
     return JsonResponse({"status": "Booking approved successfully!"}, status=200)
 
 
 def reject_bookings(request, booking_id):
-    booking = get_object_or_404(Booking, id=booking_id)
+    if request.method == "POST":
+        booking = get_object_or_404(Booking, id=booking_id)
 
-    # Set the status to Rejected
-    rejected_status = get_object_or_404(Status, name="Rejected")
-    booking.status = rejected_status
-    booking.save()
+        # Get the status for Rejected
+        rejected_status = get_object_or_404(Status, name="Rejected")
+        booking.status = rejected_status
 
-    return JsonResponse({"status": "Booking rejected successfully!"}, status=200)
+        # Assign the approver as the current logged-in user
+        booking.approver = request.user
+
+        # Parse the JSON body to get the remark
+        data = json.loads(request.body)
+        remark = data.get("remark", "").strip()
+
+        if not remark:
+            return JsonResponse({"status": "Remark cannot be empty!"}, status=400)
+
+        booking.remark = remark
+        booking.save()
+
+        return JsonResponse({"status": "Booking rejected successfully!"}, status=200)
+
+    return JsonResponse({"status": "Invalid request method."}, status=405)
 
 
 def all_waiting_bookings(request):

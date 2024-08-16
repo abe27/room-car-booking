@@ -24,6 +24,7 @@
         <table class="table table-borderless table-striped">
           <thead>
             <tr>
+              <th scope="col">ID</th>
               <th scope="col">Status</th>
               <th scope="col">Room</th>
               <th scope="col">Requester</th>
@@ -37,6 +38,7 @@
           <tbody>
             {% for booking in bookings %}
               <tr>
+                <td class="text-secondary">{{ booking.id }}</td>
                 {% if booking.status.name == 'Waiting' %}
                   <td class="text-warning">{{ booking.status }}</td>
                 {% elif booking.status.name == 'Approved' %}
@@ -78,69 +80,110 @@
         reverseButtons: true
       }).then((result) => {
         if (result.isConfirmed) {
+          
           if (action === 'Approve') {
-            fetch(`/room/approve-booking/${bookingId}/`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
+            // Prompt for the remark (optional)
+            Swal.fire({
+              title: 'Approve Booking',
+              input: 'textarea',
+              inputLabel: 'Optionally provide a reason for approval:',
+              inputPlaceholder: 'Type your remark here...',
+              inputAttributes: {
+                'aria-label': 'Type your remark here'
               },
-              body: JSON.stringify({})
+              icon: 'info',
+              showCancelButton: true,
+              confirmButtonText: 'Approve',
+              cancelButtonText: 'Cancel',
+              reverseButtons: true
+            }).then((result) => {
+              // Check if the user clicked "Approve"
+              if (result.isConfirmed) {
+                const remark = result.value ? result.value.trim() : '' // Get the remark entered by the user
+    
+                // Send the remark to the server
+                fetch(`/room/approve-booking/${bookingId}/`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                  },
+                  body: JSON.stringify({ remark: remark })
+                })
+                  .then((response) => {
+                    if (response.status === 200) {
+                      // SweetAlert2 success message
+                      Swal.fire({
+                        title: 'Approved!',
+                        text: 'The booking has been approved.',
+                        icon: 'success'
+                      })
+                      setTimeout(() => {
+                        location.reload()
+                      }, 2000)
+                    } else {
+                      return response.json().then((data) => {
+                        Swal.fire('Error!', data.status, 'error')
+                      })
+                    }
+                  })
+                  .catch(() => {
+                    Swal.fire('Error!', 'An unexpected error occurred.', 'error')
+                  })
+              }
             })
-              .then((response) => {
-                if (response.status === 200) {
-                  // SweetAlert2 success message
-                  Swal.fire({
-                    title: 'Approved!',
-                    text: 'The booking has been approved.',
-                    icon: 'success'
-                  })
-                  setTimeout(function () {
-                    location.reload()
-                  }, 2000)
-                } else {
-                  return response.json().then((data) => {
-                    Swal.fire('Error!', data.status, 'error')
-                  })
-                }
-              })
-              .catch(() => {
-                Swal.fire('Error!', 'An unexpected error occurred.', 'error')
-              })
           }
+    
           // Add similar logic for Reject action
           if (action === 'Reject') {
-            fetch(`/room/reject-booking/${bookingId}/`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-              },
-              body: JSON.stringify({})
+            Swal.fire({
+              title: `Are you sure you want to ${actionText}?`,
+              input: 'textarea',
+              inputLabel: 'Please provide a reason for rejection:',
+              inputPlaceholder: 'Type your remark here...',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: `Yes, ${action.toLowerCase()} it!`,
+              cancelButtonText: 'No, cancel!',
+              reverseButtons: true
+            }).then((result) => {
+              // Check if the user clicked "Yes"
+              if (result.isConfirmed) {
+                const remark = result.value.trim() // Get the remark entered by the user
+    
+                // Send the remark to the server
+                fetch(`/room/reject-booking/${bookingId}/`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                  },
+                  body: JSON.stringify({ remark: remark })
+                })
+                  .then((response) => {
+                    if (response.status === 200) {
+                      // SweetAlert2 success message
+                      Swal.fire({
+                        title: 'Rejected!',
+                        text: 'The booking has been rejected.',
+                        icon: 'success'
+                      })
+                      setTimeout(() => {
+                        location.reload()
+                      }, 2000)
+                    } else {
+                      console.log(response)
+                      return response.json().then((data) => {
+                        Swal.fire('Error!', data.status, 'error')
+                      })
+                    }
+                  })
+                  .catch(() => {
+                    Swal.fire('Error!', 'An unexpected error occurred.', 'error')
+                  })
+              }
             })
-              .then((response) => {
-                if (response.status === 200) {
-                  // SweetAlert2 success message
-                  Swal.fire({
-                    title: 'Rejected!',
-                    text: 'The booking has been rejected.',
-                    icon: 'success'
-                  })
-                  setTimeout(function () {
-                    location.reload()
-                  }, 2000)
-                } else {
-                  return response.json().then((data) => {
-                    Swal.fire('Error!', data.status, 'error')
-                  })
-                }
-              })
-              .catch(() => {
-                Swal.fire('Error!', 'An unexpected error occurred.', 'error')
-              })
           }
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          Swal.fire('Cancelled', 'The booking remains unchanged.', 'error')
         }
       })
     }

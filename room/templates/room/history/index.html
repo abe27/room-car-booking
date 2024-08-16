@@ -23,6 +23,7 @@
         <table class="table table-borderless table-striped">
           <thead>
             <tr>
+              <th scope="col">ID</th>
               <th scope="col">Status</th>
               <th scope="col">Title</th>
               <th scope="col">Description</th>
@@ -35,6 +36,7 @@
           <tbody>
             {% for booking in bookings %}
               <tr>
+                <td class="text-secondary">{{ booking.id }}</td>
                 {% if booking.status.name == 'Waiting' %}
                   <td class="text-warning">{{ booking.status }}</td>
                 {% elif booking.status.name == 'Approved' %}
