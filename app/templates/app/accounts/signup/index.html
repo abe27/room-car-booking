@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block link %}
-  <link rel="stylesheet" href={% static "css/signup.css" %} />
+  <link rel="stylesheet" href="{% static 'css/signup.css' %}" />
 {% endblock %}
 
 {% block content %}
@@ -22,7 +22,7 @@
                 <div class="card-body p-md-5 text-black">
                   <h3 class="mb-5 text-uppercase">Employee registration form</h3>
 
-                  <form method="POST" action="{% url 'signup' %}">
+                  <form id="signupForm">
                     {% csrf_token %}
                     <div class="row">
                       <div class="col-md-6 mb-4">
@@ -95,6 +95,10 @@
                       <button type="submit" class="btn btn-dark btn-lg ms-2">Signup</button>
                     </div>
                   </form>
+
+                  <p class="mt-4">
+                    Already have an account? <a href="{% url 'signin' %}" class="link-primary">Sign in</a>
+                  </p>
                 </div>
               </div>
             </div>
@@ -104,25 +108,81 @@
     </div>
   </section>
 
+  <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="formToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div id="toastMessage" class="toast-body">
+          <!-- Toast message will appear here -->
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  {% comment %}filter script{% endcomment %}
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const fccorpSelect = document.getElementById('id_fccorp')
-      const fcdeptSelect = document.getElementById('id_fcdept')
+    $(document).ready(function () {
+      const fccorpSelect = $('#id_fccorp')
+      const fcdeptSelect = $('#id_fcdept')
     
-      fccorpSelect.addEventListener('change', function () {
-        const fccorpId = this.value
+      fccorpSelect.on('change', function () {
+        const fccorpId = $(this).val()
     
-        fetch(`/user/filter/dept/?fccorp=${fccorpId}`)
-          .then((response) => response.json())
-          .then((data) => {
-            fcdeptSelect.innerHTML = ''
-            data.forEach((department) => {
-              const option = document.createElement('option')
-              option.value = department.id
-              option.textContent = department.fcname
-              fcdeptSelect.appendChild(option)
+        $.ajax({
+          url: `/user/filter/dept/?fccorp=${fccorpId}`,
+          method: 'GET',
+          success: function (data) {
+            fcdeptSelect.empty()
+            data.forEach(function (department) {
+              fcdeptSelect.append(new Option(department.fcname, department.id))
             })
-          })
+          }
+        })
+      })
+    })
+  </script>
+
+  {% comment %}signup script{% endcomment %}
+  <script>
+    $(document).ready(function () {
+      $('#signupForm').on('submit', function (e) {
+        e.preventDefault()
+    
+        $.ajax({
+          type: 'POST',
+          url: "{% url 'signup' %}",
+          data: $(this).serialize() + '&csrfmiddlewaretoken={{ csrf_token }}',
+          success: function (response) {
+            const toastElement = $('#formToast')
+            const toastMessage = $('#toastMessage')
+            const formToast = new bootstrap.Toast(toastElement)
+    
+            if (response.success) {
+              toastElement.removeClass('text-bg-danger').addClass('text-bg-success')
+              toastMessage.text('Signup successful! Redirecting...')
+              formToast.show()
+    
+              setTimeout(function () {
+                window.location.href = response.redirect_url
+              }, 3000)
+            } else {
+              toastElement.removeClass('text-bg-success').addClass('text-bg-danger')
+              toastMessage.text(response.error)
+              formToast.show()
+            }
+          },
+          error: function (xhr, status, error) {
+            const toastElement = $('#formToast')
+            const toastMessage = $('#toastMessage')
+            const formToast = new bootstrap.Toast(toastElement)
+    
+            toastElement.removeClass('text-bg-success').addClass('text-bg-danger')
+            toastMessage.text('An error occurred: ' + error)
+            formToast.show()
+          }
+        })
       })
     })
   </script>

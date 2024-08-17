@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from company_department.models import Company, Department
@@ -69,13 +70,21 @@ def sign_up(request):
                         fccorp=company,
                         fcdept=department,
                     )
-                    return redirect("signin")
+                    return JsonResponse({"success": True, "redirect_url": "/signin"})
                 except Company.DoesNotExist:
-                    # Handle company not found error
-                    pass
+                    return JsonResponse(
+                        {"success": False, "error": "Company not found"}
+                    )
                 except Department.DoesNotExist:
-                    # Handle department not found error
-                    pass
+                    return JsonResponse(
+                        {"success": False, "error": "Department not found"}
+                    )
+                except Exception as e:
+                    return JsonResponse({"success": False, "error": str(e)})
+            else:
+                return JsonResponse(
+                    {"success": False, "error": "Passwords do not match"}
+                )
 
         companies = Company.objects.all()
         departments = Department.objects.all()
@@ -86,6 +95,7 @@ def sign_up(request):
         }
 
         return render(request, "app/accounts/signup/index.html", context=context)
+
 
 def profile(request):
     if request.user.is_authenticated:
