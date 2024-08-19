@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="{% static 'room/css/style.css' %}" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -85,7 +87,6 @@
       </div>
     </div>
   </div>
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
   <!-- Approve Script -->
   <script>
@@ -237,8 +238,8 @@
       const filterEndDate = endDateInput ? new Date(endDateInput + 'T23:59:59') : null
     
       $('#bookingTable tbody tr').each(function () {
-        const startDateStr = $(this).find('td').eq(6).text().trim() // เปลี่ยนเป็นคอลัมน์ Start Date
-        const endDateStr = $(this).find('td').eq(7).text().trim() // เปลี่ยนเป็นคอลัมน์ End Date
+        const startDateStr = $(this).find('td').eq(7).text().trim() // เปลี่ยนเป็นคอลัมน์ Start Date
+        const endDateStr = $(this).find('td').eq(8).text().trim() // เปลี่ยนเป็นคอลัมน์ End Date
     
         //console.log('Row Start Date:', startDateStr)
         //console.log('Row End Date:', endDateStr)
@@ -262,6 +263,31 @@
     
         $(this).toggle(showRow)
       })
+    }
+    
+    function exportToExcel() {
+      console.log('Export to Excel function called')
+    
+      // Clone the table
+      const originalTable = document.getElementById('bookingTable')
+      const clonedTable = originalTable.cloneNode(true)
+    
+      // Remove the "Action" column (last column)
+      const actionColumnIndex = 8 // Adjust the index based on your table
+      $(clonedTable)
+        .find('th:nth-child(' + (actionColumnIndex + 1) + ')')
+        .remove()
+      $(clonedTable)
+        .find('td:nth-child(' + (actionColumnIndex + 1) + ')')
+        .remove()
+    
+      // ใช้ SheetJS เพื่อสร้างไฟล์ Excel
+      const wb = XLSX.utils.book_new()
+      const ws = XLSX.utils.table_to_sheet(clonedTable)
+      XLSX.utils.book_append_sheet(wb, ws, 'Bookings')
+    
+      // สร้างไฟล์ Excel และดาวน์โหลด
+      XLSX.writeFile(wb, 'bookings.xlsx')
     }
   </script>
 {% endblock %}

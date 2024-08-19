@@ -53,7 +53,7 @@ def fetch_bookings(request):
     return JsonResponse({"bookings": json.dumps(booking_data)})
 
 
-@csrf_exempt
+# @csrf_exempt
 def save_booking(request):
     if request.method == "POST":
         try:
@@ -142,7 +142,6 @@ def save_booking(request):
     return JsonResponse({"status": "Invalid request"}, status=400)
 
 
-@csrf_exempt
 def cancel_booking(request):
     booking_id = request.POST.get("id")
     booking = get_object_or_404(Booking, id=booking_id, employee=request.user)
@@ -267,11 +266,11 @@ def approve_booking(request, booking_id):
 
     # Assign the approver as the current logged-in user
     booking.approver = request.user
-    
+
     # Parse the JSON body to get the remark
     data = json.loads(request.body)
     remark = data.get("remark", "").strip()
-    
+
     booking.remark = remark
     booking.save()
 
@@ -319,6 +318,7 @@ def reject_bookings(request, booking_id):
 
     return JsonResponse({"status": "Invalid request method."}, status=405)
 
+
 def staff_cancel_bookings(request, booking_id):
     if request.method == "POST":
         booking = get_object_or_404(Booking, id=booking_id)
@@ -343,6 +343,7 @@ def staff_cancel_bookings(request, booking_id):
         return JsonResponse({"status": "Booking canceled successfully!"}, status=200)
 
     return JsonResponse({"status": "Invalid request method."}, status=405)
+
 
 def all_waiting_bookings(request):
     if request.user.is_authenticated:

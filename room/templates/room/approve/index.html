@@ -153,9 +153,22 @@
     function exportToExcel() {
       console.log('Export to Excel function called')
     
+      // Clone the table
+      const originalTable = document.getElementById('bookingTable')
+      const clonedTable = originalTable.cloneNode(true)
+    
+      // Remove the "Action" column (last column)
+      const actionColumnIndex = 10 // Adjust the index based on your table
+      $(clonedTable)
+        .find('th:nth-child(' + (actionColumnIndex + 1) + ')')
+        .remove()
+      $(clonedTable)
+        .find('td:nth-child(' + (actionColumnIndex + 1) + ')')
+        .remove()
+    
       // ใช้ SheetJS เพื่อสร้างไฟล์ Excel
       const wb = XLSX.utils.book_new()
-      const ws = XLSX.utils.table_to_sheet(document.getElementById('bookingTable'))
+      const ws = XLSX.utils.table_to_sheet(clonedTable)
       XLSX.utils.book_append_sheet(wb, ws, 'Bookings')
     
       // สร้างไฟล์ Excel และดาวน์โหลด

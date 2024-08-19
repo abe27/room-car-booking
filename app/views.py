@@ -4,7 +4,6 @@ from django.contrib.auth import authenticate, login, logout
 from company_department.models import Company, Department
 from user.models import Employee
 from django.contrib.auth.hashers import make_password
-from django.contrib import messages
 from room.models import Room
 
 
@@ -38,7 +37,7 @@ def sign_in(request):
                 return JsonResponse(
                     {
                         "status": "error",
-                        "message": "Invalid username or password. or Your account is inactive, Please contact the administrator.",
+                        "message": "Invalid username or password. If your account is inactive, please contact the administrator.",
                     }
                 )
 
