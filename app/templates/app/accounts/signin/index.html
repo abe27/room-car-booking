@@ -19,7 +19,7 @@
                     <span class="h1 fw-bold mb-0">Signin to your account</span>
                   </div>
                   {% comment %} <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5> {% endcomment %}
-                  <form method="post" action="{% url 'signin' %}">
+                  <form id="login-form" method="post" action="{% url 'signin' %}">
                     {% csrf_token %}
 
                     <div data-mdb-input-init class="form-outline mb-4">
@@ -51,4 +51,91 @@
       </div>
     </div>
   </section>
+
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    $(document).ready(function () {
+      $('#login-form').on('submit', function (event) {
+        event.preventDefault() // ป้องกันการส่งฟอร์มแบบปกติ
+    
+        $.ajax({
+          type: 'POST',
+          url: "{% url 'signin' %}",
+          data: $(this).serialize() + '&csrfmiddlewaretoken={{ csrf_token }}',
+          dataType: 'json',
+          success: function (data) {
+            if (data.status === 'success') {
+              window.location.href = '/'
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: data.message,
+                confirmButtonText: 'Try Again'
+              })
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error('Error:', error)
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Something went wrong!',
+              confirmButtonText: 'Try Again'
+            })
+          }
+        })
+      })
+    })
+  </script>
+  {% comment %} <script>
+    document.getElementById('login-form').addEventListener('submit', function (event) {
+      event.preventDefault() // ป้องกันการส่งฟอร์มแบบปกติ
+    
+      const form = this
+      const formData = new FormData(form)
+      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+    
+      fetch("{% url 'signin' %}", {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.status === 'inactive') {
+            Swal.fire({
+              icon: 'error',
+              title: 'Inactive Account',
+              text: data.message,
+              confirmButtonText: 'OK'
+            })
+          } else if (data.status === 'success') {
+            window.location.href = '/'
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Login Failed',
+              text: 'Invalid username or password.',
+              confirmButtonText: 'Try Again'
+            })
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong!',
+            confirmButtonText: 'Try Again'
+          })
+        })
+    })
+  </script> {% endcomment %}
 {% endblock %}

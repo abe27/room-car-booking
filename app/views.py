@@ -33,9 +33,14 @@ def sign_in(request):
 
             if user is not None:
                 login(request, user)
-                return redirect("/")
+                return JsonResponse({"status": "success"})
             else:
-                messages.error(request, "Invalid username or password.")
+                return JsonResponse(
+                    {
+                        "status": "error",
+                        "message": "Invalid username or password. or Your account is inactive, Please contact the administrator.",
+                    }
+                )
 
         return render(request, "app/accounts/signin/index.html")
 
@@ -69,6 +74,7 @@ def sign_up(request):
                         password=make_password(password),
                         fccorp=company,
                         fcdept=department,
+                        is_active=False,
                     )
                     return JsonResponse({"success": True, "redirect_url": "/signin"})
                 except Company.DoesNotExist:
