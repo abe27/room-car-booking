@@ -18,19 +18,20 @@
       transform: scale(1.05); /* ขยายขนาดการ์ดขึ้น 5% */
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* เพิ่มเงาเมื่อ hover */
     }
-
+    
     .card-img-top {
       height: 400px; /* กำหนดความสูงให้รูปภาพ */
       object-fit: cover; /* ครอบคลุมพื้นที่ด้วยอัตราส่วนคงที่ */
     }
   </style>
 
-  <div class="container vh-100 d-flex align-items-center justify-content-center">
+  {% include 'app/home/navbar.html' %}
+  <div class="container d-flex align-items-center justify-content-center my-3">
     <div class="row w-100 mx-auto my-auto row-gap-3">
       <div class="col-md-6 my-auto">
         <a href="/room" class="text-decoration-none">
           <div class="card mb-3 my-2 h-100">
-            <img src="{% static "app/images/room.jpg" %}" class="card-img-top img-fluid" alt="room" />
+            <img src="{% static 'app/images/room.jpg' %}" class="card-img-top img-fluid" alt="room" />
             <div class="card-body">
               <h5 class="card-title">ระบบจองห้องประชุม</h5>
               <p class="card-text">สำหรับการจองห้องประชุมภายในองค์กร.</p>
@@ -40,7 +41,7 @@
       </div>
       <div class="col-md-6 my-auto">
         <div class="card mb-3 my-2 h-100">
-          <img src="{% static "app/images/car.jpg" %}" class="card-img-top img-fluid" alt="car" />
+          <img src="{% static 'app/images/car.jpg' %}" class="card-img-top img-fluid" alt="car" />
           <div class="card-body">
             <h5 class="card-title">ระบบจองรถ</h5>
             <p class="card-text">สำหรับการจองรถภายในองค์กร.</p>
