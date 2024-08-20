@@ -4,6 +4,15 @@ from user.models import Employee
 
 
 # Create your models here.
+
+
+class Room_Status(models.Model):
+    name = models.CharField(max_length=255, default="", blank=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class Room(models.Model):
     name = models.CharField(max_length=255, default="", blank=True)
     detail = models.TextField(default="", blank=True)
@@ -16,7 +25,14 @@ class Room(models.Model):
         null=True,
     )
     remark = models.TextField(default="", blank=True)
-    sequence = models.IntegerField(null=True, blank=True, unique=True)
+    sequence = models.IntegerField(null=True, blank=True)
+    status = models.ForeignKey(
+        Room_Status,
+        on_delete=models.SET_NULL,
+        related_name="rooms",
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return f"{self.name}"

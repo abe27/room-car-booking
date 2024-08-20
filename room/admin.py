@@ -1,10 +1,17 @@
 from django.contrib import admin
-from .models import Room, Status, Booking
+from .models import Room_Status, Room, Status, Booking
+
+
+class Room_StatusAdmin(admin.ModelAdmin):
+    list_display = ["id", "name"]
 
 
 class RoomAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "company", "image", "sequence"]
+    list_display = ["id", "name", "company", "image", "status", "sequence"]
     ordering = ["-sequence"]
+    list_filter = [
+        "company",
+    ]
 
 
 class StatusAdmin(admin.ModelAdmin):
@@ -40,6 +47,7 @@ class BookingAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
+admin.site.register(Room_Status, Room_StatusAdmin)
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Status, StatusAdmin)
 admin.site.register(Booking, BookingAdmin)

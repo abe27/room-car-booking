@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from .models import Room, Booking, Status
+from .models import Room_Status, Room, Booking, Status
 from django.views.decorators.csrf import csrf_exempt
 import json
 from datetime import datetime
@@ -9,7 +9,10 @@ from datetime import datetime
 def room(request):
     if request.user.is_authenticated:
         user_company = request.user.fccorp
-        rooms = Room.objects.filter(company=user_company)
+        room_status = Room_Status.objects.get(name="Active")
+        rooms = Room.objects.filter(company=user_company, status=room_status).order_by(
+            "sequence"
+        )
         context = {
             "rooms": rooms,
             "default_room": rooms[0] if rooms.exists() else None,  # เพิ่ม default_room
