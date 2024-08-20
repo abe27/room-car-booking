@@ -1,0 +1,68 @@
+{% extends 'car/base.html' %}
+
+{% load static %}
+
+{% block title %}
+  Profile
+{% endblock %}
+
+{% block link %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="{% static 'car/css/style.css' %}" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+{% endblock %}
+
+{% block content %}
+  <div class="wrapper d-flex align-items-stretch">
+    {% include 'car/components/sidebar.html' %}
+    <!-- Page Content -->
+    <div id="content" class="p-4 p-md-5">
+      {% include 'car/components/navbar.html' %}
+      <div class="container rounded bg-white mt-5 mb-5 card">
+        <div class="row">
+          <div class="col-md-3 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+              <img class="rounded-circle mt-5" width="150px" src="{{request.user.fccorp.image.url}}" /><span class="font-weight-bold">{{ request.user.username }}</span><span class="text-black-50">{{ request.user.email }}</span><span></span>
+            </div>
+          </div>
+          <div class="col-md-5 border-right">
+            <div class="p-3 py-5">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="text-right">Profile</h4>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-6">
+                  <label class="labels">Firstname</label><input type="text" class="form-control" placeholder="first name" value="{{ request.user.first_name }}" readonly />
+                </div>
+                <div class="col-md-6">
+                  <label class="labels">Lastname</label><input type="text" class="form-control" placeholder="lastname" value="{{ request.user.last_name }}" readonly />
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-12">
+                  <label class="labels">Employee ID</label><input type="text" class="form-control" placeholder="employee ID" value="{{request.user.emp_id}}" readonly/>
+                </div>
+              </div>
+              {% comment %} <div class="mt-5 text-center">
+                <button class="btn btn-primary profile-button" type="button">Save Profile</button>
+              </div> {% endcomment %}
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 py-5">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-lg">Company/Department</span>
+              </div><br />
+              <div class="col-md-12">
+                <label class="labels">Company</label><input type="text" class="form-control" placeholder="Company" value="{{ request.user.fccorp.fcname }}" readonly />
+              </div> <br />
+              <div class="col-md-12">
+                <label class="labels">Department</label><input type="text" class="form-control" placeholder="Department" value="{{ request.user.fcdept.fcname }}" readonly />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

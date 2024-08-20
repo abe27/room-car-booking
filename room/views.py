@@ -6,6 +6,16 @@ import json
 from datetime import datetime
 
 
+def profile(request):
+    if request.user.is_authenticated:
+        room_id = request.GET.get("room_id")
+        room = Room.objects.filter(id=room_id).first()
+        context = {"room": room, "url": "profile"}
+        return render(request, "room/profile/index.html", context)
+    else:
+        return redirect("/")
+
+
 def room(request):
     if request.user.is_authenticated:
         user_company = request.user.fccorp
@@ -121,7 +131,7 @@ def save_booking(request):
                 )
 
             employee = request.user
-            status = Status.objects.get(sequence=0)
+            status = Status.objects.get(name="Waiting")
 
             Booking.objects.create(
                 room=room,

@@ -57,7 +57,7 @@
       if (result.isConfirmed) {
         // If the user confirmed, proceed with cancellation
         $.ajax({
-          url: "{% url 'room_cancel_booking' %}",
+          url: "{% url 'car_cancel_booking' %}",
           type: 'POST',
           data: {
             id: bookingId,

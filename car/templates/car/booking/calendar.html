@@ -2,9 +2,9 @@
 <input type="hidden" name="user_id" value="{{request.user.id}}" />
 
 <!-- Include modal and toast template -->
-{% include 'room/booking/toast.html' %}
-{% include 'room/booking/modal_event.html' %}
-{% include 'room/booking/modal_detail.html' %}
+{% include 'car/booking/toast.html' %}
+{% include 'car/booking/modal_event.html' %}
+{% include 'car/booking/modal_detail.html' %}
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -16,19 +16,19 @@
     var calendarEl = $('#calendar')[0]
     var colorToast = new bootstrap.Toast($('#colorToast')[0], { delay: 5000 })
     var dateToast = new bootstrap.Toast($('#dateToast')[0], { delay: 5000 })
-    var selectedRoomId = null
+    var selectedcarId = null
   
-    function setRoomId(id) {
-      selectedRoomId = id
+    function setcarId(id) {
+      selectedcarId = id
       fetchBookings(id)
       calendar.render()
     }
   
-    function fetchBookings(roomId) {
+    function fetchBookings(carId) {
       $.ajax({
-        url: `{% url "room_fetch_bookings" %}`,
+        url: `{% url "car_fetch_bookings" %}`,
         method: 'GET',
-        data: { room_id: roomId },
+        data: { car_id: carId },
         success: function (response) {
           var bookings = JSON.parse(response.bookings)
           calendar.removeAllEvents()
@@ -80,10 +80,10 @@
         addEventButton: {
           text: 'add event...',
           click: function () {
-            if (selectedRoomId) {
+            if (selectedcarId) {
               $('#eventModal').modal('show')
             } else {
-              alert('Please select a room first.')
+              alert('Please select a car first.')
             }
           }
         }
@@ -124,7 +124,7 @@
       var endDate = formData.find((field) => field.name === 'end_date').value
   
       $.ajax({
-        url: '{% url "room_save_booking" %}',
+        url: '{% url "car_save_booking" %}',
         method: 'POST',
         data: {
           csrfmiddlewaretoken: '{{ csrf_token }}',
@@ -132,11 +132,11 @@
           description: formData.find((field) => field.name === 'description').value,
           start_date: startDate,
           end_date: endDate,
-          room_id: selectedRoomId
+          car_id: selectedcarId
         },
         success: function (response, textStatus, jqXHR) {
           if (jqXHR.status === 200) {
-            fetchBookings(selectedRoomId)
+            fetchBookings(selectedcarId)
             $('#eventModal').modal('hide')
             $('#eventForm')[0].reset()
           } else {
@@ -154,15 +154,15 @@
       })
     })
   
-    // Add this section to set the room ID and load the calendar immediately
-    if ($('.room-link').length > 0) {
-      var firstRoomId = $('.room-link').first().data('room-id')
-      setRoomId(firstRoomId)
+    // Add this section to set the car ID and load the calendar immediately
+    if ($('.car-link').length > 0) {
+      var firstcarId = $('.car-link').first().data('car-id')
+      setcarId(firstcarId)
     }
   
-    $('.room-link').on('click', function () {
-      var roomId = $(this).data('room-id')
-      setRoomId(roomId)
+    $('.car-link').on('click', function () {
+      var carId = $(this).data('car-id')
+      setcarId(carId)
     })
   
     $('#sidebarCollapse').on('click', function () {

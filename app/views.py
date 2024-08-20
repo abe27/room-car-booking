@@ -5,6 +5,7 @@ from company_department.models import Company, Department
 from user.models import Employee
 from django.contrib.auth.hashers import make_password
 from room.models import Room
+from car.models import Car
 
 
 # Create your views here.
@@ -100,13 +101,3 @@ def sign_up(request):
         }
 
         return render(request, "app/accounts/signup/index.html", context=context)
-
-
-def profile(request):
-    if request.user.is_authenticated:
-        room_id = request.GET.get("room_id")
-        room = Room.objects.filter(id=room_id).first()
-        context = {"room": room, "url": "profile"}
-        return render(request, "app/accounts/profile/index.html", context)
-    else:
-        return redirect("/")

@@ -1,0 +1,241 @@
+{% extends 'car/base.html' %}
+
+{% load static %}
+
+{% block title %}
+  Approve
+{% endblock %}
+
+{% block link %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="{% static 'car/css/style.css' %}" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Add jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="wrapper d-flex align-items-stretch">
+    {% include 'car/components/sidebar.html' %}
+    <!-- Page Content -->
+    <div id="content" class="p-4 p-md-5">
+      {% include 'car/components/navbar.html' %}
+
+      <!-- Search Inputs -->
+      <div class="card shadow-sm mt-3 p-3">
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="startDate">Start Date</label>
+            <input type="date" class="form-control" id="startDate" placeholder="Start Date" />
+          </div>
+          <div class="form-group col-md-4">
+            <label for="endDate">End Date</label>
+            <input type="date" class="form-control" id="endDate" placeholder="End Date" />
+          </div>
+          <div class="form-group col-md-4 d-flex align-items-end">
+            <button type="button" class="btn btn-primary" id="searchButton">Search</button>
+            <button type="button" class="btn btn-success ml-2" id="exportButton">Export Excel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-responsive card shadow-sm mt-3 p-3">
+        <table class="table table-borderless table-striped" id="bookingTable">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Status</th>
+              <th scope="col">car</th>
+              <th scope="col">Requester</th>
+              <th scope="col">Title</th>
+              <th scope="col">Description</th>
+              <th scope="col">Start Date</th>
+              <th scope="col">End Date</th>
+              <th scope="col">Approver</th>
+              <th scope="col">Remark</th>
+              {% if url == 'approved' or url == 'all_approved' %}
+                <th scope="col">Action</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for booking in bookings %}
+              <tr>
+                <td class="text-secondary">{{ booking.id }}</td>
+                {% if booking.status.name == 'Waiting' %}
+                  <td class="text-warning">{{ booking.status }}</td>
+                {% elif booking.status.name == 'Approved' %}
+                  <td class="text-success">{{ booking.status }}</td>
+                {% elif booking.status.name == 'Rejected' %}
+                  <td class="text-danger">{{ booking.status }}</td>
+                {% elif booking.status.name == 'Canceled' %}
+                  <td class="text-secondary">{{ booking.status }}</td>
+                {% endif %}
+                <td>{{ booking.car.name }}</td>
+                <td>{{ booking.employee.first_name }}</td>
+                <td>{{ booking.title }}</td>
+                <td>{{ booking.description }}</td>
+                <td>{{ booking.start_date|date:'Y-m-d H:i' }}</td>
+                <td>{{ booking.end_date|date:'Y-m-d H:i' }}</td>
+                <td>{{ booking.approver.first_name }}</td>
+                <td>{{ booking.remark }}</td>
+                {% if url == 'approved' or url == 'all_approved' %}
+                  <td>
+                    <button class="btn btn-secondary" onclick="handleAction('{{ booking.id }}')">Cancel</button>
+                  </td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Script -->
+  <script>
+    $(document).ready(function () {
+      $('#searchButton').click(function () {
+        filterTable()
+      })
+    
+      $('#exportButton').click(function () {
+        exportToExcel()
+      })
+    })
+    
+    function parseDate(dateStr) {
+      return new Date(dateStr.replace(' ', 'T'))
+    }
+    
+    function filterTable() {
+      //console.log('Filter function called')
+    
+      const startDateInput = $('#startDate').val()
+      const endDateInput = $('#endDate').val()
+    
+      //console.log('Start Date Input:', startDateInput)
+      //console.log('End Date Input:', endDateInput)
+    
+      const filterStartDate = startDateInput ? new Date(startDateInput + 'T00:00:00') : null
+      const filterEndDate = endDateInput ? new Date(endDateInput + 'T23:59:59') : null
+    
+      $('#bookingTable tbody tr').each(function () {
+        const startDateStr = $(this).find('td').eq(6).text().trim() // เปลี่ยนเป็นคอลัมน์ Start Date
+        const endDateStr = $(this).find('td').eq(7).text().trim() // เปลี่ยนเป็นคอลัมน์ End Date
+    
+        //console.log('Row Start Date:', startDateStr)
+        //console.log('Row End Date:', endDateStr)
+    
+        const rowStartDate = parseDate(startDateStr)
+        const rowEndDate = parseDate(endDateStr)
+    
+        //console.log('Parsed Row Start Date:', rowStartDate)
+        //console.log('Parsed Row End Date:', rowEndDate)
+    
+        let showRow = true
+    
+        if (filterStartDate && rowEndDate < filterStartDate) {
+          showRow = false
+        }
+        if (filterEndDate && rowStartDate > filterEndDate) {
+          showRow = false
+        }
+    
+        //console.log('Show Row:', showRow)
+    
+        $(this).toggle(showRow)
+      })
+    }
+    
+    function exportToExcel() {
+      console.log('Export to Excel function called')
+    
+      // Clone the table
+      const originalTable = document.getElementById('bookingTable')
+      const clonedTable = originalTable.cloneNode(true)
+    
+      // Remove the "Action" column (last column)
+      const actionColumnIndex = 10 // Adjust the index based on your table
+      $(clonedTable)
+        .find('th:nth-child(' + (actionColumnIndex + 1) + ')')
+        .remove()
+      $(clonedTable)
+        .find('td:nth-child(' + (actionColumnIndex + 1) + ')')
+        .remove()
+    
+      // ใช้ SheetJS เพื่อสร้างไฟล์ Excel
+      const wb = XLSX.utils.book_new()
+      const ws = XLSX.utils.table_to_sheet(clonedTable)
+      XLSX.utils.book_append_sheet(wb, ws, 'Bookings')
+    
+      // สร้างไฟล์ Excel และดาวน์โหลด
+      XLSX.writeFile(wb, 'bookings.xlsx')
+    }
+  </script>
+
+  <!-- Cancel Script -->
+  <script>
+    function handleAction(bookingId) {
+      Swal.fire({
+        title: `Are you sure you want to cancel this booking?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: `Yes, cancel it!`,
+        cancelButtonText: 'No, keep it',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: 'Provide a reason for cancelation',
+            input: 'textarea',
+            inputLabel: 'Reason for cancel:',
+            inputPlaceholder: 'Type your remark here...',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true
+          }).then((result) => {
+            // Check if the user clicked "Submit"
+            if (result.isConfirmed) {
+              const remark = result.value.trim() // Get the remark entered by the user
+    
+              // Send the remark to the server
+              fetch(`/car/staff-cancel-booking/${bookingId}/`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ remark: remark })
+              })
+                .then((response) => {
+                  if (response.status === 200) {
+                    // SweetAlert2 success message
+                    Swal.fire({
+                      title: 'Canceled!',
+                      text: 'The booking has been canceled.',
+                      icon: 'success'
+                    })
+                    setTimeout(() => {
+                      location.reload()
+                    }, 2000)
+                  } else {
+                    return response.json().then((data) => {
+                      Swal.fire('Error!', data.status, 'error')
+                    })
+                  }
+                })
+                .catch(() => {
+                  Swal.fire('Error!', 'An unexpected error occurred.', 'error')
+                })
+            }
+          })
+        }
+      })
+    }
+  </script>
+{% endblock %}

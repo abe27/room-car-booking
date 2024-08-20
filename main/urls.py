@@ -25,4 +25,5 @@ urlpatterns = [
     path("", include("app.urls")),
     path("user/", include("user.urls")),  # Make sure this line is included
     path("room/", include("room.urls")),
+    path("car/", include("car.urls")),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
