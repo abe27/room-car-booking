@@ -16,7 +16,7 @@
       </li>
       {% if user.is_staff == True %}
         <li>
-          <a href="#pageSubmenu1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">อนุมัติการจอง ({{ car.name }})</a>
+          <a href="#pageSubmenu1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">อนุมัติการจองรถ ({{ car.name }})</a>
           <ul class="collapse list-unstyled" id="pageSubmenu1">
             <li class="{% if url == 'waiting' %}active{% endif %}">
               <a href="/car/approve/waiting?car_id={{ car.id }}">รอการอนุมัติ</a>
@@ -36,7 +36,7 @@
           </ul>
         </li>
         <li>
-          <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">อนุมัติการจอง (ทุกห้อง)</a>
+          <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">อนุมัติการจองรถ (ทั้งหมด)</a>
           <ul class="collapse list-unstyled" id="pageSubmenu2">
             <li class="{% if url == 'all_waiting' %}active{% endif %}">
               <a href="/car/approve/all_waiting?car_id={{ car.id }}">รอการอนุมัติ</a>
