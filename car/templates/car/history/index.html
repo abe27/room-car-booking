@@ -64,8 +64,8 @@
                   <td class="text-secondary">{{ booking.status }}</td>
                 {% endif %}
                 <td>{{ booking.title }}</td>
-                <td>{{ booking.car }}</td>
-                <td>{{ booking.location }}</td>
+                <td>{{ booking.car.name }}</td>
+                <td>{{ booking.location.name }}</td>
                 <td>{{ booking.description }}</td>
                 <td>{{ booking.start_date|date:'Y-m-d H:i' }}</td>
                 <td>{{ booking.end_date|date:'Y-m-d H:i' }}</td>
