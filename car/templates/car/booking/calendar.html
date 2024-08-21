@@ -1,5 +1,5 @@
 <div id="calendar"></div>
-<input type="hidden" name="user_id" value="{{request.user.id}}" />
+<input type="hidden" name="user_id" value="{{ request.user.id }}" />
 
 <!-- Include modal and toast template -->
 {% include 'car/booking/toast.html' %}
@@ -44,6 +44,7 @@
                   emp_id: booking.emp_id,
                   firstname: booking.first_name,
                   lastname: booking.last_name,
+                  location: booking.location,
                   description: booking.description,
                   status: booking.status
                 }
@@ -90,21 +91,22 @@
       },
       eventClick: function (info) {
         var eventObject = info.event
-        var currentUserEmpId = {{ request.user.emp_id }}; // ID ของผู้ใช้ปัจจุบัน
+        var currentUserEmpId = '{{ request.user.emp_id }}' // ID ของผู้ใช้ปัจจุบัน
         //console.log(eventObject.start)
         $('#eventDetailId').text(eventObject.extendedProps.id)
         $('#eventDetailEmployeeId').text(eventObject.extendedProps.emp_id)
         $('#eventDetailEmployeeName').text(eventObject.extendedProps.firstname + ' ' + eventObject.extendedProps.lastname)
         $('#eventDetailTitle').text(eventObject.title)
+        $('#eventDetailLocation').text(eventObject.extendedProps.location)
         $('#eventDetailDescription').text(eventObject.extendedProps.description)
         $('#eventDetailStart').text(formatDateTime(eventObject.start))
         $('#eventDetailEnd').text(formatDateTime(eventObject.end))
         // กำหนดสีพื้นหลังตามที่ได้รับจาก eventObject
         //$('#eventDetailColor').css('background-color', eventObject.backgroundColor)
         $('#eventDetailStatus').css('background-color', eventObject.color).text(eventObject.extendedProps.status)
-
+  
         // แสดงปุ่ม Cancel ถ้า emp_id ตรงกับ ID ของผู้ใช้ปัจจุบัน
-        if (eventObject.extendedProps.emp_id == currentUserEmpId && eventObject.extendedProps.status == "Waiting") {
+        if (eventObject.extendedProps.emp_id == currentUserEmpId && eventObject.extendedProps.status == 'Waiting') {
           $('#cancelBookingBtn').show()
         } else {
           $('#cancelBookingBtn').hide()
@@ -130,6 +132,7 @@
           csrfmiddlewaretoken: '{{ csrf_token }}',
           title: formData.find((field) => field.name === 'title').value,
           description: formData.find((field) => field.name === 'description').value,
+          location: formData.find((field) => field.name === 'location').value,
           start_date: startDate,
           end_date: endDate,
           car_id: selectedcarId

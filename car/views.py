@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from .models import Car_Status, Car, Booking, Booking_Status
+from .models import Car_Status, Car, Booking, Booking_Status, Location
 
 # from django.views.decorators.csrf import csrf_exempt
 import json
@@ -36,8 +36,9 @@ def car(request):
 def booking(request):
     if request.user.is_authenticated:
         car_id = request.GET.get("car_id")
+        locations = Location.objects.all()  # ดึงข้อมูล location ทั้งหมดจากฐานข้อมูล
         car = Car.objects.filter(id=car_id).first()
-        context = {"car": car, "url": "booking"}
+        context = {"car": car, "locations": locations, "url": "booking"}
         return render(request, "car/booking/index.html", context)
     else:
         return redirect("/")
@@ -56,6 +57,7 @@ def fetch_bookings(request):
                 "first_name": booking.employee.first_name,
                 "last_name": booking.employee.last_name,
                 "title": booking.title,
+                "location": booking.location.name,
                 "start_date": booking.start_date.isoformat(),
                 "end_date": booking.end_date.isoformat(),
                 "description": booking.description,
@@ -73,6 +75,7 @@ def save_booking(request):
         try:
             data = request.POST
             title = data.get("title")
+            location_id = data.get("location")
             description = data.get("description")
             start_date = data.get("start_date")
             end_date = data.get("end_date")
@@ -82,7 +85,16 @@ def save_booking(request):
                 car = Car.objects.get(id=car_id)
             except car.DoesNotExist:
                 return JsonResponse(
-                    {"status": "car not found."},
+                    {"status": "Car not found."},
+                    status=404,
+                )
+
+            # Retrieve the Location instance
+            try:
+                location = Location.objects.get(id=location_id)
+            except Location.DoesNotExist:
+                return JsonResponse(
+                    {"status": "Location not found."},
                     status=404,
                 )
 
@@ -138,6 +150,7 @@ def save_booking(request):
                 car=car,
                 employee=employee,
                 title=title,
+                location=location,
                 description=description,
                 start_date=start_date_iso,
                 end_date=end_date_iso,

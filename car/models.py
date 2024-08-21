@@ -47,9 +47,20 @@ class Booking_Status(models.Model):
         return f"{self.name}"
 
 
+class Location(models.Model):
+    name = models.CharField(max_length=255, default="", blank=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class Booking(models.Model):
     car = models.ForeignKey(
-        Car, on_delete=models.SET_NULL, related_name="car_bookings", blank=True, null=True
+        Car,
+        on_delete=models.SET_NULL,
+        related_name="car_bookings",
+        blank=True,
+        null=True,
     )
     employee = models.ForeignKey(
         Employee,
@@ -59,6 +70,13 @@ class Booking(models.Model):
         null=True,
     )
     title = models.CharField(max_length=255, default="", blank=True)
+    location = models.ForeignKey(
+        Location,
+        on_delete=models.SET_NULL,
+        related_name="car_bookings",
+        blank=True,
+        null=True,
+    )
     description = models.TextField(default="", blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Car_Status, Car, Booking_Status, Booking
+from .models import Car_Status, Car, Booking_Status, Booking, Location
 
 
 class Car_Status_Admin(admin.ModelAdmin):
@@ -46,8 +46,14 @@ class BookingAdmin(admin.ModelAdmin):
     ordering = ["-start_date", "-end_date", "-created_at"]
 
 
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ["id", "name"]
+    ordering = ["-id"]
+
+
 # Register your models here.
 admin.site.register(Car_Status, Car_Status_Admin)
 admin.site.register(Car, CarAdmin)
 admin.site.register(Booking_Status, Booking_Status_Admin)
 admin.site.register(Booking, BookingAdmin)
+admin.site.register(Location, LocationAdmin)
