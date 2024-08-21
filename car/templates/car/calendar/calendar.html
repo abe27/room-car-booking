@@ -2,9 +2,8 @@
 <input type="hidden" name="user_id" value="{{ request.user.id }}" />
 
 <!-- Include modal and toast template -->
-{% include 'car/booking/toast.html' %}
-{% include 'car/booking/modal_event.html' %}
-{% include 'car/booking/modal_detail.html' %}
+{% include 'car/calendar/toast.html' %}
+{% include 'car/calendar/modal_detail.html' %}
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -61,8 +60,8 @@
       dayMaxEvents: true,
       initialView: 'dayGridMonth',
       headerToolbar: {
-        left: 'title prev,next today',
-        center: 'addEventButton',
+        left: 'prev,next today',
+        center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
       // Setting the date format for the date picker and calendar
@@ -75,18 +74,6 @@
         },
         timeGridDay: {
           titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
-        }
-      },
-      customButtons: {
-        addEventButton: {
-          text: 'add event...',
-          click: function () {
-            if (selectedcarId) {
-              $('#eventModal').modal('show')
-            } else {
-              alert('Please select a car first.')
-            }
-          }
         }
       },
       eventClick: function (info) {
@@ -118,44 +105,6 @@
     function formatDateTime(date) {
       return moment.utc(date).format('DD MMMM YYYY, HH:mm A')
     }
-  
-    $('#eventForm').on('submit', function (e) {
-      e.preventDefault()
-      var formData = $(this).serializeArray()
-      var startDate = formData.find((field) => field.name === 'start_date').value
-      var endDate = formData.find((field) => field.name === 'end_date').value
-  
-      $.ajax({
-        url: '{% url "car_save_booking" %}',
-        method: 'POST',
-        data: {
-          csrfmiddlewaretoken: '{{ csrf_token }}',
-          title: formData.find((field) => field.name === 'title').value,
-          description: formData.find((field) => field.name === 'description').value,
-          location: formData.find((field) => field.name === 'location').value,
-          start_date: startDate,
-          end_date: endDate,
-          car_id: selectedcarId
-        },
-        success: function (response, textStatus, jqXHR) {
-          if (jqXHR.status === 200) {
-            fetchBookings(selectedcarId)
-            $('#eventModal').modal('hide')
-            $('#eventForm')[0].reset()
-          } else {
-            $('#dateToast .toast-body').text(response.status)
-            var dateToast = new bootstrap.Toast($('#dateToast')[0], { delay: 5000 })
-            dateToast.show()
-          }
-        },
-        error: function (error) {
-          $('#dateToast .toast-body').text(error.responseJSON.status)
-          var dateToast = new bootstrap.Toast($('#dateToast')[0], { delay: 5000 })
-          dateToast.show()
-          console.log(error)
-        }
-      })
-    })
   
     // Add this section to set the car ID and load the calendar immediately
     if ($('.car-link').length > 0) {

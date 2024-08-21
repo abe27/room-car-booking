@@ -5,6 +5,7 @@ urlpatterns = [
     path("", views.car, name="car"),
     path("profile", views.profile, name="car_profile"),
     path("booking/", views.booking, name="car_booking"),
+    path("calendar/", views.calendar, name="car_calendar"),
     path("fetch_bookings/", views.fetch_bookings, name="car_fetch_bookings"),
     path("save_booking/", views.save_booking, name="car_save_booking"),
     path("cancel_booking/", views.cancel_booking, name="car_cancel_booking"),

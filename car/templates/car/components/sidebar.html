@@ -5,8 +5,11 @@
     <div class="img logo rounded-circle mb-2" style="background-image: url({{ request.user.fccorp.image.url }});"></div>
     <div class="text-center">สวัสดีคุณ, {{ request.user.first_name }}</div>
     <ul class="list-unstyled components mb-5">
-      <li id="car" class="{% if url == 'booking' %}active{% endif %}">
-        <a href="/car/booking?car_id={{ car.id }}" class="car-link" data-car-id="{{ car.id }}" data-car-name="{{ car.name }}">จองรถ</a>
+      <li id="booking" class="{% if url == 'booking' %}active{% endif %}">
+        <a href="/car/booking?car_id={{ car.id }}">จองรถ</a>
+      </li>
+      <li id="car" class="{% if url == 'calendar' %}active{% endif %}">
+        <a href="/car/calendar?car_id={{ car.id }}" class="car-link" data-car-id="{{ car.id }}" data-car-name="{{ car.name }}">สถานะ</a>
       </li>
       <li id="history" class="{% if url == 'history' %}active{% endif %}">
         <a href="/car/history?car_id={{ car.id }}">ประวัติการจอง</a>

@@ -46,9 +46,10 @@
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Status</th>
-              <th scope="col">car</th>
               <th scope="col">Requester</th>
               <th scope="col">Title</th>
+              <th scope="col">Car</th>
+              <th scope="col">Location</th>
               <th scope="col">Description</th>
               <th scope="col">Start Date</th>
               <th scope="col">End Date</th>
@@ -68,9 +69,10 @@
                 {% elif booking.status.name == 'Canceled' %}
                   <td class="text-secondary">{{ booking.status }}</td>
                 {% endif %}
-                <td>{{ booking.car.name }}</td>
                 <td>{{ booking.employee.first_name }}</td>
                 <td>{{ booking.title }}</td>
+                <td>{{ booking.car.name }}</td>
+                <td>{{ booking.location }}</td>
                 <td>{{ booking.description }}</td>
                 <td>{{ booking.start_date|date:'Y-m-d H:i' }}</td>
                 <td>{{ booking.end_date|date:'Y-m-d H:i' }}</td>
@@ -273,7 +275,7 @@
       const clonedTable = originalTable.cloneNode(true)
     
       // Remove the "Action" column (last column)
-      const actionColumnIndex = 8 // Adjust the index based on your table
+      const actionColumnIndex = 9 // Adjust the index based on your table
       $(clonedTable)
         .find('th:nth-child(' + (actionColumnIndex + 1) + ')')
         .remove()

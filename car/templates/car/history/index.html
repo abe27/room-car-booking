@@ -18,7 +18,6 @@
     <!-- Page Content -->
     <div id="content" class="p-4 p-md-5">
       {% include 'car/components/navbar.html' %}
-      <h2 id="car-title" class="mb-4">{{ car.name }}</h2>
       <!-- Search Inputs -->
       <div class="card shadow-sm mt-3 p-3">
         <div class="form-row">
@@ -42,6 +41,8 @@
               <th scope="col">ID</th>
               <th scope="col">Status</th>
               <th scope="col">Title</th>
+              <th scope="col">Car</th>
+              <th scope="col">Location</th>
               <th scope="col">Description</th>
               <th scope="col">Start Date</th>
               <th scope="col">End Date</th>
@@ -63,6 +64,8 @@
                   <td class="text-secondary">{{ booking.status }}</td>
                 {% endif %}
                 <td>{{ booking.title }}</td>
+                <td>{{ booking.car }}</td>
+                <td>{{ booking.location }}</td>
                 <td>{{ booking.description }}</td>
                 <td>{{ booking.start_date|date:'Y-m-d H:i' }}</td>
                 <td>{{ booking.end_date|date:'Y-m-d H:i' }}</td>

@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block title %}
-  car
+  booking
 {% endblock %}
 
 {% block link %}
@@ -20,10 +20,119 @@
     <!-- Page Content -->
     <div id="content" class="p-4 p-md-5">
       {% include 'car/components/navbar.html' %}
-
-      <h2 id="car-title" class="mb-4">{{ car.name }}</h2>
-
-      {% include 'car/booking/calendar.html' %}
+      <div class="container mt-4 card p-3">
+        <h5 class="mb-3">Booking Car</h5>
+        <form id="eventForm">
+          <div class="form-group mb-3">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" name="title" required />
+          </div>
+          <div class="form-group mb-3">
+            <label for="location">Location</label>
+            <select class="form-control" id="location" name="location" required>
+              <option value="">Select Location</option>
+              {% for location in locations %}
+                <option value="{{ location.id }}">{{ location.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group mb-3">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+          </div>
+          <div class="form-group mb-3">
+            <label for="start_date">Start Date</label>
+            <input class="form-control border" id="start_date" name="start_date" required />
+          </div>
+          <div class="form-group mb-3">
+            <label for="end_date">End Date</label>
+            <input class="form-control border" id="end_date" name="end_date" required />
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
     </div>
   </div>
+
+  <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
+  <script>
+    $('#start_date').datetimepicker({
+      local: 'utc',
+      format: 'dd/mm/yyyy HH:MM',
+      footer: true,
+      modal: true
+    })
+    $('#end_date').datetimepicker({
+      local: 'utc',
+      format: 'dd/mm/yyyy HH:MM',
+      footer: true,
+      modal: true
+    })
+  </script>
+
+  <script>
+    $(document).ready(function () {
+      $('#eventForm').on('submit', function (e) {
+        e.preventDefault() // Prevent default form submission
+    
+        // Show confirmation dialog
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'Do you want to save this booking?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: 'success',
+          cancelButtonColor: 'danger',
+          confirmButtonText: 'Yes, save it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Gather form data
+            var formData = {
+              title: $('#title').val(),
+              location: $('#location').val(),
+              description: $('#description').val(),
+              start_date: $('#start_date').val(),
+              end_date: $('#end_date').val()
+            }
+    
+            // Send data to the server via AJAX
+            $.ajax({
+              url: "{% url 'car_save_booking' %}",
+              type: 'POST',
+              data: formData,
+              headers: {
+                'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token
+              },
+              success: function (response) {
+                if (response.status === 'Booking saved successfully!') {
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: response.status,
+                    showConfirmButton: false,
+                    timer: 1500
+                  }).then(() => {
+                    window.location.href = "{% url 'car_history' %}?car_id={{ car.id }}" // Redirect to history page
+                  })
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.status
+                  })
+                }
+              },
+              error: function (xhr, status, error) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Unexpected Error',
+                  text: 'An error occurred. Please try again.'
+                })
+              }
+            })
+          }
+        })
+      })
+    })
+  </script>
 {% endblock %}

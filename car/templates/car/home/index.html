@@ -51,7 +51,7 @@
             <div class="postcard__bar"></div>
             <div class="text-danger">{{ car.remark }}</div>
             <ul class="postcard__tagbox">
-              <form action="{% url 'car_booking' %}" method="get">
+              <form action="{% url 'car_calendar' %}" method="get">
                 <input type="hidden" name="car_id" value="{{ car.id }}" />
                 <button class="btn btn-primary" type="submit"><i class="fas fa-tag mr-2"></i>Booking</button>
               </form>

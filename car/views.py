@@ -44,6 +44,16 @@ def booking(request):
         return redirect("/")
 
 
+def calendar(request):
+    if request.user.is_authenticated:
+        car_id = request.GET.get("car_id")
+        car = Car.objects.filter(id=car_id).first()
+        context = {"car": car, "url": "calendar"}
+        return render(request, "car/calendar/index.html", context)
+    else:
+        return redirect("/")
+
+
 def fetch_bookings(request):
     car_id = request.GET.get("car_id")
     statuses = Booking_Status.objects.filter(name__in=["Waiting", "Approved"])
@@ -79,15 +89,6 @@ def save_booking(request):
             description = data.get("description")
             start_date = data.get("start_date")
             end_date = data.get("end_date")
-            car_id = data.get("car_id")
-
-            try:
-                car = Car.objects.get(id=car_id)
-            except car.DoesNotExist:
-                return JsonResponse(
-                    {"status": "Car not found."},
-                    status=404,
-                )
 
             # Retrieve the Location instance
             try:
@@ -130,24 +131,10 @@ def save_booking(request):
                     status=400,
                 )
 
-            # Check if there are any bookings with status sequence 1 during the requested time period
-            conflicting_bookings = Booking.objects.filter(
-                car=car,
-                status__name="Approved",
-                start_date__lt=end_date_obj,
-                end_date__gt=start_date_obj,
-            )
-            if conflicting_bookings.exists():
-                return JsonResponse(
-                    {"status": "The selected time slot is not available."},
-                    status=400,
-                )
-
             employee = request.user
             status = Booking_Status.objects.get(name="Waiting")
 
             Booking.objects.create(
-                car=car,
                 employee=employee,
                 title=title,
                 location=location,
@@ -181,12 +168,9 @@ def cancel_booking(request):
 def history(request):
     if request.user.is_authenticated:
         user_id = request.user.id
-        user_company = request.user.fccorp
         car_id = request.GET.get("car_id")
         car = Car.objects.filter(id=car_id).first()
-        bookings = Booking.objects.filter(
-            car__company=user_company, employee__id=user_id
-        ).order_by("-created_at")
+        bookings = Booking.objects.filter(employee__id=user_id).order_by("-created_at")
         context = {"car": car, "bookings": bookings, "url": "history"}
         return render(request, "car/history/index.html", context)
     else:
