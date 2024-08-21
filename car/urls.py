@@ -27,10 +27,6 @@ urlpatterns = [
         name="car_staff-cancel-booking",
     ),
     
-    path("approve/waiting/", views.waiting, name="car_waiting"),
-    path("approve/approved/", views.approved, name="car_approved"),
-    path("approve/rejected/", views.rejected, name="car_rejected"),
-    path("approve/cancel/", views.cancel, name="car_cancel"),
     path("approve/all/", views.all_status, name="car_all_status"),
     path("approve/all_waiting/", views.all_waiting_bookings, name="car_all_waiting"),
     path("approve/all_approved/", views.all_approved_bookings, name="car_all_approved"),

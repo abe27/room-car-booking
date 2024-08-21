@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from .models import Car_Status, Car, Booking, Booking_Status, Location
 
 # from django.views.decorators.csrf import csrf_exempt
@@ -85,6 +85,7 @@ def save_booking(request):
         try:
             data = request.POST
             title = data.get("title")
+            company = request.user.fccorp
             location_id = data.get("location")
             description = data.get("description")
             start_date = data.get("start_date")
@@ -137,6 +138,7 @@ def save_booking(request):
             Booking.objects.create(
                 employee=employee,
                 title=title,
+                company=company,
                 location=location,
                 description=description,
                 start_date=start_date_iso,
@@ -168,83 +170,14 @@ def cancel_booking(request):
 def history(request):
     if request.user.is_authenticated:
         user_id = request.user.id
+        company_id = request.user.fccorp.id
         car_id = request.GET.get("car_id")
         car = Car.objects.filter(id=car_id).first()
-        bookings = Booking.objects.filter(employee__id=user_id).order_by("-created_at")
+        bookings = Booking.objects.filter(
+            employee__id=user_id, company__id=company_id
+        ).order_by("-created_at")
         context = {"car": car, "bookings": bookings, "url": "history"}
         return render(request, "car/history/index.html", context)
-    else:
-        return redirect("/")
-
-
-def waiting(request):
-    if request.user.is_authenticated:
-        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
-        if request.user.is_staff == True:
-            user_company = request.user.fccorp
-            car_id = request.GET.get("car_id")
-            car = Car.objects.filter(id=car_id).first()
-            bookings = Booking.objects.filter(
-                car__company=user_company, car=car, status__name="Waiting"
-            ).order_by("created_at")
-            context = {"car": car, "bookings": bookings, "url": "waiting"}
-            return render(request, "car/waiting/index.html", context)
-        else:
-            return redirect("/")
-    else:
-        return redirect("/")
-
-
-def approved(request):
-    if request.user.is_authenticated:
-        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
-        if request.user.is_staff == True:
-            user_company = request.user.fccorp
-            car_id = request.GET.get("car_id")
-            car = Car.objects.filter(id=car_id).first()
-            bookings = Booking.objects.filter(
-                car__company=user_company, car=car, status__name="Approved"
-            ).order_by("-created_at")
-            context = {"car": car, "bookings": bookings, "url": "approved"}
-            return render(request, "car/approve/index.html", context)
-        else:
-            return redirect("/")
-    else:
-        return redirect("/")
-
-
-def rejected(request):
-    if request.user.is_authenticated:
-        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
-        if request.user.is_staff == True:
-            user_company = request.user.fccorp
-            car_id = request.GET.get("car_id")
-            car = Car.objects.filter(id=car_id).first()
-            bookings = Booking.objects.filter(
-                car__company=user_company, car=car, status__name="Rejected"
-            ).order_by("-created_at")
-            context = {"car": car, "bookings": bookings, "url": "rejected"}
-            return render(request, "car/approve/index.html", context)
-        else:
-            return redirect("/")
-    else:
-        return redirect("/")
-
-
-def cancel(request):
-    if request.user.is_authenticated:
-        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
-        if request.user.is_staff == True:
-            user_company = request.user.fccorp
-            car_id = request.GET.get("car_id")
-            car = Car.objects.filter(id=car_id).first()
-            bookings = Booking.objects.filter(
-                car__company=user_company, car=car, status__name="Canceled"
-            ).order_by("-created_at")
-            context = {"car": car, "bookings": bookings, "url": "cancel"}
-            return render(request, "car/approve/index.html", context)
-        else:
-            return redirect("/")
     else:
         return redirect("/")
 
@@ -253,11 +186,10 @@ def all_status(request):
     if request.user.is_authenticated:
         # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
         if request.user.is_staff == True:
-            user_company = request.user.fccorp
+            company_id = request.user.fccorp.id
             car_id = request.GET.get("car_id")
-            car = Car.objects.filter(id=car_id).first()
             bookings = Booking.objects.filter(
-                car__company=user_company, car=car
+                company__id=company_id, car__id=car_id
             ).order_by("-created_at")
             context = {"car": car, "bookings": bookings, "url": "all_status"}
             return render(request, "car/approve/index.html", context)
@@ -268,40 +200,34 @@ def all_status(request):
 
 
 def approve_booking(request, booking_id):
-    # booking = Booking.objects.get(id=booking_id)
-    booking = get_object_or_404(Booking, id=booking_id)
+    if request.method == "POST":
+        booking = get_object_or_404(Booking, id=booking_id)
 
-    # Set the status to Approved
-    approved_status = get_object_or_404(Booking_Status, name="Approved")
-    booking.status = approved_status
+        # Set the status to Approved
+        approved_status = get_object_or_404(Booking_Status, name="Approved")
+        booking.status = approved_status
 
-    # Assign the approver as the current logged-in user
-    booking.approver = request.user
+        # Assign the approver as the current logged-in user
+        booking.approver = request.user
 
-    # Parse the JSON body to get the remark
-    data = json.loads(request.body)
-    remark = data.get("remark", "").strip()
+        # Parse the JSON body to get the remark and car_id
+        data = json.loads(request.body)
+        remark = data.get("remark", "").strip()
+        car_id = data.get("car_id")
 
-    booking.remark = remark
-    booking.save()
+        # Validate and assign the selected car to the booking
+        if car_id:
+            car = get_object_or_404(Car, id=car_id)
+            booking.car = car
+        else:
+            return JsonResponse("Invalid car selection")
 
-    # Reject other bookings that overlap with the approved booking
-    overlapping_bookings = Booking.objects.filter(
-        car=booking.car,
-        status__name="Waiting",
-        start_date__lt=booking.end_date,
-        end_date__gt=booking.start_date,
-    ).exclude(id=booking.id)
+        booking.remark = remark
+        booking.save()
 
-    rejected_status = get_object_or_404(Booking_Status, name="Rejected")
-
-    for other_booking in overlapping_bookings:
-        other_booking.status = rejected_status
-        other_booking.approver = request.user
-        other_booking.remark = "มีคนจองรถคันนี้แล้ว"
-        other_booking.save()
-
-    return JsonResponse({"status": "Booking approved successfully!"}, status=200)
+        return JsonResponse({"status": "Booking approved successfully!"}, status=200)
+    else:
+        return HttpResponseBadRequest("Invalid request method")
 
 
 def reject_bookings(request, booking_id):
@@ -360,13 +286,19 @@ def all_waiting_bookings(request):
     if request.user.is_authenticated:
         # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
         if request.user.is_staff == True:
-            user_company = request.user.fccorp
+            company_id = request.user.fccorp.id
             car_id = request.GET.get("car_id")
             car = Car.objects.filter(id=car_id).first()
+            cars = Car.objects.filter(company_id=company_id)
             bookings = Booking.objects.filter(
-                car__company=user_company, status__name="Waiting"
+                company__id=company_id, status__name="Waiting"
             ).order_by("created_at")
-            context = {"car": car, "bookings": bookings, "url": "all_waiting"}
+            context = {
+                "car": car,
+                "cars": cars,
+                "bookings": bookings,
+                "url": "all_waiting",
+            }
             return render(request, "car/waiting/index.html", context)
         else:
             return redirect("/")
@@ -378,11 +310,11 @@ def all_approved_bookings(request):
     if request.user.is_authenticated:
         # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
         if request.user.is_staff == True:
-            user_company = request.user.fccorp
+            company_id = request.user.fccorp.id
             car_id = request.GET.get("car_id")
             car = Car.objects.filter(id=car_id).first()
             bookings = Booking.objects.filter(
-                car__company=user_company, status__name="Approved"
+                company__id=company_id, status__name="Approved"
             ).order_by("-created_at")
             context = {"car": car, "bookings": bookings, "url": "all_approved"}
             return render(request, "car/approve/index.html", context)
@@ -396,11 +328,11 @@ def all_rejected_bookings(request):
     if request.user.is_authenticated:
         # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
         if request.user.is_staff == True:
-            user_company = request.user.fccorp
+            company_id = request.user.fccorp.id
             car_id = request.GET.get("car_id")
             car = Car.objects.filter(id=car_id).first()
             bookings = Booking.objects.filter(
-                car__company=user_company, status__name="Rejected"
+                company__id=company_id, status__name="Rejected"
             ).order_by("-created_at")
             context = {"car": car, "bookings": bookings, "url": "all_rejected"}
             return render(request, "car/approve/index.html", context)
@@ -414,11 +346,11 @@ def all_cancel_bookings(request):
     if request.user.is_authenticated:
         # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
         if request.user.is_staff == True:
-            user_company = request.user.fccorp
+            company_id = request.user.fccorp.id
             car_id = request.GET.get("car_id")
             car = Car.objects.filter(id=car_id).first()
             bookings = Booking.objects.filter(
-                car__company=user_company, status__name="Canceled"
+                company__id=company_id, status__name="Canceled"
             ).order_by("-created_at")
             context = {"car": car, "bookings": bookings, "url": "all_cancel"}
             return render(request, "car/approve/index.html", context)
@@ -432,10 +364,10 @@ def all_all_status_bookings(request):
     if request.user.is_authenticated:
         # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
         if request.user.is_staff == True:
-            user_company = request.user.fccorp
+            company_id = request.user.fccorp.id
             car_id = request.GET.get("car_id")
             car = Car.objects.filter(id=car_id).first()
-            bookings = Booking.objects.filter(car__company=user_company).order_by(
+            bookings = Booking.objects.filter(company__id=company_id).order_by(
                 "-created_at"
             )
             context = {"car": car, "bookings": bookings, "url": "all_all_status"}

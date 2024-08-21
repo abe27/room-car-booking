@@ -69,6 +69,13 @@ class Booking(models.Model):
         blank=True,
         null=True,
     )
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.SET_NULL,
+        related_name="car_bookings",
+        blank=True,
+        null=True,
+    )
     title = models.CharField(max_length=255, default="", blank=True)
     location = models.ForeignKey(
         Location,

@@ -24,6 +24,7 @@ class BookingAdmin(admin.ModelAdmin):
         "id",
         "car",
         "status",
+        "company",
         "title",
         "description",
         "start_date",
@@ -36,6 +37,7 @@ class BookingAdmin(admin.ModelAdmin):
     ]
     list_filter = [
         "car",
+        "company",
         "start_date",
         "end_date",
         "created_at",

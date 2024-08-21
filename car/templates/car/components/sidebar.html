@@ -19,26 +19,6 @@
       </li>
       {% if user.is_staff == True %}
         <li>
-          <a href="#pageSubmenu1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">อนุมัติการจองรถ ({{ car.name }})</a>
-          <ul class="collapse list-unstyled" id="pageSubmenu1">
-            <li class="{% if url == 'waiting' %}active{% endif %}">
-              <a href="/car/approve/waiting?car_id={{ car.id }}">รอการอนุมัติ</a>
-            </li>
-            <li class="{% if url == 'approved' %}active{% endif %}">
-              <a href="/car/approve/approved?car_id={{ car.id }}">รายการที่อนุมัติ</a>
-            </li>
-            <li class="{% if url == 'rejected' %}active{% endif %}">
-              <a href="/car/approve/rejected?car_id={{ car.id }}">รายการที่ปฏิเสธ</a>
-            </li>
-            <li class="{% if url == 'cancel' %}active{% endif %}">
-              <a href="/car/approve/cancel?car_id={{ car.id }}">รายการที่ยกเลิก</a>
-            </li>
-            <li class="{% if url == 'all_status' %}active{% endif %}">
-              <a href="/car/approve/all?car_id={{ car.id }}">สถานะทั้งหมด</a>
-            </li>
-          </ul>
-        </li>
-        <li>
           <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">อนุมัติการจองรถ (ทั้งหมด)</a>
           <ul class="collapse list-unstyled" id="pageSubmenu2">
             <li class="{% if url == 'all_waiting' %}active{% endif %}">
