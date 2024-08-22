@@ -5,6 +5,7 @@ from .models import Car_Status, Car, Booking, Booking_Status, Location
 # from django.views.decorators.csrf import csrf_exempt
 import json
 from datetime import datetime
+import requests
 
 
 def profile(request):
@@ -82,59 +83,66 @@ def fetch_bookings(request):
 # @csrf_exempt
 def save_booking(request):
     if request.method == "POST":
+        data = request.POST
+        title = data.get("title")
+        company = request.user.fccorp
+        location_id = data.get("location")
+        description = data.get("description")
+        start_date = data.get("start_date")
+        end_date = data.get("end_date")
+
+        # Retrieve the Location instance
         try:
-            data = request.POST
-            title = data.get("title")
-            company = request.user.fccorp
-            location_id = data.get("location")
-            description = data.get("description")
-            start_date = data.get("start_date")
-            end_date = data.get("end_date")
+            location = Location.objects.get(id=location_id)
+        except Location.DoesNotExist:
+            return JsonResponse(
+                {"status": "Location not found."},
+                status=404,
+            )
 
-            # Retrieve the Location instance
-            try:
-                location = Location.objects.get(id=location_id)
-            except Location.DoesNotExist:
-                return JsonResponse(
-                    {"status": "Location not found."},
-                    status=404,
-                )
+        # Validate dates
+        try:
+            start_date_obj = datetime.strptime(start_date, "%d/%m/%Y %H:%M")
+            start_date_iso = start_date_obj.isoformat()
+        except ValueError:
+            return JsonResponse(
+                {"status": "Invalid start date format."},
+                status=400,
+            )
 
-            # Validate dates
-            # Convert start_date to ISO format
-            # end_date_obj = parse_datetime(end_date)
-            try:
-                start_date_obj = datetime.strptime(start_date, "%d/%m/%Y %H:%M")
-                start_date_iso = start_date_obj.isoformat()
-            except ValueError:
-                return JsonResponse(
-                    {"status": "Invalid start date format."},
-                    status=400,
-                )
+        try:
+            end_date_obj = datetime.strptime(end_date, "%d/%m/%Y %H:%M")
+            end_date_iso = end_date_obj.isoformat()
+        except ValueError:
+            return JsonResponse(
+                {"status": "Invalid end date format."},
+                status=400,
+            )
 
-            try:
-                end_date_obj = datetime.strptime(end_date, "%d/%m/%Y %H:%M")
-                end_date_iso = end_date_obj.isoformat()
-            except ValueError:
-                return JsonResponse(
-                    {"status": "Invalid end date format."},
-                    status=400,
-                )
+        if start_date_obj == end_date_obj:
+            return JsonResponse(
+                {"status": "Start date and end date cannot be the same."},
+                status=400,
+            )
+        if end_date_obj < start_date_obj:
+            return JsonResponse(
+                {"status": "End date cannot be earlier than start date."},
+                status=400,
+            )
 
-            if start_date_obj == end_date_obj:
-                return JsonResponse(
-                    {"status": "Start date and end date cannot be the same."},
-                    status=400,
-                )
-            if end_date_obj < start_date_obj:
-                return JsonResponse(
-                    {"status": "End date cannot be earlier than start date."},
-                    status=400,
-                )
+        employee = request.user
+        status = Booking_Status.objects.get(name="Waiting")
 
-            employee = request.user
-            status = Booking_Status.objects.get(name="Waiting")
+        # Send Line Notify
+        line_notify_token = request.user.fccorp.line_notify_car
+        line_notify_url = "https://notify-api.line.me/api/notify"
+        headers = {"Authorization": f"Bearer {line_notify_token}"}
+        message = f"\nTitle: {title}\nRequester: {request.user.first_name} {request.user.last_name}\nLocation: {location.name}\nDescription: {description}\nStart: {start_date}\nEnd: {end_date}"
+        payload = {"message": message}
 
+        response = requests.post(line_notify_url, headers=headers, data=payload)
+        if response.status_code != 200:
+            # Save the booking
             Booking.objects.create(
                 employee=employee,
                 title=title,
@@ -145,14 +153,25 @@ def save_booking(request):
                 end_date=end_date_iso,
                 status=status,
             )
-
-            return JsonResponse({"status": "Booking saved successfully!"}, status=200)
-
-        except Exception as e:
-            print(f"Unexpected error: {e}")
             return JsonResponse(
-                {"status": f"An unexpected error occurred: {str(e)}"},
+                {"status": "Booking saved, but failed to send Line notification."},
                 status=500,
+            )
+        else:
+            # Save the booking
+            Booking.objects.create(
+                employee=employee,
+                title=title,
+                company=company,
+                location=location,
+                description=description,
+                start_date=start_date_iso,
+                end_date=end_date_iso,
+                status=status,
+            )
+            return JsonResponse(
+                {"status": "Booking saved and Line notification sent successfully!"},
+                status=200,
             )
 
     return JsonResponse({"status": "Invalid request"}, status=400)

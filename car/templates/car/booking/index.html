@@ -103,8 +103,8 @@
               headers: {
                 'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token
               },
-              success: function (response) {
-                if (response.status === 'Booking saved successfully!') {
+              success: function (response, textStatus, jqXHR) {
+                if (jqXHR.status === 200) {
                   Swal.fire({
                     icon: 'success',
                     title: 'Success',
@@ -122,12 +122,24 @@
                   })
                 }
               },
-              error: function (xhr, status, error) {
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Unexpected Error',
-                  text: 'An error occurred. Please try again.'
-                })
+              error: function (error) {
+                if (error.status === 500) {
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: error.responseJSON.status,
+                    showConfirmButton: false,
+                    timer: 1500
+                  }).then(() => {
+                    window.location.href = "{% url 'car_history' %}?car_id={{ car.id }}" // Redirect to history page
+                  })
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Unexpected Error',
+                    text: error.responseJSON.status
+                  })
+                }
               }
             })
           }
