@@ -107,17 +107,17 @@
             Swal.fire({
               title: 'Approve Booking',
               html: `
-                        <label for="car-select" class="form-label">Select Car:</label>
-                        <select class="form-control" id="car-select" name="car" required>
-                            <option value="">Select Car</option>
-                            {% for car in cars %}
-                              <option value="{{ car.id }}">{{ car.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <br/><br/>
-                        <label for="remark-textarea" class="form-label">Optionally provide a reason for approval:</label>
-                        <textarea id="remark-textarea" class="form-control" placeholder="Type your remark here..."></textarea>
-                    `,
+                <label for="car-select" class="form-label">Select Car:</label>
+                <select class="form-control" id="car-select" name="car" required>
+                  <option value="">Select Car</option>
+                  {% for car in cars %}
+                    <option value="{{ car.id }}">{{ car.name }}</option>
+                  {% endfor %}
+                </select>
+                <br/><br/>
+                <label for="remark-textarea" class="form-label">Optionally provide a reason for approval:</label>
+                <textarea id="remark-textarea" class="form-control" placeholder="Type your remark here..."></textarea>
+              `,
               icon: 'info',
               showCancelButton: true,
               confirmButtonText: 'Approve',
@@ -147,20 +147,20 @@
                   body: JSON.stringify({ car_id: carId, remark: remark })
                 })
                   .then((response) => {
-                    if (response.status === 200) {
-                      Swal.fire({
-                        title: 'Approved!',
-                        text: 'The booking has been approved.',
-                        icon: 'success'
-                      })
-                      setTimeout(() => {
-                        location.reload()
-                      }, 2000)
-                    } else {
-                      return response.json().then((data) => {
+                    return response.json().then((data) => {
+                      if (response.status === 200) {
+                        Swal.fire({
+                          title: 'Approved!',
+                          text: data.status,
+                          icon: 'success'
+                        })
+                        setTimeout(() => {
+                          location.reload()
+                        }, 2000)
+                      } else {
                         Swal.fire('Error!', data.status, 'error')
-                      })
-                    }
+                      }
+                    })
                   })
                   .catch(() => {
                     Swal.fire('Error!', 'An unexpected error occurred.', 'error')
@@ -196,22 +196,22 @@
                   body: JSON.stringify({ remark: remark })
                 })
                   .then((response) => {
-                    if (response.status === 200) {
-                      // SweetAlert2 success message
-                      Swal.fire({
-                        title: 'Rejected!',
-                        text: 'The booking has been rejected.',
-                        icon: 'success'
-                      })
-                      setTimeout(() => {
-                        location.reload()
-                      }, 2000)
-                    } else {
-                      console.log(response)
-                      return response.json().then((data) => {
+                    return response.json().then((data) => {
+                      if (response.status === 200) {
+                        // SweetAlert2 success message
+                        Swal.fire({
+                          title: 'Rejected!',
+                          text: data.status,
+                          icon: 'success'
+                        })
+                        setTimeout(() => {
+                          location.reload()
+                        }, 2000)
+                      } else {
+                        console.log(response)
                         Swal.fire('Error!', data.status, 'error')
-                      })
-                    }
+                      }
+                    })
                   })
                   .catch(() => {
                     Swal.fire('Error!', 'An unexpected error occurred.', 'error')
