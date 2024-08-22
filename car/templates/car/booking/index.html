@@ -123,23 +123,11 @@
                 }
               },
               error: function (error) {
-                if (error.status === 500) {
-                  Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: error.responseJSON.status,
-                    showConfirmButton: false,
-                    timer: 1500
-                  }).then(() => {
-                    window.location.href = "{% url 'car_history' %}?car_id={{ car.id }}" // Redirect to history page
-                  })
-                } else {
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Unexpected Error',
-                    text: error.responseJSON.status
-                  })
-                }
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Unexpected Error',
+                  text: error.responseJSON.status
+                })
               }
             })
           }

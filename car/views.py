@@ -133,42 +133,32 @@ def save_booking(request):
         employee = request.user
         status = Booking_Status.objects.get(name="Waiting")
 
+        # Save the booking
+        booking = Booking.objects.create(
+            employee=employee,
+            title=title,
+            company=company,
+            location=location,
+            description=description,
+            start_date=start_date_iso,
+            end_date=end_date_iso,
+            status=status,
+        )
+
         # Send Line Notify
         line_notify_token = request.user.fccorp.line_notify_car
         line_notify_url = "https://notify-api.line.me/api/notify"
         headers = {"Authorization": f"Bearer {line_notify_token}"}
-        message = f"\nTitle: {title}\nRequester: {request.user.first_name} {request.user.last_name}\nLocation: {location.name}\nDescription: {description}\nStart: {start_date}\nEnd: {end_date}"
+        message = f"\nBooking ID: {booking.id}\nTitle: {title}\nRequester: {request.user.first_name} {request.user.last_name}\nLocation: {location.name}\nDescription: {description}\nStart: {start_date}\nEnd: {end_date}"
         payload = {"message": message}
 
         response = requests.post(line_notify_url, headers=headers, data=payload)
         if response.status_code != 200:
-            # Save the booking
-            Booking.objects.create(
-                employee=employee,
-                title=title,
-                company=company,
-                location=location,
-                description=description,
-                start_date=start_date_iso,
-                end_date=end_date_iso,
-                status=status,
-            )
             return JsonResponse(
                 {"status": "Booking saved, but failed to send Line notification."},
-                status=500,
+                status=200,
             )
         else:
-            # Save the booking
-            Booking.objects.create(
-                employee=employee,
-                title=title,
-                company=company,
-                location=location,
-                description=description,
-                start_date=start_date_iso,
-                end_date=end_date_iso,
-                status=status,
-            )
             return JsonResponse(
                 {"status": "Booking saved and Line notification sent successfully!"},
                 status=200,

@@ -4,6 +4,7 @@ from .models import Room_Status, Room, Booking, Status
 from django.views.decorators.csrf import csrf_exempt
 import json
 from datetime import datetime
+import requests
 
 
 def profile(request):
@@ -133,7 +134,8 @@ def save_booking(request):
             employee = request.user
             status = Status.objects.get(name="Waiting")
 
-            Booking.objects.create(
+            # Save the booking
+            booking = Booking.objects.create(
                 room=room,
                 employee=employee,
                 title=title,
@@ -143,7 +145,26 @@ def save_booking(request):
                 status=status,
             )
 
-            return JsonResponse({"status": "Booking saved successfully!"}, status=200)
+            # Send Line Notify
+            line_notify_token = request.user.fccorp.line_notify_room
+            line_notify_url = "https://notify-api.line.me/api/notify"
+            headers = {"Authorization": f"Bearer {line_notify_token}"}
+            message = f"\nBooking ID: {booking.id}\nTitle: {title}\nRequester: {request.user.first_name} {request.user.last_name}\nRoom: {room.name}\nDescription: {description}\nStart: {start_date}\nEnd: {end_date}"
+            payload = {"message": message}
+
+            response = requests.post(line_notify_url, headers=headers, data=payload)
+            if response.status_code != 200:
+                return JsonResponse(
+                    {"status": "Booking saved, but failed to send Line notification."},
+                    status=200,
+                )
+            else:
+                return JsonResponse(
+                    {
+                        "status": "Booking saved and Line notification sent successfully!"
+                    },
+                    status=200,
+                )
 
         except Exception as e:
             print(f"Unexpected error: {e}")
