@@ -131,21 +131,21 @@
                   body: JSON.stringify({ remark: remark })
                 })
                   .then((response) => {
-                    if (response.status === 200) {
-                      // SweetAlert2 success message
-                      Swal.fire({
-                        title: 'Approved!',
-                        text: 'The booking has been approved.',
-                        icon: 'success'
-                      })
-                      setTimeout(() => {
-                        location.reload()
-                      }, 2000)
-                    } else {
-                      return response.json().then((data) => {
+                    return response.json().then((data) => {
+                      if (response.status === 200) {
+                        // SweetAlert2 success message
+                        Swal.fire({
+                          title: 'Approved!',
+                          text: data.status,
+                          icon: 'success'
+                        })
+                        setTimeout(() => {
+                          location.reload()
+                        }, 2000)
+                      } else {
                         Swal.fire('Error!', data.status, 'error')
-                      })
-                    }
+                      }
+                    })
                   })
                   .catch(() => {
                     Swal.fire('Error!', 'An unexpected error occurred.', 'error')
@@ -181,22 +181,22 @@
                   body: JSON.stringify({ remark: remark })
                 })
                   .then((response) => {
-                    if (response.status === 200) {
-                      // SweetAlert2 success message
-                      Swal.fire({
-                        title: 'Rejected!',
-                        text: 'The booking has been rejected.',
-                        icon: 'success'
-                      })
-                      setTimeout(() => {
-                        location.reload()
-                      }, 2000)
-                    } else {
-                      console.log(response)
-                      return response.json().then((data) => {
+                    return response.json().then((data) => {
+                      if (response.status === 200) {
+                        // SweetAlert2 success message
+                        Swal.fire({
+                          title: 'Rejected!',
+                          text: data.status,
+                          icon: 'success'
+                        })
+                        setTimeout(() => {
+                          location.reload()
+                        }, 2000)
+                      } else {
+                        console.log(response)
                         Swal.fire('Error!', data.status, 'error')
-                      })
-                    }
+                      }
+                    })
                   })
                   .catch(() => {
                     Swal.fire('Error!', 'An unexpected error occurred.', 'error')

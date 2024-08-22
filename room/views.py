@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
-from django.http import JsonResponse # type: ignore
+from django.shortcuts import render, redirect, get_object_or_404  # type: ignore
+from django.http import JsonResponse  # type: ignore
 from .models import Room_Status, Room, Booking, Status
-from django.views.decorators.csrf import csrf_exempt # type: ignore
+from django.views.decorators.csrf import csrf_exempt  # type: ignore
 import json
 from datetime import datetime
-import requests # type: ignore
+import requests  # type: ignore
 
 
 def profile(request):
@@ -149,7 +149,7 @@ def save_booking(request):
             line_notify_token = request.user.fccorp.line_notify_room
             line_notify_url = "https://notify-api.line.me/api/notify"
             headers = {"Authorization": f"Bearer {line_notify_token}"}
-            message = f"\nBooking ID: {booking.id}\nTitle: {title}\nRequester: {request.user.first_name} {request.user.last_name}\nRoom: {room.name}\nDescription: {description}\nStart: {start_date}\nEnd: {end_date}"
+            message = f"\nBooking ID: {booking.id}\nRoom: {room.name}\nTitle: {title}\nRequester: {request.user.first_name} {request.user.last_name}\nDescription: {description}\nStart: {start_date}\nEnd: {end_date}\nStatus: {booking.status.name}"
             payload = {"message": message}
 
             response = requests.post(line_notify_url, headers=headers, data=payload)
@@ -324,7 +324,28 @@ def approve_booking(request, booking_id):
         other_booking.remark = "มีคนจองห้องนี้แล้ว"
         other_booking.save()
 
-    return JsonResponse({"status": "Booking approved successfully!"}, status=200)
+    # Send Line Notify
+    line_notify_token = request.user.fccorp.line_notify_room
+    line_notify_url = "https://notify-api.line.me/api/notify"
+    headers = {"Authorization": f"Bearer {line_notify_token}"}
+    message = f"\nBooking ID: {booking.id}\nRoom: {booking.room.name}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nDescription: {booking.description}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nRemark: {booking.remark}\nStatus: {booking.status.name}"
+    payload = {"message": message}
+
+    response = requests.post(line_notify_url, headers=headers, data=payload)
+    if response.status_code != 200:
+        return JsonResponse(
+            {
+                "status": "Booking approved successfully!, but failed to send Line notification."
+            },
+            status=200,
+        )
+    else:
+        return JsonResponse(
+            {
+                "status": "Booking approved successfully and Line notification sent successfully!"
+            },
+            status=200,
+        )
 
 
 def reject_bookings(request, booking_id):
@@ -348,7 +369,28 @@ def reject_bookings(request, booking_id):
         booking.remark = remark
         booking.save()
 
-        return JsonResponse({"status": "Booking rejected successfully!"}, status=200)
+        # Send Line Notify
+        line_notify_token = request.user.fccorp.line_notify_room
+        line_notify_url = "https://notify-api.line.me/api/notify"
+        headers = {"Authorization": f"Bearer {line_notify_token}"}
+        message = f"\nBooking ID: {booking.id}\nRoom: {booking.room.name}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nDescription: {booking.description}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nRemark: {booking.remark}\nStatus: {booking.status.name}"
+        payload = {"message": message}
+
+        response = requests.post(line_notify_url, headers=headers, data=payload)
+        if response.status_code != 200:
+            return JsonResponse(
+                {
+                    "status": "Booking rejected successfully!, but failed to send Line notification."
+                },
+                status=200,
+            )
+        else:
+            return JsonResponse(
+                {
+                    "status": "Booking rejected successfully and Line notification sent successfully!"
+                },
+                status=200,
+            )
 
     return JsonResponse({"status": "Invalid request method."}, status=405)
 
@@ -373,8 +415,28 @@ def staff_cancel_bookings(request, booking_id):
 
         booking.remark = remark
         booking.save()
+        # Send Line Notify
+        line_notify_token = request.user.fccorp.line_notify_room
+        line_notify_url = "https://notify-api.line.me/api/notify"
+        headers = {"Authorization": f"Bearer {line_notify_token}"}
+        message = f"\nBooking ID: {booking.id}\nRoom: {booking.room.name}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nDescription: {booking.description}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nRemark: {booking.remark}\nStatus: {booking.status.name}"
+        payload = {"message": message}
 
-        return JsonResponse({"status": "Booking canceled successfully!"}, status=200)
+        response = requests.post(line_notify_url, headers=headers, data=payload)
+        if response.status_code != 200:
+            return JsonResponse(
+                {
+                    "status": "Booking canceled successfully!, but failed to send Line notification."
+                },
+                status=200,
+            )
+        else:
+            return JsonResponse(
+                {
+                    "status": "Booking canceled successfully and Line notification sent successfully!"
+                },
+                status=200,
+            )
 
     return JsonResponse({"status": "Invalid request method."}, status=405)
 

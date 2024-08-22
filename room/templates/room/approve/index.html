@@ -213,21 +213,21 @@
                 body: JSON.stringify({ remark: remark })
               })
                 .then((response) => {
-                  if (response.status === 200) {
-                    // SweetAlert2 success message
-                    Swal.fire({
-                      title: 'Canceled!',
-                      text: 'The booking has been canceled.',
-                      icon: 'success'
-                    })
-                    setTimeout(() => {
-                      location.reload()
-                    }, 2000)
-                  } else {
-                    return response.json().then((data) => {
+                  return response.json().then((data) => {
+                    if (response.status === 200) {
+                      // SweetAlert2 success message
+                      Swal.fire({
+                        title: 'Canceled!',
+                        text: data.status,
+                        icon: 'success'
+                      })
+                      setTimeout(() => {
+                        location.reload()
+                      }, 2000)
+                    } else {
                       Swal.fire('Error!', data.status, 'error')
-                    })
-                  }
+                    }
+                  })
                 })
                 .catch(() => {
                   Swal.fire('Error!', 'An unexpected error occurred.', 'error')

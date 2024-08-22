@@ -149,7 +149,7 @@ def save_booking(request):
         line_notify_token = request.user.fccorp.line_notify_car
         line_notify_url = "https://notify-api.line.me/api/notify"
         headers = {"Authorization": f"Bearer {line_notify_token}"}
-        message = f"\nBooking ID: {booking.id}\nTitle: {title}\nRequester: {request.user.first_name} {request.user.last_name}\nLocation: {location.name}\nDescription: {description}\nStart: {start_date}\nEnd: {end_date}"
+        message = f"\nBooking ID: {booking.id}\nTitle: {title}\nRequester: {request.user.first_name} {request.user.last_name}\nLocation: {location.name}\nDescription: {description}\nStart: {start_date}\nEnd: {end_date}\nStatus: {booking.status.name}"
         payload = {"message": message}
 
         response = requests.post(line_notify_url, headers=headers, data=payload)
