@@ -1,9 +1,9 @@
-from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse # type: ignore
+from django.shortcuts import render, redirect # type: ignore
+from django.contrib.auth import authenticate, login, logout # type: ignore
 from company_department.models import Company, Department
 from user.models import Employee
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password # type: ignore
 from room.models import Room
 from car.models import Car
 

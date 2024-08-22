@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
+from django.http import JsonResponse # type: ignore
 from .models import Room_Status, Room, Booking, Status
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt # type: ignore
 import json
 from datetime import datetime
-import requests
+import requests # type: ignore
 
 
 def profile(request):
