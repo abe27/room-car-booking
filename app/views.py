@@ -1,9 +1,9 @@
-from django.http import JsonResponse # type: ignore
-from django.shortcuts import render, redirect # type: ignore
-from django.contrib.auth import authenticate, login, logout # type: ignore
+from django.http import JsonResponse  # type: ignore
+from django.shortcuts import render, redirect  # type: ignore
+from django.contrib.auth import authenticate, login, logout  # type: ignore
 from company_department.models import Company, Department
 from user.models import Employee
-from django.contrib.auth.hashers import make_password # type: ignore
+from django.contrib.auth.hashers import make_password  # type: ignore
 from room.models import Room
 from car.models import Car
 
@@ -55,6 +55,7 @@ def sign_up(request):
             emp_id = request.POST.get("emp_id")
             username = request.POST.get("username")
             email = request.POST.get("email")
+            tel = request.POST.get("tel")
             password = request.POST.get("password")
             confirm_password = request.POST.get("confirm_password")
             fccorp_id = request.POST.get("fccorp_id")
@@ -71,6 +72,7 @@ def sign_up(request):
                         emp_id=emp_id,
                         username=username,
                         email=email,
+                        tel=tel,
                         password=make_password(password),
                         fccorp=company,
                         fcdept=department,

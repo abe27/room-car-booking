@@ -27,7 +27,7 @@ class EmployeeAdmin(UserAdmin):
 
     fieldsets = (
         (None, {"fields": ("username",)}),
-        ("Personal info", {"fields": ("first_name", "last_name", "emp_id", "email")}),
+        ("Personal info", {"fields": ("first_name", "last_name", "emp_id", "email", "tel")}),
         (
             "Additional info",
             {
@@ -61,6 +61,7 @@ class EmployeeAdmin(UserAdmin):
         "id",
         "username",
         "email",
+        "tel",
         "password_reset_link",
         "first_name",
         "last_name",

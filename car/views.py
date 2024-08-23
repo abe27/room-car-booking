@@ -149,7 +149,7 @@ def save_booking(request):
         line_notify_token = request.user.fccorp.line_notify_car
         line_notify_url = "https://notify-api.line.me/api/notify"
         headers = {"Authorization": f"Bearer {line_notify_token}"}
-        message = f"\nBooking ID: {booking.id}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nLocation: {booking.location.name}\nDescription: {booking.description}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nStatus: {booking.status.name}"
+        message = f"\nBooking ID: {booking.id}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nLocation: {booking.location.name}\nDescription: {booking.description}\nTel: {booking.employee.tel}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nStatus: {booking.status.name}"
         payload = {"message": message}
 
         response = requests.post(line_notify_url, headers=headers, data=payload)
@@ -238,7 +238,7 @@ def approve_booking(request, booking_id):
         line_notify_token = request.user.fccorp.line_notify_car
         line_notify_url = "https://notify-api.line.me/api/notify"
         headers = {"Authorization": f"Bearer {line_notify_token}"}
-        message = f"\nBooking ID: {booking.id}\nCar: {booking.car.name}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nLocation: {booking.location.name}\nDescription: {booking.description}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nRemark: {booking.remark}\nStatus: {booking.status.name}"
+        message = f"\nBooking ID: {booking.id}\nCar: {booking.car.name}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nLocation: {booking.location.name}\nDescription: {booking.description}\nTel: {booking.employee.tel}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nRemark: {booking.remark}\nStatus: {booking.status.name}"
         payload = {"message": message}
 
         response = requests.post(line_notify_url, headers=headers, data=payload)
@@ -281,7 +281,7 @@ def reject_bookings(request, booking_id):
         line_notify_token = request.user.fccorp.line_notify_car
         line_notify_url = "https://notify-api.line.me/api/notify"
         headers = {"Authorization": f"Bearer {line_notify_token}"}
-        message = f"\nBooking ID: {booking.id}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nLocation: {booking.location.name}\nDescription: {booking.description}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nRemark: {booking.remark}\nStatus: {booking.status.name}"
+        message = f"\nBooking ID: {booking.id}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nLocation: {booking.location.name}\nDescription: {booking.description}\nTel: {booking.employee.tel}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nRemark: {booking.remark}\nStatus: {booking.status.name}"
         payload = {"message": message}
 
         response = requests.post(line_notify_url, headers=headers, data=payload)
@@ -324,7 +324,7 @@ def staff_cancel_bookings(request, booking_id):
         line_notify_token = request.user.fccorp.line_notify_car
         line_notify_url = "https://notify-api.line.me/api/notify"
         headers = {"Authorization": f"Bearer {line_notify_token}"}
-        message = f"\nBooking ID: {booking.id}\nCar: {booking.car.name}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nLocation: {booking.location.name}\nDescription: {booking.description}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nRemark: {booking.remark}\nStatus: {booking.status.name}"
+        message = f"\nBooking ID: {booking.id}\nCar: {booking.car.name}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nLocation: {booking.location.name}\nDescription: {booking.description}\nTel: {booking.employee.tel}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nRemark: {booking.remark}\nStatus: {booking.status.name}"
         payload = {"message": message}
 
         response = requests.post(line_notify_url, headers=headers, data=payload)
