@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
-from django.http import JsonResponse, HttpResponseBadRequest # type: ignore
+from django.shortcuts import render, redirect, get_object_or_404  # type: ignore
+from django.http import JsonResponse, HttpResponseBadRequest  # type: ignore
 from .models import Car_Status, Car, Booking, Booking_Status, Location
 
 # from django.views.decorators.csrf import csrf_exempt
 import json
 from datetime import datetime
-import requests # type: ignore
+import requests  # type: ignore
 
 
 def profile(request):
@@ -149,7 +149,20 @@ def save_booking(request):
         line_notify_token = request.user.fccorp.line_notify_car
         line_notify_url = "https://notify-api.line.me/api/notify"
         headers = {"Authorization": f"Bearer {line_notify_token}"}
-        message = f"\nBooking ID: {booking.id}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nLocation: {booking.location.name}\nDescription: {booking.description}\nTel: {booking.employee.tel}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nStatus: {booking.status.name}"
+        # Assuming booking.start_date and booking.end_date are in ISO format strings
+        start_date_obj = datetime.fromisoformat(booking.start_date)
+        end_date_obj = datetime.fromisoformat(booking.end_date)
+        message = (
+            f"\nBooking ID: {booking.id}\n"
+            f"Title: {booking.title}\n"
+            f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
+            f"Location: {booking.location.name}\n"
+            f"Description: {booking.description}\n"
+            f"Tel: {booking.employee.tel}\n"
+            f"Start: {start_date_obj.strftime('%d/%m/%Y %H:%M')}\n"
+            f"End: {end_date_obj.strftime('%d/%m/%Y %H:%M')}\n"
+            f"Status: {booking.status.name}"
+        )
         payload = {"message": message}
 
         response = requests.post(line_notify_url, headers=headers, data=payload)
@@ -238,7 +251,19 @@ def approve_booking(request, booking_id):
         line_notify_token = request.user.fccorp.line_notify_car
         line_notify_url = "https://notify-api.line.me/api/notify"
         headers = {"Authorization": f"Bearer {line_notify_token}"}
-        message = f"\nBooking ID: {booking.id}\nCar: {booking.car.name}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nLocation: {booking.location.name}\nDescription: {booking.description}\nTel: {booking.employee.tel}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nRemark: {booking.remark}\nStatus: {booking.status.name}"
+        message = (
+            f"\nBooking ID: {booking.id}\n"
+            f"Car: {booking.car.name}\n"
+            f"Title: {booking.title}\n"
+            f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
+            f"Location: {booking.location.name}\n"
+            f"Description: {booking.description}\n"
+            f"Tel: {booking.employee.tel}\n"
+            f"Start: {booking.start_date.strftime('%d/%m/%Y %H:%M')}\n"
+            f"End: {booking.end_date.strftime('%d/%m/%Y %H:%M')}\n"
+            f"Remark: {booking.remark}\n"
+            f"Status: {booking.status.name}"
+        )
         payload = {"message": message}
 
         response = requests.post(line_notify_url, headers=headers, data=payload)
@@ -281,7 +306,18 @@ def reject_bookings(request, booking_id):
         line_notify_token = request.user.fccorp.line_notify_car
         line_notify_url = "https://notify-api.line.me/api/notify"
         headers = {"Authorization": f"Bearer {line_notify_token}"}
-        message = f"\nBooking ID: {booking.id}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nLocation: {booking.location.name}\nDescription: {booking.description}\nTel: {booking.employee.tel}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nRemark: {booking.remark}\nStatus: {booking.status.name}"
+        message = (
+            f"\nBooking ID: {booking.id}\n"
+            f"Title: {booking.title}\n"
+            f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
+            f"Location: {booking.location.name}\n"
+            f"Description: {booking.description}\n"
+            f"Tel: {booking.employee.tel}\n"
+            f"Start: {booking.start_date.strftime('%d/%m/%Y %H:%M')}\n"
+            f"End: {booking.end_date.strftime('%d/%m/%Y %H:%M')}\n"
+            f"Remark: {booking.remark}\n"
+            f"Status: {booking.status.name}"
+        )
         payload = {"message": message}
 
         response = requests.post(line_notify_url, headers=headers, data=payload)
@@ -324,7 +360,19 @@ def staff_cancel_bookings(request, booking_id):
         line_notify_token = request.user.fccorp.line_notify_car
         line_notify_url = "https://notify-api.line.me/api/notify"
         headers = {"Authorization": f"Bearer {line_notify_token}"}
-        message = f"\nBooking ID: {booking.id}\nCar: {booking.car.name}\nTitle: {booking.title}\nRequester: {booking.employee.first_name} {booking.employee.last_name}\nLocation: {booking.location.name}\nDescription: {booking.description}\nTel: {booking.employee.tel}\nStart: {booking.start_date}\nEnd: {booking.end_date}\nRemark: {booking.remark}\nStatus: {booking.status.name}"
+        message = (
+            f"\nBooking ID: {booking.id}\n"
+            f"Car: {booking.car.name}\n"
+            f"Title: {booking.title}\n"
+            f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
+            f"Location: {booking.location.name}\n"
+            f"Description: {booking.description}\n"
+            f"Tel: {booking.employee.tel}\n"
+            f"Start: {booking.start_date.strftime('%d/%m/%Y %H:%M')}\n"
+            f"End: {booking.end_date.strftime('%d/%m/%Y %H:%M')}\n"
+            f"Remark: {booking.remark}\n"
+            f"Status: {booking.status.name}"
+        )
         payload = {"message": message}
 
         response = requests.post(line_notify_url, headers=headers, data=payload)
