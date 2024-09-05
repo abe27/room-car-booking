@@ -1,0 +1,50 @@
+<script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
+
+<style>
+  .gj-icon {
+    margin-top: 8px;
+    margin-right: 2px;
+  }
+</style>
+
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eventModalLabel">จองห้องประชุม</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="roomName"></div>
+        <form id="eventForm">
+          {% csrf_token %}
+          <div class="form-group mt-3">
+            <label for="title">หัวข้อ</label>
+            <input type="text" class="form-control" id="title" name="title" required />
+          </div>
+          <div class="form-group my-3">
+            <label for="description">รายละเอียด</label>
+            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+          </div>
+          <div class="form-group">
+            <div class="row">
+              <div class="col">
+                <label for="date" class="form-label">วันที่</label>
+                <input type="date" class="form-control" name="date" id="date" value="{{ date }}" required />
+              </div>
+              <div class="col">
+                <label for="start_time" class="form-label">ตั้งแต่เวลา</label>
+                <input type="time" class="form-control time-picker" name="start_time" id="start_time" placeholder="กรุณาระบุเวลา" value="{{ start_time }}" required />
+              </div>
+              <div class="col">
+                <label for="end_time" class="form-label">ถึงเวลา</label>
+                <input type="time" class="form-control time-picker" name="end_time" id="end_time" placeholder="กรุณาระบุเวลา" value="{{ end_time }}" required />
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary mt-3">บันทึกการจอง</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
