@@ -7,6 +7,38 @@ from datetime import datetime
 import requests  # type: ignore
 
 
+def dashboard(request):
+    context = {}
+    if request.method == "POST":
+        date = request.POST.get("date")
+        start_time = request.POST.get("start_time")
+        end_time = request.POST.get("end_time")
+
+        # Convert the input date and times to datetime objects
+        start_datetime = datetime.strptime(f"{date} {start_time}", "%Y-%m-%d %H:%M")
+        end_datetime = datetime.strptime(f"{date} {end_time}", "%Y-%m-%d %H:%M")
+
+        # Query for rooms that are not booked during the specified time range
+        booked_rooms = Booking.objects.filter(
+            start_date__lt=end_datetime, end_date__gt=start_datetime
+        ).values_list("room_id", flat=True)
+
+        available_rooms = Room.objects.exclude(id__in=booked_rooms)
+
+        context.update(
+            {
+                "date": date,
+                "start_time": start_time,
+                "end_time": end_time,
+                "rooms": available_rooms,
+            }
+        )
+
+        return render(request, "room/dashboard/index.html", context)
+    else:
+        return render(request, "room/dashboard/index.html")
+
+
 def profile(request):
     if request.user.is_authenticated:
         room_id = request.GET.get("room_id")
@@ -132,7 +164,7 @@ def save_booking(request):
                 )
 
             employee = request.user
-            status = Status.objects.get(name="Waiting")
+            status = Status.objects.get(sequence=1)  # sequence 1 is Approved
 
             # Save the booking
             booking = Booking.objects.create(

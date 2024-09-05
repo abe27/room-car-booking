@@ -1,0 +1,25 @@
+<div class="modal fade" id="roomModal{{ room.id }}" tabindex="-1" aria-labelledby="roomModalLabel{{ room.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-dark fw-bold" id="roomModalLabel{{ room.id }}">{{ room.name }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img class="img-fluid"
+            src="{% if room.image %}{{ room.image.url }}{% else %}https://random-image-pepebigotes.vercel.app/api/random-image{% endif %}"
+            alt="{{ room.name }}" />
+          {% comment %} <div class="mt-3 text-dark">
+            <strong>Company:</strong> {{ room.company.fcname }}
+          </div> {% endcomment %}
+          <div class="mt-3 text-dark fw-bold">
+            <label for="exampleFormControlTextarea1" class="form-label">Detail</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" readonly>{{ room.detail }}</textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
