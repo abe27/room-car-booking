@@ -1,0 +1,64 @@
+{% load static %}
+
+<nav id="sidebar" style="background-color: #07234F;" class="shadow">
+  <div class="p-4 pt-5">
+    <div class="img logo rounded-circle mb-2" style="background-image: url({{ request.user.fccorp.image.url }});"></div>
+    <div class="text-center">สวัสดีคุณ, {{ request.user.first_name }}</div>
+    <ul class="list-unstyled components mb-5">
+      <li id="room" class="{% if url == 'booking' %}active{% endif %}">
+        <a href="/room/booking?room_id={{ room.id }}" class="room-link" data-room-id="{{ room.id }}" data-room-name="{{ room.name }}">จองห้องประชุม</a>
+      </li>
+      <li id="history" class="{% if url == 'history' %}active{% endif %}">
+        <a href="/room/history?room_id={{ room.id }}">ประวัติการจอง</a>
+      </li>
+      <li id="profile" class="{% if url == 'profile' %}active{% endif %}">
+        <a href="/room/profile?room_id={{ room.id }}">ประวัติส่วนตัว</a>
+      </li>
+      {% if user.is_staff == True %}
+        <li>
+          <a href="#pageSubmenu1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">อนุมัติการจอง ({{ room.name }})</a>
+          <ul class="collapse list-unstyled" id="pageSubmenu1">
+            <li class="{% if url == 'waiting' %}active{% endif %}">
+              <a href="/room/approve/waiting?room_id={{ room.id }}">รอการอนุมัติ</a>
+            </li>
+            <li class="{% if url == 'approved' %}active{% endif %}">
+              <a href="/room/approve/approved?room_id={{ room.id }}">รายการที่อนุมัติ</a>
+            </li>
+            <li class="{% if url == 'rejected' %}active{% endif %}">
+              <a href="/room/approve/rejected?room_id={{ room.id }}">รายการที่ปฏิเสธ</a>
+            </li>
+            <li class="{% if url == 'cancel' %}active{% endif %}">
+              <a href="/room/approve/cancel?room_id={{ room.id }}">รายการที่ยกเลิก</a>
+            </li>
+            <li class="{% if url == 'all_status' %}active{% endif %}">
+              <a href="/room/approve/all?room_id={{ room.id }}">สถานะทั้งหมด</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">อนุมัติการจอง (ทุกห้อง)</a>
+          <ul class="collapse list-unstyled" id="pageSubmenu2">
+            <li class="{% if url == 'all_waiting' %}active{% endif %}">
+              <a href="/room/approve/all_waiting?room_id={{ room.id }}">รอการอนุมัติ</a>
+            </li>
+            <li class="{% if url == 'all_approved' %}active{% endif %}">
+              <a href="/room/approve/all_approved?room_id={{ room.id }}">รายการที่อนุมัติ</a>
+            </li>
+            <li class="{% if url == 'all_rejected' %}active{% endif %}">
+              <a href="/room/approve/all_rejected?room_id={{ room.id }}">รายการที่ปฏิเสธ</a>
+            </li>
+            <li class="{% if url == 'all_cancel' %}active{% endif %}">
+              <a href="/room/approve/all_cancel?room_id={{ room.id }}">รายการที่ยกเลิก</a>
+            </li>
+            <li class="{% if url == 'all_all_status' %}active{% endif %}">
+              <a href="/room/approve/all_all?room_id={{ room.id }}">สถานะทั้งหมด</a>
+            </li>
+          </ul>
+        </li>
+      {% endif %}
+      <li id="signout" class="{% if url == 'profile' %}active{% endif %}">
+        <a href="/signout" class="text-danger">ออกจากระบบ</a>
+      </li>
+    </ul>
+  </div>
+</nav>
