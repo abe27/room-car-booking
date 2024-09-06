@@ -1,0 +1,29 @@
+{% extends 'room/base.html' %}
+
+{% load static %}
+
+{% block title %}
+  Room
+{% endblock %}
+
+{% block link %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="{% static 'room/css/style.css' %}" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="wrapper d-flex align-items-stretch">
+    {% include 'room/components/sidebar.html' %}
+    <!-- Page Content -->
+    <div id="content" class="p-4 p-md-5">
+      {% include 'room/components/navbar.html' %}
+
+      <h2 id="room-title" class="mb-4">{{ room.name }}</h2>
+
+      {% include 'room/booking/calendar.html' %}
+    </div>
+  </div>
+{% endblock %}

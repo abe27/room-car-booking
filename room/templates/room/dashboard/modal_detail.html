@@ -1,0 +1,86 @@
+<!-- Modal Template for Event Details -->
+<div class="modal fade" id="eventDetailModal" tabindex="-1" aria-labelledby="eventDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eventDetailModalLabel">Event Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Event Details -->
+        <p>
+          <strong>ID:</strong> <span id="eventDetailId"></span>
+        </p>
+        <p>
+          <strong>Employee Id:</strong> <span id="eventDetailEmployeeId"></span>
+        </p>
+        <p>
+          <strong>Employee:</strong> <span id="eventDetailEmployeeName"></span>
+        </p>
+        <p>
+          <strong>Title:</strong> <span id="eventDetailTitle"></span>
+        </p>
+        <p>
+          <strong>Description:</strong> <span id="eventDetailDescription"></span>
+        </p>
+        <p>
+          <strong>Start Date:</strong> <span id="eventDetailStart"></span>
+        </p>
+        <p>
+          <strong>End Date:</strong> <span id="eventDetailEnd"></span>
+        </p>
+        <p>
+          <strong>Status:</strong> <span id="eventDetailStatus"></span>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="cancelBookingBtn" class="btn btn-danger" onclick="cancelBooking()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function cancelBooking() {
+    const bookingId = $('#eventDetailId').text()
+  
+    // Confirm cancellation using SweetAlert2
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you really want to cancel this booking?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, cancel it!',
+      cancelButtonText: 'No, keep it'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // If the user confirmed, proceed with cancellation
+        $.ajax({
+          url: "{% url 'room_cancel_booking' %}",
+          type: 'POST',
+          data: {
+            id: bookingId,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function (response) {
+            if (response.success) {
+              Swal.fire({
+                title: 'Canceled!',
+                text: 'Your booking has been canceled.',
+                icon: 'success'
+              }).then(() => {
+                location.reload() // Reload the page to reflect the changes
+              })
+            } else {
+              Swal.fire('Failed!', 'Failed to cancel booking.', 'error')
+            }
+          },
+          error: function (xhr, status, error) {
+            Swal.fire('Error!', 'An error occurred while canceling the booking.', 'error')
+          }
+        })
+      }
+    })
+  }
+</script>

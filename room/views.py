@@ -7,36 +7,64 @@ from datetime import datetime
 import requests  # type: ignore
 
 
+def booking(request):
+    if request.user.is_authenticated:
+        context = {}
+        if request.method == "POST":
+            date = request.POST.get("date")
+            start_time = request.POST.get("start_time")
+            end_time = request.POST.get("end_time")
+
+            # Convert the input date and times to datetime objects
+            start_datetime = datetime.strptime(f"{date} {start_time}", "%Y-%m-%d %H:%M")
+            end_datetime = datetime.strptime(f"{date} {end_time}", "%Y-%m-%d %H:%M")
+
+            # Query for rooms that are not booked during the specified time range
+            booked_rooms = Booking.objects.filter(
+                start_date__lt=end_datetime, end_date__gt=start_datetime
+            ).values_list("room_id", flat=True)
+
+            available_rooms = Room.objects.exclude(id__in=booked_rooms).order_by(
+                "sequence"
+            )
+
+            context.update(
+                {
+                    "date": date,
+                    "start_time": start_time,
+                    "end_time": end_time,
+                    "rooms": available_rooms,
+                }
+            )
+
+            return render(request, "room/booking/index.html", context)
+        else:
+            return render(request, "room/booking/index.html")
+    else:
+        return redirect("/")
+
+
 def dashboard(request):
     context = {}
-    if request.method == "POST":
-        date = request.POST.get("date")
-        start_time = request.POST.get("start_time")
-        end_time = request.POST.get("end_time")
+    if request.user.is_authenticated:
+        rooms = Room.objects.all()
+        context.update({"rooms": rooms})
+        if request.method == "POST":
+            room_id = request.POST.get("room_id")  # Corrected line
 
-        # Convert the input date and times to datetime objects
-        start_datetime = datetime.strptime(f"{date} {start_time}", "%Y-%m-%d %H:%M")
-        end_datetime = datetime.strptime(f"{date} {end_time}", "%Y-%m-%d %H:%M")
+            # Fetch selected room and bookings
+            selectedRoom = Room.objects.get(
+                id=room_id
+            )  # Use `get` to fetch a single object
+            bookings = Booking.objects.filter(room__id=room_id)
 
-        # Query for rooms that are not booked during the specified time range
-        booked_rooms = Booking.objects.filter(
-            start_date__lt=end_datetime, end_date__gt=start_datetime
-        ).values_list("room_id", flat=True)
-
-        available_rooms = Room.objects.exclude(id__in=booked_rooms)
-
-        context.update(
-            {
-                "date": date,
-                "start_time": start_time,
-                "end_time": end_time,
-                "rooms": available_rooms,
-            }
-        )
-
-        return render(request, "room/dashboard/index.html", context)
+            # Update context with selected room and its bookings
+            context.update({"bookings": bookings, "selectedRoom": selectedRoom})
+            return render(request, "room/dashboard/index.html", context)
+        else:
+            return render(request, "room/dashboard/index.html", context)
     else:
-        return render(request, "room/dashboard/index.html")
+        return redirect("/")
 
 
 def profile(request):
@@ -61,16 +89,6 @@ def room(request):
             "default_room": rooms[0] if rooms.exists() else None,  # เพิ่ม default_room
         }
         return render(request, "room/home/index.html", context)
-    else:
-        return redirect("/")
-
-
-def booking(request):
-    if request.user.is_authenticated:
-        room_id = request.GET.get("room_id")
-        room = Room.objects.filter(id=room_id).first()
-        context = {"room": room, "url": "booking"}
-        return render(request, "room/booking/index.html", context)
     else:
         return redirect("/")
 
@@ -119,6 +137,11 @@ def save_booking(request):
                     status=404,
                 )
 
+            if start_time > end_time:
+                return JsonResponse(
+                    {"status": "Start time cannot be later than end time."},
+                    status=400,
+                )
             # Convert the input date and times to datetime objects
             start_datetime = datetime.strptime(f"{date} {start_time}", "%Y-%m-%d %H:%M")
             end_datetime = datetime.strptime(f"{date} {end_time}", "%Y-%m-%d %H:%M")

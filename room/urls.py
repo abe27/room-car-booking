@@ -3,9 +3,9 @@ from room import views
 
 urlpatterns = [
     path("", views.room, name="room"),
-    path("dashboard/", views.dashboard, name="dashboard"),
-    path("profile", views.profile, name="profile"),
+    path("dashboard/", views.dashboard, name="room_dashboard"),
     path("booking/", views.booking, name="room_booking"),
+    path("profile", views.profile, name="profile"),
     path("fetch_bookings/", views.fetch_bookings, name="room_fetch_bookings"),
     path("save_booking/", views.save_booking, name="room_save_booking"),
     path("cancel_booking/", views.cancel_booking, name="room_cancel_booking"),

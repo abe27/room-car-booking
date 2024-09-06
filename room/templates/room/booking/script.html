@@ -150,7 +150,7 @@
     function showAlert(message, alertType) {
       var alertHTML = '<div class="alert ' + alertType + ' alert-dismissible fade show" role="alert">' + '<strong>' + message + '</strong>' + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' + '</div>'
       // แทรก alert เข้าไปใน container
-      document.getElementById('alertContainer').innerHTML = alertHTML
+      $('#alertContainer').html(alertHTML)
     }
   })
 </script>
