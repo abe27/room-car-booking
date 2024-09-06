@@ -20,16 +20,16 @@
           <div class="form-group">
             <div class="row">
               <div class="col">
-                <label for="date" class="form-label">วันที่</label>
-                <input type="date" class="form-control" name="date" id="date" value="{{ date }}" required />
+                <label for="date_event" class="form-label">วันที่</label>
+                <input type="date" class="form-control" name="date_event" id="date_event" value="{{ date }}" required/>
               </div>
               <div class="col">
                 <label for="start_time" class="form-label">ตั้งแต่เวลา</label>
-                <input type="time" class="form-control time-picker" name="start_time_event" id="start_time_event" placeholder="กรุณาระบุเวลา" required />
+                <input type="time" class="form-control time-picker" name="start_time_event" id="start_time_event" value="{{start_time}}" placeholder="กรุณาระบุเวลา" required />
               </div>
               <div class="col">
                 <label for="end_time" class="form-label">ถึงเวลา</label>
-                <input type="time" class="form-control time-picker" name="end_time_event" id="end_time_event" placeholder="กรุณาระบุเวลา" required />
+                <input type="time" class="form-control time-picker" name="end_time_event" id="end_time_event" value="{{end_time}}" placeholder="กรุณาระบุเวลา" required />
               </div>
             </div>
           </div>

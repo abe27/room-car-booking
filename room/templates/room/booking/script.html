@@ -17,15 +17,26 @@
   })
 </script>
 
-<!-- ดัก Error เวลา -->
+<!-- ดัก Error วันที่ เวลา -->
 <script>
   $(document).ready(function () {
     $('#searchForm').on('submit', function (event) {
       var startTime = $('#start_time').val()
       var endTime = $('#end_time').val()
-  
-      // ซ่อน alert ก่อนการตรวจสอบ
+      var date = $('#date').val()
 
+      // Get the current date
+      var today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+
+      if (date < today) {
+        event.preventDefault(); // ป้องกันการส่งฟอร์ม
+        $('#alertMessage').html(
+          '<div class="alert alert-warning alert-dismissible fade show" role="alert">' +
+            '<strong>ข้อผิดพลาด!</strong> ห้ามเลือกวันย้อนหลัง.' +
+            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+          '</div>'
+        );
+      }
   
       //ไม่เลือกเวลา
       if (!startTime || !endTime) {
@@ -96,7 +107,7 @@
       // ดึงค่าจากฟอร์ม
       const title = $('#title').val()
       const description = $('#description').val()
-      const date = $('#date').val()
+      const date = $('#date_event').val()
       const start_time = $('#start_time_event').val()
       const end_time = $('#end_time_event').val()
       const room_id = $(this).data('room-id')

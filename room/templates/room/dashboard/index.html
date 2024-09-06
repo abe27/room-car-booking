@@ -39,13 +39,7 @@
               src="{% if selectedRoom.image %}
                 {{ selectedRoom.image.url }}
               {% else %}
-                
-                
-                
                 https://random-image-pepebigotes.vercel.app/api/random-image
-
-
-
               {% endif %}" />
           </div>
           <div class="col-md-8">
@@ -59,24 +53,7 @@
         </div>
       </div>
     {% endif %}
+    <div id="calendar" class="mb-3"></div>
   </div>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    $(document).ready(function () {
-      $('#searchRoom').submit(function (event) {
-        // ตรวจสอบว่ามีการเลือกห้องประชุมหรือไม่
-        if ($('#room_id').val() === null) {
-          event.preventDefault() // ป้องกันการส่งฟอร์ม
-
-          // แสดงข้อความแจ้งเตือน
-          $('#alertPlaceholder').html(`
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-              <strong>กรุณาเลือกห้องประชุม!</strong> คุณต้องเลือกห้องประชุมก่อนค้นหา.
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-          `)
-        }
-      })
-    })
-  </script>
+  {% include './script.html' %}
 {% endblock %}

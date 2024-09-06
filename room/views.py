@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt  # type: ignore
 import json
 from datetime import datetime
 import requests  # type: ignore
+from django.core.serializers import serialize
 
 
 def booking(request):
@@ -50,21 +51,41 @@ def dashboard(request):
         rooms = Room.objects.all()
         context.update({"rooms": rooms})
         if request.method == "POST":
-            room_id = request.POST.get("room_id")  # Corrected line
+            room_id = request.POST.get("room_id")
 
             # Fetch selected room and bookings
-            selectedRoom = Room.objects.get(
-                id=room_id
-            )  # Use `get` to fetch a single object
+            selectedRoom = Room.objects.get(id=room_id)
             bookings = Booking.objects.filter(room__id=room_id)
 
-            # Update context with selected room and its bookings
-            context.update({"bookings": bookings, "selectedRoom": selectedRoom})
+            bookings_data = []
+            for booking in bookings:
+                bookings_data.append(
+                    {
+                        "id": booking.pk,
+                        "emp_id": booking.employee.emp_id,
+                        "first_name": booking.employee.first_name,
+                        "last_name": booking.employee.last_name,
+                        "title": booking.title,
+                        "start_date": booking.start_date.isoformat(),
+                        "end_date": booking.end_date.isoformat(),
+                        "description": booking.description,
+                        "status": booking.status.name,
+                        "color": booking.status.color,
+                    }
+                )
+
+            # Update context with selected room, its bookings, and serialized bookings data
+            context.update(
+                {
+                    "bookings": json.dumps(
+                        bookings_data
+                    ),  # Ensure that bookings are JSON string
+                    "selectedRoom": selectedRoom,
+                }
+            )
             return render(request, "room/dashboard/index.html", context)
         else:
             return render(request, "room/dashboard/index.html", context)
-    else:
-        return redirect("/")
 
 
 def profile(request):
@@ -145,6 +166,15 @@ def save_booking(request):
             # Convert the input date and times to datetime objects
             start_datetime = datetime.strptime(f"{date} {start_time}", "%Y-%m-%d %H:%M")
             end_datetime = datetime.strptime(f"{date} {end_time}", "%Y-%m-%d %H:%M")
+
+            # Check if the start date is in the past
+            today = datetime.now().date()
+            start_date = start_datetime.date()
+            if start_date < today:
+                return JsonResponse(
+                    {"status": "Cannot book a room for a past date."},
+                    status=400,
+                )
 
             if start_datetime == end_datetime:
                 return JsonResponse(
