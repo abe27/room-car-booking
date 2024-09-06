@@ -106,8 +106,9 @@ def save_booking(request):
             data = request.POST
             title = data.get("title")
             description = data.get("description")
-            start_date = data.get("start_date")
-            end_date = data.get("end_date")
+            date = data.get("date")
+            start_time = data.get("start_time")
+            end_time = data.get("end_time")
             room_id = data.get("room_id")
 
             try:
@@ -118,35 +119,13 @@ def save_booking(request):
                     status=404,
                 )
 
-            # Validate dates
-            # Convert start_date to ISO format
-            # end_date_obj = parse_datetime(end_date)
-            try:
-                start_date_obj = datetime.strptime(start_date, "%d/%m/%Y %H:%M")
-                start_date_iso = start_date_obj.isoformat()
-            except ValueError:
-                return JsonResponse(
-                    {"status": "Invalid start date format."},
-                    status=400,
-                )
+            # Convert the input date and times to datetime objects
+            start_datetime = datetime.strptime(f"{date} {start_time}", "%Y-%m-%d %H:%M")
+            end_datetime = datetime.strptime(f"{date} {end_time}", "%Y-%m-%d %H:%M")
 
-            try:
-                end_date_obj = datetime.strptime(end_date, "%d/%m/%Y %H:%M")
-                end_date_iso = end_date_obj.isoformat()
-            except ValueError:
-                return JsonResponse(
-                    {"status": "Invalid end date format."},
-                    status=400,
-                )
-
-            if start_date_obj == end_date_obj:
+            if start_datetime == end_datetime:
                 return JsonResponse(
                     {"status": "Start date and end date cannot be the same."},
-                    status=400,
-                )
-            if end_date_obj < start_date_obj:
-                return JsonResponse(
-                    {"status": "End date cannot be earlier than start date."},
                     status=400,
                 )
 
@@ -154,8 +133,8 @@ def save_booking(request):
             conflicting_bookings = Booking.objects.filter(
                 room=room,
                 status__name="Approved",
-                start_date__lt=end_date_obj,
-                end_date__gt=start_date_obj,
+                start_date__lt=end_datetime,
+                end_date__gt=start_datetime,
             )
             if conflicting_bookings.exists():
                 return JsonResponse(
@@ -172,8 +151,8 @@ def save_booking(request):
                 employee=employee,
                 title=title,
                 description=description,
-                start_date=start_date_iso,
-                end_date=end_date_iso,
+                start_date=start_datetime,
+                end_date=end_datetime,
                 status=status,
             )
 
@@ -181,9 +160,7 @@ def save_booking(request):
             line_notify_token = request.user.fccorp.line_notify_room
             line_notify_url = "https://notify-api.line.me/api/notify"
             headers = {"Authorization": f"Bearer {line_notify_token}"}
-            # Assuming booking.start_date and booking.end_date are in ISO format strings
-            start_date_obj = datetime.fromisoformat(booking.start_date)
-            end_date_obj = datetime.fromisoformat(booking.end_date)
+
             message = (
                 f"\nBooking ID: {booking.id}\n"
                 f"Room: {booking.room.name}\n"
@@ -191,8 +168,8 @@ def save_booking(request):
                 f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
                 f"Description: {booking.description}\n"
                 f"Tel: {booking.employee.tel}\n"
-                f"Start: {start_date_obj.strftime('%d/%m/%Y %H:%M')}\n"
-                f"End: {end_date_obj.strftime('%d/%m/%Y %H:%M')}\n"
+                f"Start: {booking.start_date.strftime('%d/%m/%Y %H:%M')}\n"
+                f"End: {booking.end_date.strftime('%d/%m/%Y %H:%M')}\n"
                 f"Status: {booking.status.name}"
             )
             payload = {"message": message}

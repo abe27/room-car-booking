@@ -8,10 +8,7 @@
     <form id="searchForm" method="POST" action="{% url 'dashboard' %}" onsubmit="return validateForm()">
       {% csrf_token %}
       <div class="card p-3">
-        <div id="alertMessage" class="alert alert-warning alert-dismissible fade show d-none" role="alert">
-          <strong>ข้อผิดพลาด!</strong> กรุณากรอกเวลาให้ครบ.
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+        <div id="alertMessage"></div>
         <div class="row">
           <div class="col">
             <label for="date" class="form-label">วันที่</label>
