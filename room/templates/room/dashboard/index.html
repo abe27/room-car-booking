@@ -1,34 +1,35 @@
-{% extends 'app/base.html' %}
+{% extends 'room/base.html' %}
 
 {% block content %}
-  {% include 'room/home/navbar.html' %}
-  <div class="container mt-3">
+  <div id="main-content">
     <h1 class="text-center mb-3">สถานะการจองห้อง</h1>
-    <div class="card p-3">
-      <div id="alertPlaceholder"></div> <!-- สำหรับแสดงข้อความแจ้งเตือน -->
-      <form id="searchRoom" method="POST" action="{% url 'room_dashboard' %}">
-        {% csrf_token %}
-        <div class="row">
-          <div class="col">
-            <label for="room">เลือกห้องประชุม</label>
-            <select class="form-select mt-2" aria-label="Default select room" id="room_id" name="room_id">
-              <option disabled selected>Open this select menu</option>
-              {% for room in rooms %}
-                {% if selectedRoom and selectedRoom.id == room.id %}
-                  <option value="{{ room.id }}" selected>{{ room.name }}</option>
-                {% else %}
-                  <option value="{{ room.id }}">{{ room.name }}</option>
-                {% endif %}
-              {% endfor %}
-            </select>
-          </div>
-          <div class="d-flex mt-3">
-            <div class="mx-auto">
-              <button type="submit" class="btn btn-primary">Search</button>
+    <div class="card">
+      <div class="card-body">
+        <div id="alertPlaceholder"></div> <!-- สำหรับแสดงข้อความแจ้งเตือน -->
+        <form id="searchRoom" method="POST" action="{% url 'room_dashboard' %}">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col">
+              <label for="room">เลือกห้องประชุม</label>
+              <select class="form-select mt-2" aria-label="Default select room" id="room_id" name="room_id">
+                <option disabled selected>Open this select menu</option>
+                {% for room in rooms %}
+                  {% if selectedRoom and selectedRoom.id == room.id %}
+                    <option value="{{ room.id }}" selected>{{ room.name }}</option>
+                  {% else %}
+                    <option value="{{ room.id }}">{{ room.name }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+            <div class="d-flex mt-3">
+              <div class="mx-auto">
+                <button type="submit" class="btn btn-primary">Search</button>
+              </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
     {% if selectedRoom %}
       <div class="card mt-3 mb-3">
@@ -55,5 +56,6 @@
     {% endif %}
     <div id="calendar" class="mb-3"></div>
   </div>
+  {% include "./modal_detail.html" %}
   {% include './script.html' %}
 {% endblock %}

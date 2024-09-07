@@ -1,0 +1,35 @@
+<!-- Include DataTables JS and CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<!-- Include Moment.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    // Initialize DataTable
+    var table = $('#bookingsTable').DataTable()
+  
+    // Filter by status
+    $('#status').on('change', function () {
+      var status = $(this).val()
+      if (status === 'All') {
+        table.column(1).search('').draw()
+      } else {
+        table.column(1).search(status).draw()
+      }
+    })
+  
+    // Filter by date
+    $('#date').on('change', function () {
+      var selectedDate = $(this).val()
+      if (selectedDate) {
+        // Format the selected date to match the format in the table
+        var formattedDate = moment(selectedDate).format('DD/MM/YYYY')
+        table.column(4).search(formattedDate).draw() // Adjust column index as needed
+      } else {
+        table.column(4).search('').draw() // Clear the search if no date is selected
+      }
+    })
+  })
+</script>
