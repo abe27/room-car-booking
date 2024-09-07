@@ -1,0 +1,34 @@
+[
+    {
+        "model": "room.room_status",
+        "fields": {
+            "name": "Waiting",
+            "color": "#FFDA76",
+            "sequence": 0
+        }
+    },
+    {
+        "model": "room.room_status",
+        "fields": {
+            "name": "Approved",
+            "color": "#A2CA71",
+            "sequence": 1
+        }
+    },
+    {
+        "model": "room.room_status",
+        "fields": {
+            "name": "Rejected",
+            "color": "#A02334",
+            "sequence": 2
+        }
+    },
+    {
+        "model": "room.room_status",
+        "fields": {
+            "name": "Cancelled",
+            "color": "#A02334",
+            "sequence": 3
+        }
+    }
+]
