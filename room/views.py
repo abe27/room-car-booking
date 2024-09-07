@@ -10,7 +10,9 @@ from django.core.serializers import serialize
 
 def booking(request):
     if request.user.is_authenticated:
-        context = {}
+        context = {
+            "url": "booking"
+        }
         if request.method == "POST":
             date = request.POST.get("date")
             start_time = request.POST.get("start_time")

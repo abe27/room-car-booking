@@ -1,40 +1,54 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <button type="button" id="sidebarCollapse" class="btn btn-primary">
-      <i class="fa fa-bars"></i>
-      <span class="sr-only">Toggle Menu</span>
-    </button>
-    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i class="fa fa-bars"></i></button>
+<header>
+  <nav class="navbar navbar-expand navbar-light navbar-top">
+    <div class="container-fluid">
+      <a href="#" class="burger-btn d-block"><i class="bi bi-justify fs-3"></i></a>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="nav navbar-nav ml-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="/">Home</a>
-        </li>
-      </ul>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto mb-lg-0">
+        </ul>
+        <div class="dropdown">
+          <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="user-menu d-flex">
+              <div class="user-name text-end me-3">
+                <h6 class="mb-0 text-gray-600">{{request.user.first_name}} {{request.user.last_name}}</h6>
+                <p class="mb-0 text-sm text-gray-600">{{request.user.fccorp}}</p>
+              </div>
+              <div class="user-img d-flex align-items-center">
+                <div class="avatar avatar-md">
+                  <img src="{{ request.user.fccorp.image.url }}" />
+                </div>
+              </div>
+            </div>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton" style="min-width: 11rem;">
+            <li>
+              <h6 class="dropdown-header">Hello, John!</h6>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="icon-mid bi bi-person me-2"></i> My Profile</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <i class="icon-mid bi bi-gear me-2"></i>
+                Settings
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <i class="icon-mid bi bi-wallet me-2"></i>
+                Wallet
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider" />
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="icon-mid bi bi-box-arrow-left me-2"></i> Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-  </div>
-</nav>
-
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-<script>
-  ;(function ($) {
-    'use strict'
-  
-    var fullHeight = function () {
-      $('.js-fullheight').css('height', $(window).height())
-      $(window).resize(function () {
-        $('.js-fullheight').css('height', $(window).height())
-      })
-    }
-    fullHeight()
-  
-    $('#sidebarCollapse').on('click', function () {
-      $('#sidebar').toggleClass('active')
-    })
-  })(jQuery)
-</script>
+  </nav>
+</header>
