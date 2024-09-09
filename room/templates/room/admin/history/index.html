@@ -1,0 +1,103 @@
+{% extends 'room/base.html' %}
+
+{% block content %}
+  <div id="main-content">
+    <h1 class="text-center mb-3">ประวัติการจอง</h1>
+    <div class="card">
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col">
+            <label for="room" class="form-label">ห้องประชุม</label>
+            <select class="form-select" aria-label="Default select room" name="room" id="room">
+              <option value="All" selected>All room</option>
+              {% for room in rooms %}
+                <option value="{{ room.name }}">{{ room.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label for="status" class="form-label">สถานะ</label>
+            <select class="form-select" aria-label="Default select status" name="status" id="status">
+              <option value="All" selected>All status</option>
+              {% for status in statuses %}
+                <option value="{{ status.name }}">{{ status.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col">
+            <label for="date" class="form-label">วันที่</label>
+            <input type="date" class="form-control" name="date" id="date" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body table-responsive">
+        <table class="table" id="bookingsTable">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">ห้อง</th>
+              <th scope="col">สถานะ</th>
+              <th scope="col">หัวข้อ</th>
+              <th scope="col">ตั้งแต่เวลา</th>
+              <th scope="col">ถึงเวลา</th>
+              <th scope="col">หมายเหตุ</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for booking in bookings %}
+              <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.room }}</td>
+                <td>{{ booking.status }}</td>
+                <td>{{ booking.title }}</td>
+                <td>{{ booking.start_date|date:'d/m/Y, H:i' }}</td>
+                <td>{{ booking.end_date|date:'d/m/Y, H:i' }}</td>
+                <td>{{ booking.remark }}</td>
+                <td>
+                  <div class="d-flex justify-content-between">
+                    <button class="btn btn-primary view-btn"
+                      data-id="{{ booking.id }}"
+                      data-employee-id="{{ booking.employee.id }}"
+                      data-employee-name="{{ booking.employee.first_name }} {{ booking.employee.last_name }}"
+                      data-title="{{ booking.title }}"
+                      data-description="{{ booking.description }}"
+                      data-start="{{ booking.start_date|date:'d/m/Y, H:i' }}"
+                      data-end="{{ booking.end_date|date:'d/m/Y, H:i' }}"
+                      data-status="{{ booking.status }}"
+                      data-remark="{{ booking.remark }}"
+                      data-bs-toggle="modal" 
+                      data-bs-target="#eventDetailModal">
+                      View
+                    </button>
+                    <button class="btn btn-danger edit-btn" 
+                      data-id="{{ booking.id }}"
+                      data-status="{{ booking.status.id }}"
+                      data-remark="{{ booking.remark }}"
+                      data-bs-toggle="modal" 
+                      data-bs-target="#editBookingModal"
+                    >
+                      Edit
+                    </button>
+                    {% comment %} <button class="btn btn-danger edit-btn">
+                      <a href="{% url 'admin:room_booking_change' booking.id %}" style="color:white;">
+                        Edit
+                      </a>
+                    </button> {% endcomment %}
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% include "room/components/modal_detail.html" %}
+  {% include "./modal_edit.html" %}
+  {% include './script.html' %}
+{% endblock %}

@@ -1,0 +1,35 @@
+<div class="modal fade" id="editBookingModal" tabindex="-1" aria-labelledby="editBookingModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editBookingModalLabel">แก้ไขการจอง</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editBookingForm" method="POST" action="{% url 'edit_booking' %}">
+          {% csrf_token %}
+          <!-- hidden field to store booking ID -->
+          <input type="hidden" id="editBookingId" name="id">
+
+          <!-- Status Selection -->
+          <div class="mb-3">
+            <label for="editStatus" class="form-label">สถานะ</label>
+            <select class="form-select" id="editStatus" name="status">
+              {% for status in statuses %}
+                <option value="{{ status.id }}">{{ status.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Remark Input -->
+          <div class="mb-3">
+            <label for="editRemark" class="form-label">หมายเหตุ</label>
+            <textarea class="form-control" id="editRemark" name="remark" required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

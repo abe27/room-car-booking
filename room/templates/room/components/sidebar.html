@@ -52,6 +52,18 @@
           </a>
         </li>
       </ul>
+      {% if request.user.is_staff %}
+        <ul class="menu">
+          <li class="sidebar-title">Admin Menu</li>
+
+          <li class="sidebar-item {% if url == 'history_admin' %}active{% endif %}">
+            <a href="{% url 'room_history_admin' %}" class="sidebar-link">
+              <i class="bi bi-grid-fill"></i>
+              <span>ประวัติการจอง</span>
+            </a>
+          </li>
+        </ul>
+      {% endif %}
     </div>
   </div>
 </div>

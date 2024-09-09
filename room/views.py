@@ -4,6 +4,7 @@ from .models import Room_Status, Room, Booking, Status
 import json
 from datetime import datetime
 import requests  # type: ignore
+from django.contrib import messages
 
 
 def booking(request):
@@ -263,19 +264,47 @@ def profile(request):
         return redirect("/")
 
 
-def cancel(request):
-    if request.user.is_authenticated:
-        # if request.user.fcdept.fcname == "HR" or request.user.fcdept.fcname == "IT":
-        if request.user.is_staff == True:
-            user_company = request.user.fccorp
-            room_id = request.GET.get("room_id")
-            room = Room.objects.filter(id=room_id).first()
-            bookings = Booking.objects.filter(
-                room__company=user_company, room=room, status__name="Canceled"
-            ).order_by("-created_at")
-            context = {"room": room, "bookings": bookings, "url": "cancel"}
-            return render(request, "room/approve/index.html", context)
-        else:
-            return redirect("/")
+def history_admin(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        user_company = request.user.fccorp
+        bookings = Booking.objects.filter(room__company=user_company)
+        statuses = Status.objects.all().order_by("sequence")
+        rooms = Room.objects.all().order_by("sequence")
+
+        context = {
+            "bookings": bookings,
+            "url": "history_admin",
+            "statuses": statuses,
+            "rooms": rooms,
+        }
+        return render(request, "room/admin/history/index.html", context)
     else:
         return redirect("/")
+
+def edit_booking(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        if request.method == 'POST':
+            # Get the booking ID from the form data
+            booking_id = request.POST.get('id')
+            status_id = request.POST.get('status')
+            remark = request.POST.get('remark')
+
+            # Get the booking object by its ID
+            booking = get_object_or_404(Booking, id=booking_id)
+
+            # Get the status object by its ID
+            status = get_object_or_404(Status, id=status_id)
+
+            # Update the booking fields
+            booking.status = status
+            booking.remark = remark
+            booking.save()
+
+            # Add a success message
+            messages.success(request, 'การจองได้รับการแก้ไขเรียบร้อยแล้ว')
+
+            # Redirect to the bookings page (or wherever you want after editing)
+            return redirect('room_history_admin')  # Change 'bookings_history' to the appropriate URL name
+
+    # If not POST, just redirect or handle accordingly
+    return redirect('/')
