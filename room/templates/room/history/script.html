@@ -4,6 +4,7 @@
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 <!-- Include Moment.js library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
   $(document).ready(function () {
@@ -50,11 +51,11 @@
       var employeeId = $(this).data('employee-id')
       var employeeName = $(this).data('employee-name')
       var title = $(this).data('title')
-      var description = $(this).data('description').replace(/\n/g, '<br>');  // Convert line breaks to <br>
+      var description = $(this).data('description').replace(/\n/g, '<br>') // Convert line breaks to <br>
       var start = $(this).data('start')
       var end = $(this).data('end')
       var status = $(this).data('status')
-      var remark = $(this).data('remark').replace(/\n/g, '<br>');  // Convert line breaks to <br>
+      var remark = $(this).data('remark').replace(/\n/g, '<br>') // Convert line breaks to <br>
   
       // Set modal content
       $('#eventDetailId').text(id)
@@ -67,6 +68,61 @@
       $('#eventDetailStatus').text(status)
       $('#eventDetailRemark').html(remark)
     })
-    
+  
+    // Cancel a booking
+    $('.cancel-btn').on('click', function () {
+      var booking_id = $(this).data('id')
+  
+      // แสดงการยืนยันจาก SweetAlert2 พร้อมฟิลด์หมายเหตุเพิ่มเติม
+      Swal.fire({
+        title: 'ยกเลิกการจอง',
+        text: 'คุณต้องการยกเลิกการจองนี้จริง ๆ หรือไม่?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ใช่, ยกเลิกเลย!',
+        cancelButtonText: 'ไม่, เก็บไว้',
+        input: 'textarea',
+        inputLabel: 'หมายเหตุ',
+        inputPlaceholder: 'กรุณาใส่หมายเหตุของคุณที่นี่...',
+        inputAttributes: {
+          'aria-label': 'กรุณาใส่หมายเหตุของคุณที่นี่',
+          required: true
+        },
+        inputValidator: (value) => {
+          if (!value) {
+            return 'กรุณาใส่หมายเหตุ!'
+          }
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // ถ้าผู้ใช้ยืนยัน, ดำเนินการยกเลิก
+          $.ajax({
+            url: "{% url 'room_cancel_booking' %}",
+            type: 'POST',
+            data: {
+              id: booking_id,
+              remark: result.value, // รวมหมายเหตุในข้อมูล
+              csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function (response) {
+              if (response.success) {
+                Swal.fire({
+                  title: 'ยกเลิกแล้ว!',
+                  text: 'การจองของคุณถูกยกเลิกแล้ว.',
+                  icon: 'success'
+                }).then(() => {
+                  location.reload() // โหลดหน้าใหม่เพื่อสะท้อนการเปลี่ยนแปลง
+                })
+              } else {
+                Swal.fire('ล้มเหลว!', 'ไม่สามารถยกเลิกการจองได้.', 'error')
+              }
+            },
+            error: function (xhr, status, error) {
+              Swal.fire('เกิดข้อผิดพลาด!', 'เกิดข้อผิดพลาดขณะยกเลิกการจอง.', 'error')
+            }
+          })
+        }
+      })
+    })
   })
 </script>

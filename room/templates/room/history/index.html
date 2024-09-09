@@ -75,7 +75,9 @@
                         data-bs-target="#eventDetailModal">
                         View
                       </button>
-                      <button class="btn btn-danger cancel-btn" data-id="{{ booking.id }}">Cancel</button>
+                      {% if booking.status.name != "Cancelled" %}
+                        <button class="btn btn-danger cancel-btn" data-id="{{ booking.id }}">Cancel</button>
+                      {% endif %}
                     </div>
                   </td>
                 {% else %}

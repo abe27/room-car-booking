@@ -68,14 +68,19 @@ def dashboard(request):
                         "title": booking.title,
                         "start_date": booking.start_date.isoformat(),
                         "end_date": booking.end_date.isoformat(),
-                        "description": booking.description.replace("\r\n", "<br>").replace("\n", "<br>"),  # แปลง \r\n และ \n เป็น <br>
+                        "description": booking.description.replace(
+                            "\r\n", "<br>"
+                        ).replace(
+                            "\n", "<br>"
+                        ),  # แปลง \r\n และ \n เป็น <br>
                         "status": booking.status.name,
                         "color": booking.status.color,
-                        "remark": booking.remark.replace("\r\n", "<br>").replace("\n", "<br>"),  # แปลง \r\n และ \n เป็น <br>,
+                        "remark": booking.remark.replace("\r\n", "<br>").replace(
+                            "\n", "<br>"
+                        ),  # แปลง \r\n และ \n เป็น <br>,
                     }
                 )
-                
-            print(bookings_data)
+
             # Update context with selected room, its bookings, and serialized bookings data
             context.update(
                 {
@@ -205,12 +210,23 @@ def save_booking(request):
 
 
 def cancel_booking(request):
-    booking_id = request.POST.get("id")
-    booking = get_object_or_404(Booking, id=booking_id, employee=request.user)
-    booking.status = Status.objects.get(name="Canceled")
-    booking.save()
+    if request.method == "POST":
+        booking_id = request.POST.get("id")
+        remark = request.POST.get("remark")  # รับค่าหมายเหตุจากคำขอ
 
-    return JsonResponse({"success": True})
+        # ดึงข้อมูลการจองตาม booking_id และตรวจสอบว่าผู้ใช้เป็นเจ้าของ
+        booking = get_object_or_404(Booking, id=booking_id, employee=request.user)
+
+        # ตั้งสถานะเป็น "Cancelled"
+        booking.status = Status.objects.get(name="Cancelled")
+        booking.remark = remark  # บันทึกหมายเหตุใน Booking
+        booking.save()
+
+        return JsonResponse({"success": True})
+
+    return JsonResponse(
+        {"success": False, "error": "Invalid request method"}, status=400
+    )
 
 
 def history(request):
