@@ -8,21 +8,16 @@
 
 {% block link %}
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-  <link rel="stylesheet" href="{% static 'room/css/style.css' %}" />
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
 {% endblock %}
 
 {% block content %}
-  <div class="wrapper d-flex align-items-stretch">
-    {% include 'room/components/sidebar.html' %}
-    <!-- Page Content -->
-    <div id="content" class="p-4 p-md-5">
-      {% include 'room/components/navbar.html' %}
-      <div class="container rounded bg-white mt-5 mb-5 card">
+  <div id="main-content">
+    <div class="card">
+      <div class="card-body">
         <div class="row">
-          <div class="col-md-3 border-right">
-            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-              <img class="rounded-circle mt-5" width="150px" src="{{request.user.fccorp.image.url}}" /><span class="font-weight-bold">{{ request.user.username }}</span><span class="text-black-50">{{ request.user.email }}</span><span></span>
+          <div class="d-flex col-md-3 border-right">
+            <div class="my-auto mx-auto text-center">
+              <img class="rounded-circle" width="150px" src="{{ request.user.fccorp.image.url }}" /><div class="font-weight-bold mt-3">{{ request.user.username }}</div><span>{{ request.user.email }}</span>
             </div>
           </div>
           <div class="col-md-5 border-right">
@@ -40,17 +35,17 @@
               </div>
               <div class="row mt-3">
                 <div class="col-md-12">
-                  <label class="labels">Employee ID</label><input type="text" class="form-control" placeholder="employee ID" value="{{request.user.emp_id}}" readonly/>
+                  <label class="labels">Employee ID</label><input type="text" class="form-control" placeholder="employee ID" value="{{ request.user.emp_id }}" readonly />
                 </div>
               </div>
               <div class="row mt-3">
                 <div class="col-md-12">
-                  <label class="labels">Tel</label><input type="text" class="form-control" placeholder="tel" value="{{request.user.tel}}" readonly/>
+                  <label class="labels">Tel</label><input type="text" class="form-control" placeholder="tel" value="{{ request.user.tel }}" readonly />
                 </div>
               </div>
               <div class="row mt-3">
                 <div class="col-md-12">
-                  <label class="labels">Email</label><input type="text" class="form-control" placeholder="email" value="{{request.user.email}}" readonly/>
+                  <label class="labels">Email</label><input type="text" class="form-control" placeholder="email" value="{{ request.user.email }}" readonly />
                 </div>
               </div>
               {% comment %} <div class="mt-5 text-center">

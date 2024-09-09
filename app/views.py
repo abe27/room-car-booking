@@ -103,3 +103,10 @@ def sign_up(request):
         }
 
         return render(request, "app/accounts/signup/index.html", context=context)
+
+
+def profile(request):
+    if request.user.is_authenticated:
+        return render(request, "app/accounts/profile/index.html")
+    else:
+        return redirect("/")

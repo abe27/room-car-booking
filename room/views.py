@@ -56,7 +56,7 @@ def dashboard(request):
 
             # Fetch selected room and bookings
             selectedRoom = Room.objects.get(id=room_id)
-            bookings = Booking.objects.filter(room__id=room_id)
+            bookings = Booking.objects.filter(room__id=room_id, status__name="Approved")
 
             bookings_data = []
             for booking in bookings:
@@ -254,16 +254,6 @@ def history(request):
         return redirect("/")
 
 
-def profile(request):
-    if request.user.is_authenticated:
-        room_id = request.GET.get("room_id")
-        room = Room.objects.filter(id=room_id).first()
-        context = {"room": room, "url": "profile"}
-        return render(request, "room/profile/index.html", context)
-    else:
-        return redirect("/")
-
-
 def history_admin(request):
     if request.user.is_authenticated and request.user.is_staff:
         user_company = request.user.fccorp
@@ -281,13 +271,14 @@ def history_admin(request):
     else:
         return redirect("/")
 
+
 def edit_booking(request):
     if request.user.is_authenticated and request.user.is_staff:
-        if request.method == 'POST':
+        if request.method == "POST":
             # Get the booking ID from the form data
-            booking_id = request.POST.get('id')
-            status_id = request.POST.get('status')
-            remark = request.POST.get('remark')
+            booking_id = request.POST.get("id")
+            status_id = request.POST.get("status")
+            remark = request.POST.get("remark")
 
             # Get the booking object by its ID
             booking = get_object_or_404(Booking, id=booking_id)
@@ -301,10 +292,12 @@ def edit_booking(request):
             booking.save()
 
             # Add a success message
-            messages.success(request, 'การจองได้รับการแก้ไขเรียบร้อยแล้ว')
+            messages.success(request, "การจองได้รับการแก้ไขเรียบร้อยแล้ว")
 
             # Redirect to the bookings page (or wherever you want after editing)
-            return redirect('room_history_admin')  # Change 'bookings_history' to the appropriate URL name
+            return redirect(
+                "room_history_admin"
+            )  # Change 'bookings_history' to the appropriate URL name
 
     # If not POST, just redirect or handle accordingly
-    return redirect('/')
+    return redirect("/")

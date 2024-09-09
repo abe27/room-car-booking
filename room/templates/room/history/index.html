@@ -53,7 +53,17 @@
               <tr>
                 <td>{{ booking.id }}</td>
                 <td>{{ booking.room }}</td>
-                <td>{{ booking.status }}</td>
+                <td>
+                  {% if booking.status.name == 'Approved' %}
+                    <span class="badge text-bg-success">{{ booking.status }}</span>
+                  {% elif booking.status.name == 'Rejected' %}
+                    <span class="badge text-bg-danger">{{ booking.status }}</span>
+                  {% elif booking.status.name == 'Cancelled' %}
+                    <span class="badge text-bg-secondary">{{ booking.status }}</span>
+                  {% else %}
+                    <span class="badge text-bg-secondary">{{ booking.status }}</span>
+                  {% endif %}
+                </td>
                 <td>{{ booking.title }}</td>
                 <td>{{ booking.start_date|date:'d/m/Y, H:i' }}</td>
                 <td>{{ booking.end_date|date:'d/m/Y, H:i' }}</td>
