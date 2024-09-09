@@ -34,10 +34,11 @@
           $('#eventDetailEmployeeId').text(info.event.extendedProps.emp_id)
           $('#eventDetailEmployeeName').text(info.event.extendedProps.firstname + ' ' + info.event.extendedProps.lastname)
           $('#eventDetailTitle').text(info.event.title)
-          $('#eventDetailDescription').text(info.event.extendedProps.description)
+          $('#eventDetailDescription').html(info.event.extendedProps.description)
           $('#eventDetailStart').text(info.event.start.toLocaleString('th-TH')) // Format the start date
           $('#eventDetailEnd').text(info.event.end ? info.event.end.toLocaleString('th-TH') : 'N/A') // Format the end date
           $('#eventDetailStatus').text(info.event.extendedProps.status)
+          $('#eventDetailRemark').html(info.event.extendedProps.remark)
 
           // แสดงปุ่ม Cancel ถ้า emp_id ตรงกับ ID ของผู้ใช้ปัจจุบัน
           if (info.event.extendedProps.emp_id == currentUserEmpId) {
@@ -53,14 +54,14 @@
     }
   
     function updateCalendarEvents() {
-      console.log('Updating calendar events')
+      //console.log('Updating calendar events')
   
       // Clear existing events
       calendar.removeAllEvents()
   
       // Add new events
       var bookings = JSON.parse('{{ bookings|safe }}')
-      console.log(bookings)
+      //console.log(bookings)
       calendar.addEventSource(
         bookings.map(function (booking) {
           return {
@@ -74,7 +75,8 @@
               firstname: booking.first_name,
               lastname: booking.last_name,
               description: booking.description,
-              status: booking.status
+              status: booking.status,
+              remark: booking.remark,
             }
           }
         })

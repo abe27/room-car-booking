@@ -8,15 +8,27 @@
 <script>
   $(document).ready(function () {
     // Initialize DataTable
-    var table = $('#bookingsTable').DataTable()
+    var table = $('#bookingsTable').DataTable({
+      order: [[0, 'desc']]
+    })
+  
+    // Filter by status
+    $('#room').on('change', function () {
+      var room = $(this).val()
+      if (room === 'All') {
+        table.column(1).search('').draw()
+      } else {
+        table.column(1).search(room).draw()
+      }
+    })
   
     // Filter by status
     $('#status').on('change', function () {
       var status = $(this).val()
       if (status === 'All') {
-        table.column(1).search('').draw()
+        table.column(2).search('').draw()
       } else {
-        table.column(1).search(status).draw()
+        table.column(2).search(status).draw()
       }
     })
   
@@ -31,5 +43,30 @@
         table.column(4).search('').draw() // Clear the search if no date is selected
       }
     })
+  
+    // Show event details in modal when View button is clicked
+    $('.view-btn').on('click', function () {
+      var id = $(this).data('id')
+      var employeeId = $(this).data('employee-id')
+      var employeeName = $(this).data('employee-name')
+      var title = $(this).data('title')
+      var description = $(this).data('description').replace(/\n/g, '<br>');  // Convert line breaks to <br>
+      var start = $(this).data('start')
+      var end = $(this).data('end')
+      var status = $(this).data('status')
+      var remark = $(this).data('remark').replace(/\n/g, '<br>');  // Convert line breaks to <br>
+  
+      // Set modal content
+      $('#eventDetailId').text(id)
+      $('#eventDetailEmployeeId').text(employeeId)
+      $('#eventDetailEmployeeName').text(employeeName)
+      $('#eventDetailTitle').text(title)
+      $('#eventDetailDescription').html(description)
+      $('#eventDetailStart').text(start)
+      $('#eventDetailEnd').text(end)
+      $('#eventDetailStatus').text(status)
+      $('#eventDetailRemark').html(remark)
+    })
+    
   })
 </script>

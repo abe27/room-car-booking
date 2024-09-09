@@ -68,12 +68,14 @@ def dashboard(request):
                         "title": booking.title,
                         "start_date": booking.start_date.isoformat(),
                         "end_date": booking.end_date.isoformat(),
-                        "description": booking.description,
+                        "description": booking.description.replace("\r\n", "<br>").replace("\n", "<br>"),  # แปลง \r\n และ \n เป็น <br>
                         "status": booking.status.name,
                         "color": booking.status.color,
+                        "remark": booking.remark.replace("\r\n", "<br>").replace("\n", "<br>"),  # แปลง \r\n และ \n เป็น <br>,
                     }
                 )
-
+                
+            print(bookings_data)
             # Update context with selected room, its bookings, and serialized bookings data
             context.update(
                 {
@@ -217,12 +219,18 @@ def history(request):
         user_company = request.user.fccorp
         bookings = Booking.objects.filter(
             room__company=user_company, employee__id=user_id
-        ).order_by("-created_at")
+        )
         statuses = Status.objects.all().order_by("sequence")
+        rooms = Room.objects.all().order_by("sequence")
+        # Check if the start date is in the past
+        today = datetime.now()
+
         context = {
             "bookings": bookings,
             "url": "history",
             "statuses": statuses,
+            "rooms": rooms,
+            "today": today,
         }
         return render(request, "room/history/index.html", context)
     else:

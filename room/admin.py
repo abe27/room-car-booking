@@ -43,7 +43,7 @@ class BookingAdmin(admin.ModelAdmin):
         "status",
     ]
     search_fields = ["id", "start_date", "end_date", "created_at", "title"]
-    ordering = ["-start_date", "-end_date", "-created_at"]
+    ordering = ["-id"]
 
 
 # Register your models here.

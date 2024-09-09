@@ -3,39 +3,41 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="eventDetailModalLabel">Event Details</h5>
+        <h5 class="modal-title" id="eventDetailModalLabel">รายละเอียดการจอง</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <!-- Event Details -->
         <p>
-          <strong>ID:</strong> <span id="eventDetailId"></span>
+          <strong>Booking ID:</strong> <span id="eventDetailId"></span>
         </p>
         <p>
-          <strong>Employee Id:</strong> <span id="eventDetailEmployeeId"></span>
+          <strong>สถานะ:</strong> <span id="eventDetailStatus"></span>
         </p>
         <p>
-          <strong>Employee:</strong> <span id="eventDetailEmployeeName"></span>
+          <strong>รหัสพนักงาน:</strong> <span id="eventDetailEmployeeId"></span>
         </p>
         <p>
-          <strong>Title:</strong> <span id="eventDetailTitle"></span>
+          <strong>ชื่อพนักงาน:</strong> <span id="eventDetailEmployeeName"></span>
         </p>
         <p>
-          <strong>Description:</strong> <span id="eventDetailDescription"></span>
+          <strong>หัวข้อ:</strong> <span id="eventDetailTitle"></span>
         </p>
         <p>
-          <strong>Start Date:</strong> <span id="eventDetailStart"></span>
+          <strong>รายละเอียด:</strong> <span id="eventDetailDescription"></span>
         </p>
         <p>
-          <strong>End Date:</strong> <span id="eventDetailEnd"></span>
+          <strong>ตั้งแต่เวลา:</strong> <span id="eventDetailStart"></span>
         </p>
         <p>
-          <strong>Status:</strong> <span id="eventDetailStatus"></span>
+          <strong>ถึงเวลา:</strong> <span id="eventDetailEnd"></span>
+        </p>
+        <p>
+          <strong>หมายเหตุ:</strong> <span id="eventDetailRemark"></span>
         </p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" id="cancelBookingBtn" class="btn btn-danger" onclick="cancelBooking()">Cancel</button>
       </div>
     </div>
   </div>
@@ -66,8 +68,8 @@
           success: function (response) {
             if (response.success) {
               Swal.fire({
-                title: 'Canceled!',
-                text: 'Your booking has been canceled.',
+                title: 'Cancelled!',
+                text: 'Your booking has been cancelled.',
                 icon: 'success'
               }).then(() => {
                 location.reload() // Reload the page to reflect the changes
