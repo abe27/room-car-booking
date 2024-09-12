@@ -22,9 +22,11 @@ def booking(request):
             end_datetime = datetime.strptime(f"{date} {end_time}", "%Y-%m-%d %H:%M")
 
             # Query for rooms that are not booked during the specified time range
-            booked_rooms = Booking.objects.filter(
-                start_date__lt=end_datetime, end_date__gt=start_datetime
-            ).values_list("room_id", flat=True)
+            booked_rooms = (
+                Booking.objects.exclude(status__name__in=["Waiting","Cancelled", "Rejected"])
+                .filter(start_date__lt=end_datetime, end_date__gt=start_datetime)
+                .values_list("room_id", flat=True)
+            )
 
             available_rooms = (
                 Room.objects.filter(company=request.user.fccorp, status__name="Active")
@@ -257,6 +259,12 @@ def history(request):
 
 
 def history_staff(request):
+    
+    # เคลียร์ข้อความก่อนเข้าสู่หน้า
+    storage = messages.get_messages(request)
+    for _ in storage:
+        pass  # ลูปเพื่อเคลียร์ข้อความทั้งหมด
+        
     if request.user.is_authenticated and request.user.is_staff:
         user_company = request.user.fccorp
         bookings = Booking.objects.filter(room__company=user_company)
@@ -361,13 +369,20 @@ def edit_room(request):
 
         return redirect("room_staff")
 
+
 def delete_room(request):
-    if request.method == "POST" and request.user.is_authenticated and request.user.is_staff:
-        room_id = request.POST.get('id')
+    if (
+        request.method == "POST"
+        and request.user.is_authenticated
+        and request.user.is_staff
+    ):
+        room_id = request.POST.get("id")
         try:
             room = Room.objects.get(id=room_id, company=request.user.fccorp)
             room.delete()
             return JsonResponse({"success": True})
         except Room.DoesNotExist:
-            return JsonResponse({"success": False, "message": "ห้องประชุมไม่พบหรือไม่มีสิทธิ์ในการลบ"})
+            return JsonResponse(
+                {"success": False, "message": "ห้องประชุมไม่พบหรือไม่มีสิทธิ์ในการลบ"}
+            )
     return JsonResponse({"success": False, "message": "คำขอลบไม่ถูกต้อง"})

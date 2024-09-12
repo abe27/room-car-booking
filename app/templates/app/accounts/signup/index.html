@@ -20,87 +20,87 @@
               </div>
               <div class="col-xl-6">
                 <div class="card-body p-md-5 text-black">
-                  <h3 class="mb-5 text-uppercase">Employee registration form</h3>
+                  <h3 class="mb-5 text-uppercase">สมัครสมาชิก</h3>
 
                   <form id="signupForm">
                     {% csrf_token %}
                     <div class="row">
-                      <div class="col-md-6 mb-4">
+                      <div class="col-md-6 mb-3">
                         <div data-mdb-input-init class="form-outline">
-                          <input type="text" id="firstname" name="firstname" class="form-control form-control-lg" required />
-                          <label class="form-label" for="firstname">First name</label>
+                          <label class="form-label" for="firstname">ชื่อจริง</label>
+                          <input type="text" id="firstname" name="firstname" class="form-control form-control-lg" placeholder="กรุณากรอกชื่อจริง" required />
                         </div>
                       </div>
-                      <div class="col-md-6 mb-4">
+                      <div class="col-md-6 mb-3">
                         <div data-mdb-input-init class="form-outline">
-                          <input type="text" id="lastname" name="lastname" class="form-control form-control-lg" required />
-                          <label class="form-label" for="lastname">Last name</label>
+                          <label class="form-label" for="lastname">นามสกุล</label>
+                          <input type="text" id="lastname" name="lastname" class="form-control form-control-lg" placeholder="กรุณากรอกนามสกุล" required />
                         </div>
                       </div>
                     </div>
 
-                    <div data-mdb-input-init class="form-outline mb-4">
-                      <input type="text" id="emp_id" name="emp_id" class="form-control form-control-lg" required />
-                      <label class="form-label" for="emp_id">Employee ID</label>
+                    <div data-mdb-input-init class="form-outline mb-3">
+                      <label class="form-label" for="emp_id">รหัสพนักงาน</label>
+                      <input type="text" id="emp_id" name="emp_id" class="form-control form-control-lg" placeholder="กรุณากรอกรหัสพนักงาน" required />
+                    </div>
+
+                    <div data-mdb-input-init class="form-outline mb-3">
+                      <label class="form-label" for="tel">เบอร์โทรศัพท์</label>
+                      <input type="tel" id="tel" name="tel" class="form-control form-control-lg" placeholder="กรุณากรอกเบอร์โทรศัพท์"  required />
+                    </div>
+
+                    <div data-mdb-input-init class="form-outline mb-3">
+                      <label class="form-label" for="email">อีเมล</label>
+                      <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="กรุณากรอกอีเมล" required />
+                    </div>
+
+                    <div data-mdb-input-init class="form-outline mb-3">
+                      <label class="form-label" for="username">ชื่อผู้ใช้</label>
+                      <input type="text" id="username" name="username" class="form-control form-control-lg" placeholder="กรุณากรอกชื่อผู้ใช้" required />
                     </div>
 
                     <div class="row">
-                      <div class="col-md-6 mb-4">
+                      <div class="col-md-6 mb-3">
+                        <div data-mdb-input-init class="form-outline">
+                          <label class="form-label" for="password">รหัสผ่าน</label>
+                          <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="กรุณากรอกรหัสผ่าน" required />
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div data-mdb-input-init class="form-outline">
+                          <label class="form-label" for="confirm_password">ยืนยันรหัสผ่าน</label>
+                          <input type="password" id="confirm_password" name="confirm_password" class="form-control form-control-lg" placeholder="กรุณากรอกรหัสผ่าน" required />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label" for="id_fccorp">บริษัท</label>
                         <select class="form-select" aria-label="Company select" id="id_fccorp" name="fccorp_id" required>
-                          <option selected>Choose a company</option>
+                          <option selected>เลือกบริษัท</option>
                           {% for company in companies %}
                             <option value="{{ company.id }}">{{ company.fcname }}</option>
                           {% endfor %}
                         </select>
-                        <label class="form-label" for="id_fccorp">Company</label>
                       </div>
-                      <div class="col-md-6 mb-4">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label" for="id_fcdept">แผนก</label>
                         <select class="form-select" aria-label="Department select" id="id_fcdept" name="fcdept_id" required>
-                          <option selected>Choose a department</option>
+                          <option selected>เลือกแผนก</option>
                           {% for department in departments %}
                             <option value="{{ department.id }}">{{ department.fcname }}</option>
                           {% endfor %}
                         </select>
-                        <label class="form-label" for="id_fcdept">Department</label>
-                      </div>
-                    </div>
-
-                    <div data-mdb-input-init class="form-outline mb-4">
-                      <input type="email" id="email" name="email" class="form-control form-control-lg" required />
-                      <label class="form-label" for="email">Email</label>
-                    </div>
-
-                    <div data-mdb-input-init class="form-outline mb-4">
-                      <input type="tel" id="tel" name="tel" class="form-control form-control-lg" required />
-                      <label class="form-label" for="tel">Tel</label>
-                    </div>
-
-                    <div data-mdb-input-init class="form-outline mb-4">
-                      <input type="text" id="username" name="username" class="form-control form-control-lg" required />
-                      <label class="form-label" for="username">Username</label>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-6 mb-4">
-                        <div data-mdb-input-init class="form-outline">
-                          <input type="password" id="password" name="password" class="form-control form-control-lg" required />
-                          <label class="form-label" for="password">Password</label>
-                        </div>
-                      </div>
-                      <div class="col-md-6 mb-4">
-                        <div data-mdb-input-init class="form-outline">
-                          <input type="password" id="confirm_password" name="confirm_password" class="form-control form-control-lg" required />
-                          <label class="form-label" for="confirm_password">Confirm Password</label>
-                        </div>
                       </div>
                     </div>
 
                     <div class="d-flex justify-content-end pt-3">
                       <p class="my-auto me-auto">
-                        Already have an account? <a href="{% url 'signin' %}" class="link-primary">Sign in</a>
+                        มีบัญชีผู้ใช้อยู่แล้ว? <a href="{% url 'signin' %}" class="link-primary">เข้าสู่ระบบ</a>
                       </p>
-                      <button type="reset" class="btn btn-light btn-lg">Reset all</button>
-                      <button type="submit" class="btn btn-dark btn-lg ms-2">Signup</button>
+                      <button type="reset" class="btn btn-light btn-lg">รีเซ็ตฟอร์ม</button>
+                      <button type="submit" class="btn btn-dark btn-lg ms-2">สมัครสมาชิก</button>
                     </div>
                   </form>
                 </div>
