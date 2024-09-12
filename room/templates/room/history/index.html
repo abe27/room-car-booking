@@ -68,10 +68,9 @@
                 <td>{{ booking.start_date|date:'d/m/Y, H:i' }}</td>
                 <td>{{ booking.end_date|date:'d/m/Y, H:i' }}</td>
                 <td>{{ booking.remark }}</td>
-                {% if booking.start_date|date:'Y-m-d' >= today|date:'Y-m-d' %}
-                  <td>
-                    <div class="d-flex justify-content-between">
-                      <button class="btn btn-primary view-btn"
+                <td>
+                  <div class="d-flex justify-content-between">
+                    <button class="btn btn-primary view-btn"
                         data-id="{{ booking.id }}"
                         data-employee-id="{{ booking.employee.id }}"
                         data-employee-name="{{ booking.employee.first_name }} {{ booking.employee.last_name }}"
@@ -84,29 +83,14 @@
                         data-bs-toggle="modal" 
                         data-bs-target="#eventDetailModal">
                         View
-                      </button>
+                    </button>
+                    {% if booking.start_date|date:'Y-m-d' >= today|date:'Y-m-d' %}
                       {% if booking.status.name != "Cancelled" %}
                         <button class="btn btn-danger cancel-btn" data-id="{{ booking.id }}">Cancel</button>
                       {% endif %}
-                    </div>
-                  </td>
-                {% else %}
-                  <td>
-                    <button class="btn btn-primary view-btn"
-                      data-id="{{ booking.id }}"
-                      data-employee-id="{{ booking.employee.id }}"
-                      data-employee-name="{{ booking.employee.name }}"
-                      data-title="{{ booking.title }}"
-                      data-description="{{ booking.description }}"
-                      data-start="{{ booking.start_date|date:'d/m/Y, H:i' }}"
-                      data-end="{{ booking.end_date|date:'d/m/Y, H:i' }}"
-                      data-status="{{ booking.status }}"
-                      data-bs-toggle="modal" 
-                      data-bs-target="#eventDetailModal">
-                      View
-                    </button>
-                  </td>
-                {% endif %}
+                    {%endif%}
+                  </div>
+                </td>
               </tr>
             {% endfor %}
           </tbody>

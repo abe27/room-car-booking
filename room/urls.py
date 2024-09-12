@@ -7,6 +7,7 @@ urlpatterns = [
     path("save_booking/", views.save_booking, name="room_save_booking"),
     path("cancel_booking/", views.cancel_booking, name="room_cancel_booking"),
     path("history/", views.history, name="room_history"),
-    path("history/admin/", views.history_admin, name="room_history_admin"),
+    path("history/staff/", views.history_staff, name="room_history_staff"),
     path("edit/booking/", views.edit_booking, name="edit_booking"),
+    path("room/staff/", views.room_staff, name="room_staff"),
 ]

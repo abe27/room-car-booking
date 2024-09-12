@@ -25,7 +25,7 @@ def booking(request):
             ).values_list("room_id", flat=True)
 
             available_rooms = (
-                Room.objects.filter(company=request.user.fccorp)
+                Room.objects.filter(company=request.user.fccorp, status__name="Active")
                 .exclude(id__in=booked_rooms)
                 .order_by("sequence")
             )
@@ -238,7 +238,7 @@ def history(request):
             room__company=user_company, employee__id=user_id
         )
         statuses = Status.objects.all().order_by("sequence")
-        rooms = Room.objects.all().order_by("sequence")
+        rooms = Room.objects.filter(company=request.user.fccorp).order_by("sequence")
         # Check if the start date is in the past
         today = datetime.now()
 
@@ -254,20 +254,20 @@ def history(request):
         return redirect("/")
 
 
-def history_admin(request):
+def history_staff(request):
     if request.user.is_authenticated and request.user.is_staff:
         user_company = request.user.fccorp
         bookings = Booking.objects.filter(room__company=user_company)
         statuses = Status.objects.all().order_by("sequence")
-        rooms = Room.objects.all().order_by("sequence")
+        rooms = Room.objects.filter(company=request.user.fccorp).order_by("sequence")
 
         context = {
             "bookings": bookings,
-            "url": "history_admin",
+            "url": "history_staff",
             "statuses": statuses,
             "rooms": rooms,
         }
-        return render(request, "room/admin/history/index.html", context)
+        return render(request, "room/staff/history/index.html", context)
     else:
         return redirect("/")
 
@@ -296,8 +296,20 @@ def edit_booking(request):
 
             # Redirect to the bookings page (or wherever you want after editing)
             return redirect(
-                "room_history_admin"
+                "room_history_staff"
             )  # Change 'bookings_history' to the appropriate URL name
 
     # If not POST, just redirect or handle accordingly
     return redirect("/")
+
+
+def room_staff(request):
+    context = {
+        "url": "room_staff",
+    }
+    if request.user.is_authenticated and request.user.is_staff:
+        rooms = Room.objects.filter(company=request.user.fccorp).order_by("sequence")
+        context.update({"rooms": rooms})
+        return render(request, "room/staff/room/index.html", context)
+    else:
+        return redirect("/")
