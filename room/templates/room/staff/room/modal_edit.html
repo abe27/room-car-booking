@@ -1,0 +1,52 @@
+<div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEditLabel">แก้ไขข้อมูลห้องประชุม</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editRoomForm" method="post" enctype="multipart/form-data" action="{% url 'edit_room' %}">
+          {% csrf_token %}
+          <input type="hidden" id="editRoomId" name="id" />
+          <div class="mb-3">
+            <label for="editRoomName" class="form-label">ชื่อห้อง</label>
+            <input type="text" class="form-control" id="editRoomName" name="name" required />
+          </div>
+          <div class="mb-3">
+            <label for="editRoomDetail" class="form-label">รายละเอียด</label>
+            <textarea class="form-control" id="editRoomDetail" name="detail" rows="3" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="editRoomRemark" class="form-label">หมายเหตุ</label>
+            <textarea class="form-control" id="editRoomRemark" name="remark" rows="3" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="editRoomSequence" class="form-label">ลำดับห้องประชุม</label>
+            <input type="number" class="form-control" id="editRoomSequence" name="sequence" required />
+          </div>
+          <div class="mb-3">
+            <label for="editRoomStatus" class="form-label">สถานะ</label>
+            <select class="form-select" id="editRoomStatus" name="status" required>
+              {% for status in statuses %}
+                <option value="{{ status.id }}">{{ status.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="editRoomCompany" class="form-label">บริษัท</label>
+            <select class="form-select" id="editRoomCompany" name="company" required>
+              {% for company in companies %}
+                <option value="{{ company.id }}">{{ company.fcname }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3 text-center">
+            <input type="file" class="form-control mt-2" id="editRoomImageInput" name="image"/>
+          </div>
+          <button type="submit" class="btn btn-primary">บันทึก</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

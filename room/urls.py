@@ -10,4 +10,5 @@ urlpatterns = [
     path("history/staff/", views.history_staff, name="room_history_staff"),
     path("edit/booking/", views.edit_booking, name="edit_booking"),
     path("room/staff/", views.room_staff, name="room_staff"),
+    path("edit/room/", views.edit_room, name="edit_room"),
 ]

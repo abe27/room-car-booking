@@ -1,0 +1,66 @@
+<!-- Include DataTables JS and CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<!-- Include Moment.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  $(document).ready(function () {
+    // Initialize DataTable
+    var table = $('#bookingsTable').DataTable({
+      order: [[2, 'desc']]
+    })
+  
+    // เมื่อปุ่ม view-btn ถูกกด
+    $('.view-btn').on('click', function () {
+      // ดึงข้อมูลจาก data-* attributes ของปุ่ม
+      var roomName = $(this).data('name')
+      var roomDetail = $(this).data('detail')
+      var roomStatus = $(this).data('status')
+      var roomSequence = $(this).data('sequence')
+      var roomRemark = $(this).data('remark')
+      var roomImage = $(this).data('image') // เพิ่ม data-image สำหรับรูปภาพ
+
+  
+      // เติมข้อมูลลงใน modal
+      $('#roomName').val(roomName)
+      $('#roomDetail').val(roomDetail)
+      $('#roomStatus').val(roomStatus)
+      $('#roomSequence').val(roomSequence)
+      $('#roomRemark').val(roomRemark)
+      $('#roomImage').attr('src', roomImage) // เติม URL รูปภาพลงใน src ของ img
+  
+      // เปิด modal
+      $('#modalView').modal('show')
+    })
+  })
+</script>
+
+<script>
+  $(document).ready(function () {
+    $('.edit-btn').on('click', function () {
+      var roomId = $(this).data('id')
+      var roomName = $(this).data('name')
+      var roomDetail = $(this).data('detail')
+      var roomRemark = $(this).data('remark')
+      var roomSequence = $(this).data('sequence')
+      var roomStatus = $(this).data('status')
+      var roomImage = $(this).data('image')
+  
+      // ตั้งค่าข้อมูลในฟอร์ม
+      $('#editRoomId').val(roomId)
+      $('#editRoomName').val(roomName)
+      $('#editRoomDetail').val(roomDetail)
+      $('#editRoomRemark').val(roomRemark)
+      $('#editRoomSequence').val(roomSequence)
+      $('#editRoomStatus').val(roomStatus)
+      
+      // รีเซ็ต input file เพื่อให้สามารถอัปโหลดภาพใหม่ได้
+      $('#editRoomImageInput').val('')
+  
+      $('#modalEdit').modal('show')
+    })
+  })
+</script>
