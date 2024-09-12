@@ -2,8 +2,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
-<!-- Include Moment.js library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
@@ -22,7 +21,6 @@
       var roomSequence = $(this).data('sequence')
       var roomRemark = $(this).data('remark')
       var roomImage = $(this).data('image') // เพิ่ม data-image สำหรับรูปภาพ
-
   
       // เติมข้อมูลลงใน modal
       $('#roomName').val(roomName)
@@ -56,11 +54,54 @@
       $('#editRoomRemark').val(roomRemark)
       $('#editRoomSequence').val(roomSequence)
       $('#editRoomStatus').val(roomStatus)
-      
+  
       // รีเซ็ต input file เพื่อให้สามารถอัปโหลดภาพใหม่ได้
       $('#editRoomImageInput').val('')
   
       $('#modalEdit').modal('show')
+    })
+  })
+</script>
+
+<script>
+  // เปิด SweetAlert2 เมื่อผู้ใช้คลิกปุ่ม Delete
+  $('.delete-btn').click(function () {
+    const roomId = $(this).data('id')
+    const roomName = $(this).data('name')
+  
+    Swal.fire({
+      title: 'คุณแน่ใจหรือไม่?',
+      text: `คุณต้องการลบห้องประชุม "${roomName}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'ลบ',
+      cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // ส่งคำขอ AJAX เพื่อลบห้องประชุม
+        $.ajax({
+          url: "{% url 'delete_room' %}",
+          type: 'POST',
+          data: {
+            id: roomId,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function (response) {
+            if (response.success) {
+              Swal.fire('ลบสำเร็จ!', 'ห้องประชุมได้ถูกลบเรียบร้อยแล้ว.', 'success').then(() => {
+                location.reload() // โหลดหน้าใหม่เพื่อแสดงผลลัพธ์
+              })
+            } else {
+              Swal.fire('เกิดข้อผิดพลาด!', response.message, 'error')
+            }
+          },
+          error: function (xhr, status, error) {
+            Swal.fire('เกิดข้อผิดพลาด!', 'ไม่สามารถลบห้องประชุมได้', 'error')
+          }
+        })
+      }
     })
   })
 </script>

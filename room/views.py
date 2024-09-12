@@ -360,3 +360,14 @@ def edit_room(request):
         messages.success(request, "อัพเดทห้องประชุมสำเร็จ!")  # เพิ่มข้อความแจ้งเตือน
 
         return redirect("room_staff")
+
+def delete_room(request):
+    if request.method == "POST" and request.user.is_authenticated and request.user.is_staff:
+        room_id = request.POST.get('id')
+        try:
+            room = Room.objects.get(id=room_id, company=request.user.fccorp)
+            room.delete()
+            return JsonResponse({"success": True})
+        except Room.DoesNotExist:
+            return JsonResponse({"success": False, "message": "ห้องประชุมไม่พบหรือไม่มีสิทธิ์ในการลบ"})
+    return JsonResponse({"success": False, "message": "คำขอลบไม่ถูกต้อง"})
