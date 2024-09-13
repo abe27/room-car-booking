@@ -4,12 +4,17 @@ from datetime import timedelta
 from .models import Booking
 
 def notify_upcoming_bookings():
+    
+    print("Cron job started...")
     now = timezone.now()
     upcoming_time = now + timedelta(minutes=30)
     bookings = Booking.objects.filter(
         start_date__lte=upcoming_time,
         end_date__gte=now
     )
+    print("Now: ", now)
+    print("Upcoming_time: ", upcoming_time)
+    print("Bookings: ", bookings)
 
     for booking in bookings:
         message = (
