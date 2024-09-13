@@ -123,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "en-us"
 
 # TIME_ZONE = "UTC"
-TIME_ZONE = 'Asia/Bangkok'
+TIME_ZONE = "Asia/Bangkok"
 
 USE_I18N = True
 
@@ -146,5 +146,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ตั้งเวลาแจ้งเตือน
 CRONJOBS = [
-    ('*/10 7-17 * * *', 'room.tasks.notify_upcoming_bookings', '>> /home/vcst/booking/logs/notify_upcoming_bookings.log 2>&1'),
+    # ('*/10 7-17 * * *', 'room.tasks.notify_upcoming_bookings', '>> /home/vcst/booking/logs/notify_upcoming_bookings.log 2>&1'),
+    (
+        "*/10 7-17 * * * /home/vcst/anaconda3/envs/print_tag/bin/python /home/vcst/booking/manage.py runcrons >> /home/vcst/booking/logs/notify_upcoming_bookings.log 2>&1"
+    ),
 ]
