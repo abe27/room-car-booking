@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "room",
     "app",
     "car",
+    "django_crontab",
 ]
 
 AUTH_USER_MODEL = "user.Employee"
@@ -142,3 +143,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ตั้งเวลาแจ้งเตือน
+CRONJOBS = [
+    ('0,30 7-17 * * *', 'room.tasks.notify_upcoming_bookings', '>> /path/to/logfile.log 2>&1'),
+]

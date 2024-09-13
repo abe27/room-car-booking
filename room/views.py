@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404  # type: ignore
 from django.http import JsonResponse  # type: ignore
 from .models import Room_Status, Room, Booking, Status
 import json
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import requests  # type: ignore
 from django.contrib import messages
 from company_department.models import Company
