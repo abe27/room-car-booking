@@ -8,7 +8,9 @@ from django.utils.timezone import localtime
 def notify_upcoming_bookings():
     now = timezone.now()
     upcoming_time = now + timedelta(minutes=30)
-    bookings = Booking.objects.filter(start_date__lte=upcoming_time, end_date__gte=now)
+    bookings = Booking.objects.filter(
+        start_date__lte=upcoming_time, end_date__gte=now, status__name="Approved"
+    )
 
     for booking in bookings:
         local_start = localtime(booking.start_date)  # แปลงเป็นเวลาท้องถิ่น
