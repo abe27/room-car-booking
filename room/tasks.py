@@ -1,12 +1,25 @@
 import requests
-from django.utils import timezone
 from datetime import timedelta
 from .models import Booking
 from django.utils.timezone import localtime
+from datetime import datetime
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 
+def start():
+    scheduler = BackgroundScheduler()
+    # scheduler.add_job(notify_upcoming_bookings, 'interval', minutes=10)
+    trigger = CronTrigger(hour='7-17', minute='*/10')  # Run every 10 minutes between 07:00 and 17:00
+    scheduler.add_job(notify_upcoming_bookings, trigger)
+    scheduler.start()
+
+
+def test():
+    print("I love python {}".format(datetime.now()))
 
 def notify_upcoming_bookings():
-    now = timezone.now()
+    print("Notify Upcoming Bookings:", datetime.now())
+    now = datetime.now()
     upcoming_time = now + timedelta(minutes=30)
     bookings = Booking.objects.filter(
         start_date__lte=upcoming_time, end_date__gte=now, status__name="Approved"

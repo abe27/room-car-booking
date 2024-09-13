@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "room",
     "app",
     "car",
-    "django_crontab",
 ]
 
 AUTH_USER_MODEL = "user.Employee"
@@ -83,18 +82,18 @@ WSGI_APPLICATION = "main.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    # "default": {
-    #     "ENGINE": "django.db.backends.sqlite3",
-    #     "NAME": BASE_DIR / "db.sqlite3",
-    # },
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "booking",
-        "USER": "postgres",
-        "PASSWORD": "admin@vcs",
-        "HOST": "192.168.20.16",
-        "PORT": "5432",
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     },
+    # "default": {
+    #     "ENGINE": "django.db.backends.postgresql",
+    #     "NAME": "booking",
+    #     "USER": "postgres",
+    #     "PASSWORD": "admin@vcs",
+    #     "HOST": "192.168.20.16",
+    #     "PORT": "5432",
+    # },
 }
 
 
@@ -143,8 +142,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# ตั้งเวลาแจ้งเตือน
-CRONJOBS = [
-    ('*/10 7-17 * * *', 'room.tasks.notify_upcoming_bookings', '>> /home/vcst/booking/logs/notify_upcoming_bookings.log 2>&1'),
-]
