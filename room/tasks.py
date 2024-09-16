@@ -12,7 +12,7 @@ def start():
     scheduler = BackgroundScheduler()
     # scheduler.add_job(notify_upcoming_bookings, 'interval', minutes=10)
     trigger = CronTrigger(
-        hour="7-17", minute="*/1"
+        hour="7-17", minute="*/10"
     )  # Run every 10 minutes between 07:00 and 17:00
     scheduler.add_job(notify_upcoming_bookings, trigger)
     scheduler.start()

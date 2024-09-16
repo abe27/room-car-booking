@@ -22,45 +22,37 @@
       var startTime = $('#start_time').val()
       var endTime = $('#end_time').val()
       var date = $('#date').val()
-
-      // Get the current date
-      var today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
-
+  
+      // Get the current date and time
+      var now = new Date()
+      var today = now.toISOString().split('T')[0] // YYYY-MM-DD format
+      var currentTime = now.toTimeString().split(' ')[0].substring(0, 5) // HH:MM format
+  
       if (date < today) {
-        event.preventDefault(); // ป้องกันการส่งฟอร์ม
-        $('#alertMessage').html(
-          '<div class="alert alert-warning alert-dismissible fade show" role="alert">' +
-            '<strong>ข้อผิดพลาด!</strong> ห้ามเลือกวันย้อนหลัง.' +
-            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-          '</div>'
-        );
+        event.preventDefault() // ป้องกันการส่งฟอร์ม
+        $('#alertMessage').html('<div class="alert alert-warning alert-dismissible fade show" role="alert">' + '<strong>ข้อผิดพลาด!</strong> ห้ามเลือกวันย้อนหลัง.' + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' + '</div>')
+      }
+  
+      // Check for past time
+      if (date === today) {
+        if (startTime < currentTime) {
+          event.preventDefault() // Prevent form submission
+          $('#alertMessage').html('<div class="alert alert-warning alert-dismissible fade show" role="alert">' + '<strong>ข้อผิดพลาด!</strong> เวลาที่เริ่มต้นต้องไม่เป็นเวลาที่ผ่านไปแล้ว.' + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' + '</div>')
+        }
       }
   
       //ไม่เลือกเวลา
       if (!startTime || !endTime) {
-        event.preventDefault(); // ป้องกันการส่งฟอร์ม
-        $('#alertMessage').html(
-          '<div class="alert alert-warning alert-dismissible fade show" role="alert">' +
-            '<strong>ข้อผิดพลาด!</strong> กรุณากรอกเวลาให้ครบ.' +
-            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-          '</div>'
-        );
+        event.preventDefault() // ป้องกันการส่งฟอร์ม
+        $('#alertMessage').html('<div class="alert alert-warning alert-dismissible fade show" role="alert">' + '<strong>ข้อผิดพลาด!</strong> กรุณากรอกเวลาให้ครบ.' + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' + '</div>')
       } else if (startTime == endTime) {
-        event.preventDefault(); // ป้องกันการส่งฟอร์ม
-        $('#alertMessage').html(
-          '<div class="alert alert-warning alert-dismissible fade show" role="alert">' +
-            '<strong>ข้อผิดพลาด!</strong> เวลาห้ามซ้ำกัน.' +
-            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-          '</div>'
-        );
+        event.preventDefault() // ป้องกันการส่งฟอร์ม
+        $('#alertMessage').html('<div class="alert alert-warning alert-dismissible fade show" role="alert">' + '<strong>ข้อผิดพลาด!</strong> เวลาห้ามซ้ำกัน.' + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' + '</div>')
       } else if (startTime > endTime) {
-        event.preventDefault(); // ป้องกันการส่งฟอร์ม
-        $('#alertMessage').html(
-          '<div class="alert alert-warning alert-dismissible fade show" role="alert">' +
-            '<strong>ข้อผิดพลาด!</strong> เวลาสิ้นสุดต้องมากกว่าเวลาที่เริ่ม.' +
-            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-          '</div>'
-        ).removeClass('d-none');
+        event.preventDefault() // ป้องกันการส่งฟอร์ม
+        $('#alertMessage')
+          .html('<div class="alert alert-warning alert-dismissible fade show" role="alert">' + '<strong>ข้อผิดพลาด!</strong> เวลาสิ้นสุดต้องมากกว่าเวลาที่เริ่ม.' + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' + '</div>')
+          .removeClass('d-none')
       }
     })
   })
@@ -72,7 +64,7 @@
     // เมื่อปุ่ม "View" ถูกกด
     $('.view-room-btn').click(function () {
       const roomName = $(this).data('room-name')
-      const roomDetail = $(this).data('room-detail').replace(/\n/g, '<br>');  // Convert line breaks to <br>
+      const roomDetail = $(this).data('room-detail').replace(/\n/g, '<br>') // Convert line breaks to <br>
       const roomImage = $(this).data('room-image')
   
       // อัปเดตค่าภายใน modal
