@@ -413,8 +413,8 @@ def confirm_booking(request, booking_id):
             context.update(
                 {
                     "title": "เกิดข้อผิดพลาด",
-                    "detail": "กรุณาเข้าสู่ระบบด้วยบัญชีที่ท่านได้ทำการของห้องประชุม",
-                    "image": "eror",
+                    "detail": "กรุณาเข้าสู่ระบบด้วยบัญชีที่ท่านได้ทำการจองห้องประชุม",
+                    "image": "error",
                 }
             )
         else:

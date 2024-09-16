@@ -1,6 +1,7 @@
 import requests
 from datetime import timedelta
 from .models import Booking
+from django.utils import timezone  # ใช้ timezone.now() แทน datetime.now()
 from django.utils.timezone import localtime
 from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -11,7 +12,7 @@ def start():
     scheduler = BackgroundScheduler()
     # scheduler.add_job(notify_upcoming_bookings, 'interval', minutes=10)
     trigger = CronTrigger(
-        hour="7-17", minute="*/10"
+        hour="7-17", minute="*/1"
     )  # Run every 10 minutes between 07:00 and 17:00
     scheduler.add_job(notify_upcoming_bookings, trigger)
     scheduler.start()
@@ -23,7 +24,7 @@ def test():
 
 def notify_upcoming_bookings():
     print("Notify Upcoming Bookings:", datetime.now())
-    now = datetime.now()
+    now = timezone.now()
     upcoming_time = now + timedelta(minutes=30)
     bookings = Booking.objects.filter(
         start_date__lte=upcoming_time,
@@ -35,10 +36,16 @@ def notify_upcoming_bookings():
     for booking in bookings:
         local_start = localtime(booking.start_date)  # แปลงเป็นเวลาท้องถิ่น
         local_end = localtime(booking.end_date)  # แปลงเป็นเวลาท้องถิ่น
-        confirm_url = f"http://127.0.0.1:8000/room/confirm_booking/{booking.id}"
+        
+        # คำนวณเวลาที่เหลือ
+        time_left = local_start - now
+        hours_left, remainder = divmod(time_left.total_seconds(), 3600)
+        minutes_left = remainder // 60
+        
+        confirm_url = f"http://192.168.20.16:8000/room/confirm_booking/{booking.id}"
 
         message = (
-            f"\n🔔 แจ้งเตือน: อีกประมาณ 30 นาทีท่านจะถึงเวลาจองห้องประชุม\n"
+            f"\n🔔 แจ้งเตือน: อีกประมาณ {minutes_left} นาที ท่านจะถึงเวลาจองห้องประชุม\n"
             f"ห้อง: {booking.room.name}\n"
             f"หัวข้อ: {booking.title}\n"
             f"ผู้จอง: {booking.employee.first_name} {booking.employee.last_name}\n"
@@ -47,7 +54,7 @@ def notify_upcoming_bookings():
             f"เริ่ม: {local_start.strftime('%d/%m/%Y %H:%M')}\n"
             f"สิ้นสุด: {local_end.strftime('%d/%m/%Y %H:%M')}\n"
             f"สถานะ: {booking.status.name}\n"
-            f"โปรดกดลิ้งค์ด้านล่างนี้เพื่อยืนยันการเข้าห้องประชุม\n"
+            f"\nโปรดกดลิ้งค์ด้านล่างนี้เพื่อยืนยันการเข้าห้องประชุม\n"
             f"{confirm_url}\n"
         )
 
