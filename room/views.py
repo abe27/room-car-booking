@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404  # type: ignore
 from django.http import JsonResponse  # type: ignore
 from .models import Room_Status, Room, Booking, Status
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 import requests  # type: ignore
 from django.contrib import messages
 from company_department.models import Company
@@ -23,7 +23,8 @@ def booking(request):
 
             # Query for rooms that are not booked during the specified time range
             booked_rooms = (
-                Booking.objects.exclude(status__name__in=["Waiting","Cancelled", "Rejected"])
+                # sequence 0 = Waiting, sequence 2 = Rejected, sequence 3 = Cancelled
+                Booking.objects.exclude(status__sequence__in=[0, 2, 3])
                 .filter(start_date__lt=end_datetime, end_date__gt=start_datetime)
                 .values_list("room_id", flat=True)
             )
@@ -60,7 +61,13 @@ def dashboard(request):
 
             # Fetch selected room and bookings
             selectedRoom = Room.objects.get(id=room_id)
-            bookings = Booking.objects.filter(room__id=room_id, status__name="Approved")
+            bookings = Booking.objects.filter(
+                room__id=room_id,
+                status__sequence__in=[
+                    1,
+                    4,
+                ],  # sequence 1 = Approved, sequence 4 = Confirmed
+            )
 
             bookings_data = []
             for booking in bookings:
@@ -148,7 +155,10 @@ def save_booking(request):
             # Check if there are any bookings with status sequence 1 during the requested time period
             conflicting_bookings = Booking.objects.filter(
                 room=room,
-                status__name="Approved",
+                status__sequence__in=[
+                    1,
+                    4,
+                ],  # sequence 1 = Approved, sequence 4 = Confirmed
                 start_date__lt=end_datetime,
                 end_date__gt=start_datetime,
             )
@@ -223,7 +233,7 @@ def cancel_booking(request):
         booking = get_object_or_404(Booking, id=booking_id, employee=request.user)
 
         # ตั้งสถานะเป็น "Cancelled"
-        booking.status = Status.objects.get(name="Cancelled")
+        booking.status = Status.objects.get(sequence=3)
         booking.remark = remark  # บันทึกหมายเหตุใน Booking
         booking.save()
 
@@ -259,12 +269,12 @@ def history(request):
 
 
 def history_staff(request):
-    
+
     # เคลียร์ข้อความก่อนเข้าสู่หน้า
     storage = messages.get_messages(request)
     for _ in storage:
         pass  # ลูปเพื่อเคลียร์ข้อความทั้งหมด
-        
+
     if request.user.is_authenticated and request.user.is_staff:
         user_company = request.user.fccorp
         bookings = Booking.objects.filter(room__company=user_company)
@@ -386,3 +396,48 @@ def delete_room(request):
                 {"success": False, "message": "ห้องประชุมไม่พบหรือไม่มีสิทธิ์ในการลบ"}
             )
     return JsonResponse({"success": False, "message": "คำขอลบไม่ถูกต้อง"})
+
+
+def confirm_booking(request, booking_id):
+    context = {}
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        user_company = request.user.fccorp
+        booking = Booking.objects.filter(
+            room__company=user_company,
+            employee__id=user_id,
+            id=booking_id,
+        ).first()
+
+        if booking is None:
+            context.update(
+                {
+                    "title": "เกิดข้อผิดพลาด",
+                    "detail": "กรุณาเข้าสู่ระบบด้วยบัญชีที่ท่านได้ทำการของห้องประชุม",
+                    "image": "eror",
+                }
+            )
+        else:
+            if booking.status.sequence == 1:
+                status = get_object_or_404(Status, sequence=4)
+                # ทำการยืนยันการเข้าห้องประชุม
+                booking.status = status
+                booking.save()
+                context.update(
+                    {
+                        "title": "สำเร็จ",
+                        "detail": "ยืนยันการเข้าห้องประชุมเสร็จสิ้น",
+                        "image": "success",
+                    }
+                )
+            else:
+                context.update(
+                    {
+                        "title": "เกิดข้อผิดพลาด",
+                        "detail": "ท่านเคยยืนยันการเข้าห้องประชุมนี้แล้ว",
+                        "image": "error",
+                    }
+                )
+        return render(request, "room/confirm_booking/index.html", context)
+    else:
+        return redirect("/")

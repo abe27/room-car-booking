@@ -30,5 +30,13 @@
             "color": "#A02334",
             "sequence": 3
         }
+    },
+    {
+        "model": "room.room_status",
+        "fields": {
+            "name": "Confirmed",
+            "color": "#A2CA71",
+            "sequence": 4
+        }
     }
 ]
