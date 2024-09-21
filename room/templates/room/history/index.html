@@ -85,7 +85,7 @@
                         View
                     </button>
                     {% if booking.start_date|date:'Y-m-d' >= today|date:'Y-m-d' %}
-                      {% if booking.status.name != "Cancelled" %}
+                      {% if booking.status.sequence != 3 or booking.status.sequence != 4 %}
                         <button class="btn btn-danger cancel-btn" data-id="{{ booking.id }}">Cancel</button>
                       {% endif %}
                     {%endif%}

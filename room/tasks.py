@@ -42,10 +42,16 @@ def notify_upcoming_bookings():
         hours_left, remainder = divmod(time_left.total_seconds(), 3600)
         minutes_left = remainder // 60
         
-        confirm_url = f"http://192.168.20.16:8000/room/confirm_booking/{booking.id}"
-
+        title = ""
+        confirm_url = f"http://192.168.20.16:8002/room/confirm_booking/{booking.id}"
+        
+        if now >= booking.start_date:
+            title = "\n🔔 แจ้งเตือน: ตอนนี้ถึงเวลาจองห้องประชุมของท่านแล้ว\n"
+        else :
+            title = f"\n🔔 แจ้งเตือน: อีกประมาณ {minutes_left} นาที ท่านจะถึงเวลาจองห้องประชุม\n"
+        
         message = (
-            f"\n🔔 แจ้งเตือน: อีกประมาณ {minutes_left} นาที ท่านจะถึงเวลาจองห้องประชุม\n"
+            f"{title}"
             f"ห้อง: {booking.room.name}\n"
             f"หัวข้อ: {booking.title}\n"
             f"ผู้จอง: {booking.employee.first_name} {booking.employee.last_name}\n"

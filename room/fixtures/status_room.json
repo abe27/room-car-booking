@@ -26,7 +26,7 @@
     {
         "model": "room.room_status",
         "fields": {
-            "name": "Cancelled",
+            "name": "Canceled",
             "color": "#A02334",
             "sequence": 3
         }

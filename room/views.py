@@ -23,7 +23,7 @@ def booking(request):
 
             # Query for rooms that are not booked during the specified time range
             booked_rooms = (
-                # sequence 0 = Waiting, sequence 2 = Rejected, sequence 3 = Cancelled
+                # sequence 0 = Waiting, sequence 2 = Rejected, sequence 3 = Canceled
                 Booking.objects.exclude(status__sequence__in=[0, 2, 3])
                 .filter(start_date__lt=end_datetime, end_date__gt=start_datetime)
                 .values_list("room_id", flat=True)
@@ -232,7 +232,7 @@ def cancel_booking(request):
         # ดึงข้อมูลการจองตาม booking_id และตรวจสอบว่าผู้ใช้เป็นเจ้าของ
         booking = get_object_or_404(Booking, id=booking_id, employee=request.user)
 
-        # ตั้งสถานะเป็น "Cancelled"
+        # ตั้งสถานะเป็น "Canceled"
         booking.status = Status.objects.get(sequence=3)
         booking.remark = remark  # บันทึกหมายเหตุใน Booking
         booking.save()
