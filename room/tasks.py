@@ -12,7 +12,7 @@ def start():
     scheduler = BackgroundScheduler()
     # scheduler.add_job(notify_upcoming_bookings, 'interval', minutes=10)
     trigger = CronTrigger(
-        hour="7-17", minute="*/5"
+        hour="7-17", minute="*/10"
     )  # Run every 10 minutes between 07:00 and 17:00
     scheduler.add_job(notify_upcoming_bookings, trigger)
     scheduler.start()
@@ -23,12 +23,21 @@ def test():
 
 
 def notify_upcoming_bookings():
-    print("Notify Upcoming Bookings:", datetime.now())
+    # print("Notify Upcoming Bookings:", datetime.now())
     now = timezone.now()
-    upcoming_time = now + timedelta(minutes=30)
+    now_local = localtime(now)  # แปลงเวลาปัจจุบันเป็นเวลาท้องถิ่น
+    upcoming_time = now_local + timedelta(minutes=30)
+
+    print(f"Current local time: {now_local}, Upcoming time: {upcoming_time}")
+
+    # ตรวจสอบการจองล่าสุด
+    # b = Booking.objects.order_by("-id").first()
+    # print(localtime(b.start_date), localtime(b.end_date))  # แปลงเวลาจองเป็นเวลาท้องถิ่น
+
+    # กรองการจองโดยใช้เวลาท้องถิ่น
     bookings = Booking.objects.filter(
-        start_date__lte=upcoming_time,
-        end_date__gte=now,
+        start_date__lte=upcoming_time,  # และอยู่ภายใน 30 นาทีจากนี้
+        end_date__gte=now_local,  # การจองยังไม่สิ้นสุด
         status__sequence=1,  # sequence 1 = Approved
         message=0,
     )
@@ -36,20 +45,24 @@ def notify_upcoming_bookings():
     for booking in bookings:
         local_start = localtime(booking.start_date)  # แปลงเป็นเวลาท้องถิ่น
         local_end = localtime(booking.end_date)  # แปลงเป็นเวลาท้องถิ่น
-        
+
         # คำนวณเวลาที่เหลือ
-        time_left = local_start - now
+        time_left = local_start - now_local
         hours_left, remainder = divmod(time_left.total_seconds(), 3600)
         minutes_left = remainder // 60
-        
+
         title = ""
         confirm_url = f"http://192.168.20.16:8002/room/confirm_booking/{booking.id}"
-        
-        if now >= booking.start_date:
+
+        if now_local >= booking.start_date:
             title = f"\n🔔 แจ้งเตือน: ตอนนี้ถึงเวลาจองห้องประชุมของท่านแล้ว\n"
-        else :
-            title = f"\n🔔 แจ้งเตือน: อีกประมาณ {minutes_left} นาที ท่านจะถึงเวลาจองห้องประชุม\n"
-        
+            # print(title)
+        else:
+            title = (
+                f"\n🔔 แจ้งเตือน: อีกประมาณ {minutes_left} นาที ท่านจะถึงเวลาจองห้องประชุม\n"
+            )
+            # print(title)
+
         message = (
             f"{title}"
             f"ห้อง: {booking.room.name}\n"
