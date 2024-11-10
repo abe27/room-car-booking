@@ -7,6 +7,32 @@ def booking(request):
     context = {"url": "booking"}
     if request.user.is_authenticated:
         if request.method == "POST":
+            room_capacities = [
+                {
+                    "id": 1,
+                    "name": "จำนวนผู้เข้าร่วมประชุม 1-5 คน",
+                    "start_capacity": 1,
+                    "end_capacity": 5,
+                },
+                {
+                    "id": 2,
+                    "name": "จำนวนผู้เข้าร่วมประชุม 6-10 คน",
+                    "start_capacity": 6,
+                    "end_capacity": 10,
+                },
+                {
+                    "id": 3,
+                    "name": "จำนวนผู้เข้าร่วมประชุม 11-20 คน",
+                    "start_capacity": 11,
+                    "end_capacity": 20,
+                },
+                {
+                    "id": 4,
+                    "name": "จำนวนผู้เข้าร่วมประชุม 20 คนขึ้นไป",
+                    "start_capacity": 21,
+                    "end_capacity": None,
+                },
+            ]
             date = request.POST.get("date")
             start_time = request.POST.get("start_time")
             end_time = request.POST.get("end_time")
@@ -28,6 +54,24 @@ def booking(request):
                 .exclude(id__in=booked_rooms)
                 .order_by("sequence")
             )
+
+            # Filter rooms based on capacity ranges
+            available_rooms_with_capacity = []
+            for room in available_rooms:
+                for capacity in room_capacities:
+                    if (
+                        capacity["end_capacity"] is None
+                        and room.maximum_capacity >= capacity["start_capacity"]
+                    ) or (
+                        capacity["start_capacity"]
+                        <= room.maximum_capacity
+                        <= capacity["end_capacity"]
+                    ):
+                        room.capacity_range = capacity[
+                            "id"
+                        ]  # Add capacity range name for display
+                        available_rooms_with_capacity.append(room)
+                        break  # Stop checking once a capacity range is matched
 
             context.update(
                 {

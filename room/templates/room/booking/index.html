@@ -64,7 +64,12 @@
                   View
                 </button>
                 <button class="btn btn-sm btn-primary booking-room-btn btn-success" data-bs-toggle="modal" data-bs-target="#eventModal" data-room-id="{{ room.id }}" data-room-name="{{ room.name }}">Booking</button>
-                <button class="btn btn-sm btn-primary booking-room-btn btn-warning">Check Room</button>
+                <form method="POST" action="{% url 'room_dashboard' %}">
+                  {% csrf_token %}
+                  <input type="text" id="capacity" name="capacity" value="{{room.capacity_range}}" hidden />
+                  <input type="text" id="room_id" name="room_id" value="{{room.id}}" hidden />
+                  <button type="submit" class="btn btn-sm btn-primary booking-room-btn btn-warning">Check Room</button>
+                </form>
               </div>
             </div>
           </div>
@@ -74,6 +79,16 @@
       {% endfor %}
     </div>
   </div>
+
+  <div id="helpToast" class="toast align-items-center text-bg-primary border-0 position-fixed bottom-0 end-0 mb-3 me-3" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        <a href="#" target="_blank" class="text-white">วิธีการใช้งานระบบจองห้องประชุม</a>
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+
   <!-- Modal Structure -->
   {% include './modal_view.html' %}
   {% include './modal_event.html' %}
