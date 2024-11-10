@@ -13,21 +13,40 @@
     .card {
       transition: transform 0.3s ease-in-out;
     }
-    
+
     .card:hover {
-      transform: scale(1.05); /* ขยายขนาดการ์ดขึ้น 5% */
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* เพิ่มเงาเมื่อ hover */
+      transform: scale(1.05); /* Expand the card by 5% */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
     }
-    
+
     .card-img-top {
-      height: 400px; /* กำหนดความสูงให้รูปภาพ */
-      object-fit: cover; /* ครอบคลุมพื้นที่ด้วยอัตราส่วนคงที่ */
+      height: 400px; /* Set image height */
+      object-fit: cover; /* Keep aspect ratio */
+    }
+
+    .overlay-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 1.25rem;
+      font-weight: bold;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+    }
+
+    .card-disabled {
+      pointer-events: none; /* Disable interactions */
+      opacity: 0.7; /* Slight transparency */
     }
   </style>
 
   {% include 'app/home/navbar.html' %}
   <div class="container d-flex align-items-center justify-content-center my-3">
     <div class="row w-100 mx-auto my-auto row-gap-3">
+      <!-- Room Booking Card -->
       <div class="col-md-6 my-auto">
         <a href="/room/booking" class="text-decoration-none">
           <div class="card mb-3 my-2 h-100">
@@ -39,16 +58,16 @@
           </div>
         </a>
       </div>
+      <!-- Car Booking Card (Under Maintenance) -->
       <div class="col-md-6 my-auto">
-        <a href="/car" class="text-decoration-none">
-          <div class="card mb-3 my-2 h-100">
-            <img src="{% static 'app/images/car.jpg' %}" class="card-img-top img-fluid" alt="car" />
-            <div class="card-body">
-              <h5 class="card-title">ระบบจองรถ</h5>
-              <p class="card-text">สำหรับการจองรถภายในองค์กร.</p>
-            </div>
+        <div class="card mb-3 my-2 h-100 card-disabled">
+          <img src="{% static 'app/images/car.jpg' %}" class="card-img-top img-fluid" alt="car" />
+          <div class="overlay-text">กำลังปรับปรุง</div>
+          <div class="card-body">
+            <h5 class="card-title">ระบบจองรถ</h5>
+            <p class="card-text">สำหรับการจองรถภายในองค์กร.</p>
           </div>
-        </a>
+        </div>
       </div>
     </div>
   </div>

@@ -1,6 +1,23 @@
 <!-- FullCalendar JS -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 
+<!-- รวม jQuery และ Flatpickr Plugin -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+
+<!-- เลือกเวลา -->
+<script>
+  $(document).ready(function () {
+    // เปิดใช้งาน Flatpickr สำหรับ time picker
+    $('.time-picker').flatpickr({
+      enableTime: true,
+      noCalendar: true,
+      dateFormat: 'H:i', // แสดงเวลาในรูปแบบ 24 ชั่วโมง
+      time_24hr: true
+    })
+  })
+</script>
+
 <script>
   $(document).ready(function () {
     var calendar

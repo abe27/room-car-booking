@@ -1,0 +1,80 @@
+<!-- แสดง Modal Event -->
+<script>
+  $(document).ready(function () {
+    // เมื่อปุ่ม "Booking" ถูกกด
+    $('.booking-room-btn').click(function () {
+      const roomName = $(this).data('room-name')
+      const roomId = $(this).data('room-id')
+  
+      // อัปเดตค่าภายใน modal
+      $('#roomName').text('ชื่อห้อง: ' + roomName)
+  
+      // กำหนดค่า room_id ให้กับ modal form
+      $('#eventForm').data('room-id', roomId)
+    })
+  
+    // บันทึกการจอง
+    $('#eventForm').on('submit', function (e) {
+      e.preventDefault()
+  
+      // ดึงค่าจากฟอร์ม
+      const title = $('#title').val()
+      const description = $('#description').val()
+      const date = $('#date_event').val()
+      const start_time = $('#start_time_event').val()
+      const end_time = $('#end_time_event').val()
+      const room_id = $(this).data('room-id')
+  
+      // ตรวจสอบค่าที่กรอกในฟอร์ม
+      if (!title || !description || !date || !start_time || !end_time || !room_id) {
+        console.log(title, description, date, start_time, end_time, room_id)
+        showAlert('กรุณากรอกข้อมูลให้ครบถ้วน', 'alert-warning')
+        return
+      }
+  
+      // ส่งข้อมูลฟอร์มผ่าน AJAX ไปยัง view
+      $.ajax({
+        url: "{% url 'room_save_booking' %}", // URL ของ view ที่จะรับข้อมูล (ในที่นี้คือ save_booking)
+        method: 'POST',
+        data: {
+          title: title,
+          description: description,
+          date: date,
+          start_time: start_time,
+          end_time: end_time,
+          room_id: room_id,
+          csrfmiddlewaretoken: '{{ csrf_token }}' // ส่ง CSRF Token
+        },
+        success: function (response) {
+          if (response.status === 'Booking saved and Line notification sent successfully!') {
+            showAlert('การจองสำเร็จ!', 'alert-success')
+            // รอสัก 3 วิค่อยรีหน้าเว็บ
+            setTimeout(function () {
+              location.reload() // รีเฟรชหน้าเว็บ
+            }, 3000) // 3000 milliseconds = 3 seconds
+            $('#eventForm')[0].reset() // เคลียร์ข้อมูลในฟอร์ม
+          } else if (response.status === 'Booking saved, but failed to send Line notification.') {
+            showAlert('การจองสำเร็จ!', 'alert-warning')
+            // รอสัก 3 วิค่อยรีหน้าเว็บ
+            setTimeout(function () {
+              location.reload() // รีเฟรชหน้าเว็บ
+            }, 3000) // 3000 milliseconds = 3 seconds
+            $('#eventForm')[0].reset() // เคลียร์ข้อมูลในฟอร์ม
+          } else {
+            showAlert(response.status, 'alert-danger')
+          }
+        },
+        error: function (xhr) {
+          showAlert('เกิดข้อผิดพลาด: ' + xhr.responseText, 'alert-danger')
+        }
+      })
+    })
+  
+    // ฟังก์ชันสำหรับแสดง Bootstrap alert
+    function showAlert(message, alertType) {
+      var alertHTML = '<div class="alert ' + alertType + ' alert-dismissible fade show" role="alert">' + '<strong>' + message + '</strong>' + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' + '</div>'
+      // แทรก alert เข้าไปใน container
+      $('#alertContainer').html(alertHTML)
+    }
+  })
+</script>
