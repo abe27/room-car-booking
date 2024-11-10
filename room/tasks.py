@@ -1,6 +1,6 @@
 import requests
 from datetime import timedelta
-from .models import Booking
+from .models import Booking, Status
 from django.utils import timezone  # ใช้ timezone.now() แทน datetime.now()
 from django.utils.timezone import localtime
 from datetime import datetime
@@ -12,9 +12,9 @@ def start():
     scheduler = BackgroundScheduler()
     # scheduler.add_job(notify_upcoming_bookings, 'interval', minutes=10)
     trigger = CronTrigger(
-        hour="7-17", minute="*/10"
+        hour="7-17", minute="*/1"
     )  # Run every 10 minutes between 07:00 and 17:00
-    scheduler.add_job(notify_upcoming_bookings, trigger)
+    scheduler.add_job(update_booking_status, trigger)
     scheduler.start()
 
 
@@ -89,3 +89,26 @@ def notify_upcoming_bookings():
             booking.save()
         else:
             print(f"Failed to send Line notification for booking {booking.id}")
+
+
+def update_booking_status():
+    # กำหนดเวลาปัจจุบัน
+    now = timezone.now()
+
+    # ดึงข้อมูล bookings ที่มี status__sequence เท่ากับ 1 หรือ 4 และมี end_date เลยเวลาไปแล้ว 1 ชั่วโมง
+    bookings = Booking.objects.filter(
+        status__sequence__in=[1, 4], end_date__lte=now - timedelta(hours=1)
+    )
+
+    print(f"Update Booking Status: {len(bookings)} bookings")
+
+    # ดึง status ที่มี sequence เท่ากับ 5 สำหรับ Check-out
+    check_out_status = Status.objects.get(sequence=5)
+    remark = "ถูก Check-out โดยระบบ"
+
+    # อัปเดต status ของ bookings ที่ตรงตามเงื่อนไข
+    for booking in bookings:
+        booking.status = check_out_status
+        booking.remark = remark
+        booking.check_out = now
+        booking.save()
