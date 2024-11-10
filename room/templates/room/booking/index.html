@@ -46,6 +46,7 @@
               style="height: 150px; object-fit: cover; width: 100%;" />
             <div class="card-body">
               <h5 class="card-title">{{ room.name }}</h5>
+              <div class="mb-1 text-primary">จำนวนผู้เข้าร่วมประมาณ {{ room.maximum_capacity }} คน</div>
               <div class="card-text text-danger">{{ room.remark }}</div>
               <div class="mt-2 d-flex gap-1 flex-wrap justify-content-center">
                 <button class="btn btn-sm btn-primary view-room-btn"
@@ -54,6 +55,7 @@
                   data-room-id="{{ room.id }}"
                   data-room-name="{{ room.name }}"
                   data-room-detail="{{ room.detail }}"
+                  data-room-capacity="{{ room.maximum_capacity }}"
                   data-room-image="{% if room.image %}
                     {{ room.image.url }}
                   {% else %}

@@ -1,0 +1,109 @@
+<!-- Include DataTables JS and CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<!-- Include Moment.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  $(document).ready(function () {
+    // Initialize DataTable
+    var table = $('#bookingsTable').DataTable({
+      order: [[1, 'desc']]
+    })
+  
+    // Show event details in modal when View button is clicked
+    $('.view-btn').on('click', function () {
+      var id = $(this).data('id')
+      var employeeId = $(this).data('employee-id')
+      var employeeName = $(this).data('employee-name')
+      var title = $(this).data('title')
+      var description = $(this).data('description').replace(/\n/g, '<br>') // Convert line breaks to <br>
+      var start = $(this).data('start')
+      var end = $(this).data('end')
+      var status = $(this).data('status')
+      var remark = $(this).data('remark').replace(/\n/g, '<br>') // Convert line breaks to <br>
+      console.log(id)
+  
+      // Set modal content
+      $('#eventDetailId').text(id)
+      $('#eventDetailEmployeeId').text(employeeId)
+      $('#eventDetailEmployeeName').text(employeeName)
+      $('#eventDetailTitle').text(title)
+      $('#eventDetailDescription').html(description)
+      $('#eventDetailStart').text(start)
+      $('#eventDetailEnd').text(end)
+      $('#eventDetailStatus').text(status)
+      $('#eventDetailRemark').html(remark)
+    })
+  })
+  
+  // SweetAlert confirmation before Check-in
+  $('.check-in-btn').on('click', function () {
+    var bookingId = $(this).data('id')
+  
+    Swal.fire({
+      title: 'แจ้งเตือน',
+      text: 'คุณต้องการเช็คอินห้องนี้ใช่หรือไม่?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'เช็คอิน',
+      cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Submit the Check-in request via AJAX
+        $.ajax({
+          url: '{% url "room_check_in" 0 %}'.replace('0', bookingId), // Dynamically replace with booking ID
+          type: 'POST',
+          data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function (response) {
+            Swal.fire('สำเร็จ!', 'คุณได้เช็คอินห้องนี้แล้ว.', 'success')
+            setTimeout(function () {
+              location.reload()
+            }, 1500)
+          },
+          error: function () {
+            Swal.fire('ผิดพลาด!', 'เกิดข้อผิดพลาดระหว่างเช็คอิน.', 'error')
+          }
+        })
+      }
+    })
+  })
+  
+  // SweetAlert confirmation before Check-out
+  $('.check-out-btn').on('click', function () {
+    var bookingId = $(this).data('id')
+  
+    Swal.fire({
+      title: 'แจ้งเตือน',
+      text: 'คุณต้องการเช็คเอาท์ห้องนี้ใช้หรือไม่?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'เช็คเอาท์',
+      cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Submit the Check-out request via AJAX
+        $.ajax({
+          url: '{% url "room_check_out" 0 %}'.replace('0', bookingId), // Dynamically replace with booking ID
+          type: 'POST',
+          data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function (response) {
+            Swal.fire('สำเร็จ!', 'คุณได้เช็คเอาท์ห้องนี้แล้ว.', 'success')
+            setTimeout(function () {
+              location.reload()
+            }, 1500)
+          },
+          error: function () {
+            Swal.fire('ผิดพลาด!', 'เกิดข้อผิดพลาดระหว่างเช็คเอาท์.', 'error')
+          }
+        })
+      }
+    })
+  })
+</script>

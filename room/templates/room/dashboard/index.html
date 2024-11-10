@@ -9,18 +9,33 @@
         <form id="searchRoom" method="POST" action="{% url 'room_dashboard' %}">
           {% csrf_token %}
           <div class="row">
-            <div class="col">
-              <label for="room">เลือกห้องประชุม</label>
-              <select class="form-select mt-2" aria-label="Default select room" id="room_id" name="room_id">
-                <option disabled selected>Open this select menu</option>
-                {% for room in rooms %}
-                  {% if selectedRoom and selectedRoom.id == room.id %}
-                    <option value="{{ room.id }}" selected>{{ room.name }}</option>
-                  {% else %}
-                    <option value="{{ room.id }}">{{ room.name }}</option>
-                  {% endif %}
-                {% endfor %}
-              </select>
+            <div class="row row-cols-2">
+              <div class="col">
+                <label for="">จำนวนผู้เข้าร่วมประชุม</label>
+                <select class="form-select mt-2" aria-label="Default select capacity" id="capacity" name="capacity" onchange="filterRooms()">
+                  <option disabled selected>Open this select menu</option>
+                  {% for item in room_capacities %}
+                    {% if selectedCapacity and selectedCapacity.id == item.id %}
+                      <option value="{{ item.id }}" selected data-start="{{ item.start_capacity }}" data-end="{{ item.end_capacity }}">{{ item.name }}</option>
+                    {% else %}
+                      <option value="{{ item.id }}" data-start="{{ item.start_capacity }}" data-end="{{ item.end_capacity }}">{{ item.name }}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col">
+                <label for="room">เลือกห้องประชุม</label>
+                <select class="form-select mt-2" aria-label="Default select room" id="room_id" name="room_id" disabled>
+                  <option disabled selected>Open this select menu</option>
+                  {% for room in rooms %}
+                    {% if selectedRoom and selectedRoom.id == room.id %}
+                      <option value="{{ room.id }}" selected data-capacity="{{ room.maximum_capacity }}">{{ room.name }}</option>
+                    {% else %}
+                      <option value="{{ room.id }}" data-capacity="{{ room.maximum_capacity }}">{{ room.name }}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
             </div>
             <div class="d-flex mt-3">
               <div class="mx-auto">
@@ -40,14 +55,13 @@
               src="{% if selectedRoom.image %}
                 {{ selectedRoom.image.url }}
               {% else %}
-                
                 https://random-image-pepebigotes.vercel.app/api/random-image
-
               {% endif %}" />
           </div>
           <div class="col-md-8">
             <div class="card-body">
               <h5 class="card-title">{{ selectedRoom.name }}</h5>
+              <p class="card-text text-primary">จำนวนผู้เข้าร่วมประชุมประมาณ {{ selectedRoom.maximum_capacity }} คน</p>
               <p class="card-text text-danger">{{ selectedRoom.remark }}</p>
               <div class="fw-semibold mb-1">รายละเอียด</div>
               <p class="card-text">{{ selectedRoom.detail|linebreaksbr }}</p>

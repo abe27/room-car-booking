@@ -38,6 +38,7 @@
         <table class="table" id="bookingsTable">
           <thead>
             <tr>
+              <th scope="col">Action</th>
               <th scope="col">ID</th>
               <th scope="col">ห้อง</th>
               <th scope="col">สถานะ</th>
@@ -45,12 +46,21 @@
               <th scope="col">ตั้งแต่เวลา</th>
               <th scope="col">ถึงเวลา</th>
               <th scope="col">หมายเหตุ</th>
-              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
             {% for booking in bookings %}
               <tr>
+                <td>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-primary view-btn" data-id="{{ booking.id }}" data-employee-id="{{ booking.employee.id }}" data-employee-name="{{ booking.employee.first_name }} {{ booking.employee.last_name }}" data-title="{{ booking.title }}" data-description="{{ booking.description }}" data-start="{{ booking.start_date|date:'d/m/Y, H:i' }}" data-end="{{ booking.end_date|date:'d/m/Y, H:i' }}" data-status="{{ booking.status }}" data-remark="{{ booking.remark }}" data-bs-toggle="modal" data-bs-target="#eventDetailModal">View</button>
+                    {% if booking.start_date|date:"Y-m-d H:i" > today|date:"Y-m-d H:i" %}
+                      {% if booking.status.sequence == 1 %}
+                        <button class="btn btn-sm btn-danger cancel-btn" data-id="{{ booking.id }}">Cancel</button>
+                      {% endif %}
+                    {% endif %}
+                  </div>
+                </td>
                 <td>{{ booking.id }}</td>
                 <td>{{ booking.room }}</td>
                 <td>
@@ -68,16 +78,6 @@
                 <td>{{ booking.start_date|date:'d/m/Y, H:i' }}</td>
                 <td>{{ booking.end_date|date:'d/m/Y, H:i' }}</td>
                 <td>{{ booking.remark }}</td>
-                <td>
-                  <div class="d-flex justify-content-between">
-                    <button class="btn btn-primary view-btn" data-id="{{ booking.id }}" data-employee-id="{{ booking.employee.id }}" data-employee-name="{{ booking.employee.first_name }} {{ booking.employee.last_name }}" data-title="{{ booking.title }}" data-description="{{ booking.description }}" data-start="{{ booking.start_date|date:'d/m/Y, H:i' }}" data-end="{{ booking.end_date|date:'d/m/Y, H:i' }}" data-status="{{ booking.status }}" data-remark="{{ booking.remark }}" data-bs-toggle="modal" data-bs-target="#eventDetailModal">View</button>
-                    {% if booking.start_date|date:'Y-m-d' >= today|date:'Y-m-d' %}
-                      {% if booking.status.sequence == 1 %}
-                        <button class="btn btn-danger cancel-btn" data-id="{{ booking.id }}">Cancel</button>
-                      {% endif %}
-                    {% endif %}
-                  </div>
-                </td>
               </tr>
             {% endfor %}
           </tbody>

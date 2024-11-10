@@ -9,14 +9,14 @@
 {% endblock %}
 
 {% block content %}
-  <section class="h-100" style="background-color: #0A2C55;">
-    <div class="container h-100">
-      <div class="row d-flex justify-content-center align-items-center h-100">
+  <section style="background-color: #0A2C55; min-height: 100vh;">
+    <div class="container">
+      <div class="row d-flex justify-content-center align-items-center">
         <div class="col">
           <div class="card card-registration my-4">
             <div class="row g-0">
-              <div class="col-xl-6 d-none d-xl-block">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/img4.webp" alt="Sample photo" class="img-fluid" style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
+              <div class="col-xl-6 d-none d-xl-flex align-items-center justify-content-center">
+                <img src="https://img.freepik.com/free-vector/happy-workers-sharing-ideas_52683-28614.jpg?t=st=1731244225~exp=1731247825~hmac=615362f497071dd682be63df73af3b3a38c027156ab9151a87cca8875e9d25ba&w=1060" alt="Sample photo" class="img-fluid"/>
               </div>
               <div class="col-xl-6">
                 <div class="card-body p-md-5 text-black">
@@ -28,48 +28,58 @@
                       <div class="col-md-6 mb-3">
                         <div data-mdb-input-init class="form-outline">
                           <label class="form-label" for="firstname">ชื่อจริง</label>
-                          <input type="text" id="firstname" name="firstname" class="form-control form-control-lg" placeholder="กรุณากรอกชื่อจริง" required />
+                          <input type="text" id="firstname" name="firstname" class="form-control" placeholder="กรุณากรอกชื่อจริง" required />
                         </div>
                       </div>
                       <div class="col-md-6 mb-3">
                         <div data-mdb-input-init class="form-outline">
                           <label class="form-label" for="lastname">นามสกุล</label>
-                          <input type="text" id="lastname" name="lastname" class="form-control form-control-lg" placeholder="กรุณากรอกนามสกุล" required />
+                          <input type="text" id="lastname" name="lastname" class="form-control" placeholder="กรุณากรอกนามสกุล" required />
                         </div>
                       </div>
                     </div>
 
-                    <div data-mdb-input-init class="form-outline mb-3">
-                      <label class="form-label" for="emp_id">รหัสพนักงาน</label>
-                      <input type="text" id="emp_id" name="emp_id" class="form-control form-control-lg" placeholder="กรุณากรอกรหัสพนักงาน" required />
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div data-mdb-input-init class="form-outline">
+                          <label class="form-label" for="emp_id">รหัสพนักงาน</label>
+                          <input type="text" id="emp_id" name="emp_id" class="form-control" placeholder="กรุณากรอกรหัสพนักงาน" required />
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div data-mdb-input-init class="form-outline">
+                          <label class="form-label" for="tel">เบอร์โทรศัพท์</label>
+                          <input type="tel" id="tel" name="tel" class="form-control" placeholder="กรุณากรอกเบอร์โทรศัพท์" required />
+                        </div>
+                      </div>
                     </div>
 
-                    <div data-mdb-input-init class="form-outline mb-3">
-                      <label class="form-label" for="tel">เบอร์โทรศัพท์</label>
-                      <input type="tel" id="tel" name="tel" class="form-control form-control-lg" placeholder="กรุณากรอกเบอร์โทรศัพท์"  required />
-                    </div>
-
-                    <div data-mdb-input-init class="form-outline mb-3">
-                      <label class="form-label" for="email">อีเมล</label>
-                      <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="กรุณากรอกอีเมล" required />
-                    </div>
-
-                    <div data-mdb-input-init class="form-outline mb-3">
-                      <label class="form-label" for="username">ชื่อผู้ใช้</label>
-                      <input type="text" id="username" name="username" class="form-control form-control-lg" placeholder="กรุณากรอกชื่อผู้ใช้" required />
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <div data-mdb-input-init class="form-outline">
+                          <label class="form-label" for="email">อีเมล</label>
+                          <input type="email" id="email" name="email" class="form-control" placeholder="กรุณากรอกอีเมล" required />
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <div data-mdb-input-init class="form-outline">
+                          <label class="form-label" for="username">ชื่อผู้ใช้</label>
+                          <input type="text" id="username" name="username" class="form-control" placeholder="กรุณากรอกชื่อผู้ใช้" required />
+                        </div>
+                      </div>
                     </div>
 
                     <div class="row">
                       <div class="col-md-6 mb-3">
                         <div data-mdb-input-init class="form-outline">
                           <label class="form-label" for="password">รหัสผ่าน</label>
-                          <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="กรุณากรอกรหัสผ่าน" required />
+                          <input type="password" id="password" name="password" class="form-control" placeholder="กรุณากรอกรหัสผ่าน" required />
                         </div>
                       </div>
                       <div class="col-md-6 mb-3">
                         <div data-mdb-input-init class="form-outline">
                           <label class="form-label" for="confirm_password">ยืนยันรหัสผ่าน</label>
-                          <input type="password" id="confirm_password" name="confirm_password" class="form-control form-control-lg" placeholder="กรุณากรอกรหัสผ่าน" required />
+                          <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="กรุณากรอกรหัสผ่าน" required />
                         </div>
                       </div>
                     </div>
@@ -99,8 +109,8 @@
                       <p class="my-auto me-auto">
                         มีบัญชีผู้ใช้อยู่แล้ว? <a href="{% url 'signin' %}" class="link-primary">เข้าสู่ระบบ</a>
                       </p>
-                      <button type="reset" class="btn btn-light btn-lg">รีเซ็ตฟอร์ม</button>
-                      <button type="submit" class="btn btn-dark btn-lg ms-2">สมัครสมาชิก</button>
+                      <button type="reset" class="btn btn-light">รีเซ็ตฟอร์ม</button>
+                      <button type="submit" class="btn btn-dark ms-2">สมัครสมาชิก</button>
                     </div>
                   </form>
                 </div>

@@ -34,9 +34,17 @@
     {
         "model": "room.status",
         "fields": {
-            "name": "Confirmed",
+            "name": "Check-in",
             "color": "#A2CA71",
             "sequence": 4
+        }
+    },
+    {
+        "model": "room.status",
+        "fields": {
+            "name": "Check-out",
+            "color": "#A02334",
+            "sequence": 5
         }
     }
 ]

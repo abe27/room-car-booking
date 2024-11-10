@@ -17,4 +17,7 @@ urlpatterns = [
         views.confirm_booking.confirm_booking,
         name="confirm_booking",
     ),
+    path("checkin_checkout/", views.checkin_checkout.index, name="checkin_checkout"),
+    path("check_in/<int:booking_id>/", views.checkin_checkout.check_in, name="room_check_in"),
+    path("check_out/<int:booking_id>/", views.checkin_checkout.check_out, name="room_check_out"),
 ]

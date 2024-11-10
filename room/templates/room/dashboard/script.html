@@ -127,3 +127,29 @@
     }
   })
 </script>
+
+<script>
+  function filterRooms() {
+    const capacitySelect = document.getElementById("capacity");
+    const roomSelect = document.getElementById("room_id");
+    const selectedCapacity = capacitySelect.options[capacitySelect.selectedIndex];
+    const startCapacity = parseInt(selectedCapacity.getAttribute("data-start"));
+    const endCapacity = selectedCapacity.getAttribute("data-end") ? parseInt(selectedCapacity.getAttribute("data-end")) : null;
+
+    // Enable room select only if a capacity is selected
+    roomSelect.disabled = !selectedCapacity;
+
+    // Clear previous room selection
+    roomSelect.selectedIndex = 0;
+
+    // Filter rooms based on selected capacity
+    for (const option of roomSelect.options) {
+      if (option.hasAttribute("data-capacity")) {
+        const roomCapacity = parseInt(option.getAttribute("data-capacity"));
+        const isWithinCapacity = endCapacity ? (roomCapacity >= startCapacity && roomCapacity <= endCapacity) : roomCapacity >= startCapacity;
+
+        option.style.display = isWithinCapacity ? "block" : "none";
+      }
+    }
+  }
+</script>

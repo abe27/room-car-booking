@@ -66,11 +66,13 @@
       const roomName = $(this).data('room-name')
       const roomDetail = $(this).data('room-detail').replace(/\n/g, '<br>') // Convert line breaks to <br>
       const roomImage = $(this).data('room-image')
+      const roomCapacity = 'ประมาณ ' + $(this).data('room-capacity') + ' คน'
   
       // อัปเดตค่าภายใน modal
       $('#roomModalLabel').text(roomName)
       $('#roomModalDetail').html(roomDetail)
       $('#roomModalImage').attr('src', roomImage).attr('alt', roomName)
+      $('#roomModalCapacity').text(roomCapacity)
     })
   })
 </script>

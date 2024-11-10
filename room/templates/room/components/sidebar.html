@@ -51,6 +51,12 @@
             <span>ประวัติการจอง</span>
           </a>
         </li>
+        <li class="sidebar-item {% if url == 'checkin_checkout' %}active{% endif %}">
+          <a href="{% url 'checkin_checkout' %}" class="sidebar-link">
+            <i class="bi bi-grid-fill"></i>
+            <span>เช็คอิน-เช็คเอาท์</span>
+          </a>
+        </li>
       </ul>
       {% if request.user.is_staff %}
         <ul class="menu">
