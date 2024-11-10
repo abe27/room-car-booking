@@ -3,11 +3,11 @@ from .models import Room_Status, Room, Status, Booking
 
 
 class Room_StatusAdmin(admin.ModelAdmin):
-    list_display = ["id", "name"]
+    list_display = ["name", "id"]
 
 
 class RoomAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "company", "image", "status", "sequence"]
+    list_display = ["name", "company", "image", "status", "sequence", "id"]
     ordering = ["-sequence"]
     list_filter = [
         "company",
@@ -15,7 +15,7 @@ class RoomAdmin(admin.ModelAdmin):
 
 
 class StatusAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "color", "sequence"]
+    list_display = ["name", "color", "sequence", "id"]
     ordering = ["-sequence"]
 
 

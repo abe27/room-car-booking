@@ -1,9 +1,11 @@
 <nav class="navbar bg-light border">
-    <div class="container-fluid">
-      <div class="navbar-brand d-flex flex-row">
+  <div class="container-fluid">
+    <div class="navbar-brand d-flex flex-row">
+      {% if request.user.fccorp.image %}
         <img src="{{ request.user.fccorp.image.url }}" alt="Logo" width="75" height="50" class="d-inline-block align-text-top" />
-        <div class="my-auto ms-2">{{ request.user.fccorp.fcname }}</div>
-      </div>
-      <a class="btn btn-outline-danger" href="/signout">Sign out</a>
+      {% endif %}
+      <div class="my-auto ms-2">{{ request.user.fccorp.fcname }}</div>
     </div>
-  </nav>
+    <a class="btn btn-outline-danger" href="/signout">Sign out</a>
+  </div>
+</nav>

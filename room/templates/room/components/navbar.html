@@ -15,7 +15,9 @@
               </div>
               <div class="user-img d-flex align-items-center">
                 <div class="avatar avatar-md">
-                  <img src="{{ request.user.fccorp.image.url }}" />
+                  {% if request.user.fccorp.image %}
+                    <img src="{{ request.user.fccorp.image.url }}" />
+                  {% endif %}
                 </div>
               </div>
             </div>

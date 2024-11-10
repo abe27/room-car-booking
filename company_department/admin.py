@@ -3,12 +3,12 @@ from .models import Company, Department
 
 
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ["id", "fcskid", "fcname", "image"]
+    list_display = ["fcname", "image", "id"]
     ordering = ["-id"]
 
 
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ["id", "fcskid", "fcname", "fccorp"]
+    list_display = ["fcname", "fccorp", "id"]
     list_filter = ["fccorp"]
     ordering = ["-fccorp"]
 

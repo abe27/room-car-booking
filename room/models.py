@@ -16,6 +16,7 @@ class Room_Status(models.Model):
 class Room(models.Model):
     name = models.CharField(max_length=255, default="", blank=True)
     detail = models.TextField(default="", blank=True)
+    maximum_capacity = models.IntegerField(default=0, blank=True)
     image = models.ImageField(upload_to="room/images/", default="", blank=True)
     company = models.ForeignKey(
         Company,
