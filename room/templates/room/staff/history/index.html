@@ -52,6 +52,8 @@
               <th scope="col">หัวข้อ</th>
               <th scope="col">ตั้งแต่เวลา</th>
               <th scope="col">ถึงเวลา</th>
+              <th scope="col">เช็คอิน</th>
+              <th scope="col">เช็คเอาท์</th>
               <th scope="col">หมายเหตุ</th>
               <th scope="col">Action</th>
             </tr>
@@ -75,6 +77,8 @@
                 <td>{{ booking.title }}</td>
                 <td>{{ booking.start_date|date:'d/m/Y, H:i' }}</td>
                 <td>{{ booking.end_date|date:'d/m/Y, H:i' }}</td>
+                <td>{{ booking.check_in|date:'d/m/Y, H:i' }}</td>
+                <td>{{ booking.check_out|date:'d/m/Y, H:i' }}</td>
                 <td>{{ booking.remark }}</td>
                 <td>
                   <div class="d-flex justify-content-between">

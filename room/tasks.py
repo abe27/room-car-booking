@@ -95,20 +95,38 @@ def update_booking_status():
     # กำหนดเวลาปัจจุบัน
     now = timezone.now()
 
-    # ดึงข้อมูล bookings ที่มี status__sequence เท่ากับ 1 หรือ 4 และมี end_date เลยเวลาไปแล้ว 1 ชั่วโมง
-    bookings = Booking.objects.filter(
-        status__sequence__in=[1, 4], end_date__lte=now - timedelta(hours=1)
+    # ดึงข้อมูล bookings ที่มี status__sequence เท่ากับ 1 และมี start_date เลยเวลาไปแล้ว 1 ชั่วโมง
+    # sequence 1 = Approved, sequence 4 = Check-in
+    bookings_approved = Booking.objects.filter(
+        status__sequence=1, start_date__lte=now - timedelta(hours=1)
+    )
+    # ดึงข้อมูล bookings ที่มี status__sequence เท่ากับ 4 และมี end_date เลยเวลาไปแล้ว 1 ชั่วโมง
+    bookings_check_in = Booking.objects.filter(
+        status__sequence=4, end_date__lte=now - timedelta(hours=1)
     )
 
-    print(f"Update Booking Status: {len(bookings)} bookings")
+    print(f"Update Booking Status Approved: {len(bookings_approved)} bookings")
+    print(f"Update Booking Status Check-in: {len(bookings_check_in)} bookings")
 
-    # ดึง status ที่มี sequence เท่ากับ 5 สำหรับ Check-out
-    check_out_status = Status.objects.get(sequence=5)
-    remark = "ถูก Check-out โดยระบบ"
+    # อัพเดทสถานะ Approved เป็น Rejected เมื่อสถานะของ Approved เลยเวลา start ไป 1 ชม.
+    # ดึง status ที่มี sequence 2 = Rejected
+    rejected_status = Status.objects.get(sequence=2)
+    remark_rejected = "ถูก Rejected โดยระบบ"
 
     # อัปเดต status ของ bookings ที่ตรงตามเงื่อนไข
-    for booking in bookings:
+    for booking in bookings_approved:
+        booking.status = rejected_status
+        booking.remark = remark_rejected
+        booking.save()
+        
+    # อัพเดทสถานะ Check-in เป็น Check-out เมื่อสถานะของ Check-in เลยเวลา end ไป 1 ชม.
+    # ดึง status ที่มี sequence 5 = Check-out
+    check_out_status = Status.objects.get(sequence=5)
+    remark_check_out = "ถูก Check-out โดยระบบ"
+
+    # อัปเดต status ของ bookings ที่ตรงตามเงื่อนไข
+    for booking in bookings_check_in:
         booking.status = check_out_status
-        booking.remark = remark
+        booking.remark = remark_check_out
         booking.check_out = now
         booking.save()
