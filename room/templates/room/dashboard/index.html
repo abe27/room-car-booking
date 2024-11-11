@@ -61,7 +61,7 @@
           <div class="col-md-8">
             <div class="card-body">
               <h5 class="card-title">{{ selectedRoom.name }}</h5>
-              <p class="card-text text-primary">จำนวนผู้เข้าร่วมประชุมประมาณ {{ selectedRoom.maximum_capacity }} คน</p>
+              <p class="card-text text-primary">รองรับผู้เข้าร่วมประชุม 1-{{ selectedRoom.maximum_capacity }} คน</p>
               <p class="card-text text-danger">{{ selectedRoom.remark }}</p>
               <div class="fw-semibold mb-1">รายละเอียด</div>
               <p class="card-text">{{ selectedRoom.detail|linebreaksbr }}</p>
