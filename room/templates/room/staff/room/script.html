@@ -9,7 +9,7 @@
   $(document).ready(function () {
     // Initialize DataTable
     var table = $('#bookingsTable').DataTable({
-      order: [[2, 'desc']]
+      order: [[0, 'desc']]
     })
   
     // เมื่อปุ่ม view-btn ถูกกด
@@ -17,6 +17,7 @@
       // ดึงข้อมูลจาก data-* attributes ของปุ่ม
       var roomName = $(this).data('name')
       var roomDetail = $(this).data('detail')
+      var roomCapacity = $(this).data('capacity')
       var roomStatus = $(this).data('status')
       var roomSequence = $(this).data('sequence')
       var roomRemark = $(this).data('remark')
@@ -25,6 +26,7 @@
       // เติมข้อมูลลงใน modal
       $('#roomName').val(roomName)
       $('#roomDetail').val(roomDetail)
+      $('#roomCapacity').val(roomCapacity)
       $('#roomStatus').val(roomStatus)
       $('#roomSequence').val(roomSequence)
       $('#roomRemark').val(roomRemark)
@@ -43,6 +45,7 @@
       var roomName = $(this).data('name')
       var roomDetail = $(this).data('detail')
       var roomRemark = $(this).data('remark')
+      var roomCapacity = $(this).data('capacity')
       var roomSequence = $(this).data('sequence')
       var roomStatus = $(this).data('status')
       var roomImage = $(this).data('image')
@@ -52,6 +55,7 @@
       $('#editRoomName').val(roomName)
       $('#editRoomDetail').val(roomDetail)
       $('#editRoomRemark').val(roomRemark)
+      $('#editRoomCapacity').val(roomCapacity)
       $('#editRoomSequence').val(roomSequence)
       $('#editRoomStatus').val(roomStatus)
   

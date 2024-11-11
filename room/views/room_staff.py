@@ -49,6 +49,7 @@ def edit_room(request):
         room.name = request.POST.get("name")
         room.detail = request.POST.get("detail")
         room.remark = request.POST.get("remark")
+        room.maximum_capacity = request.POST.get("capacity")
         room.sequence = request.POST.get("sequence")
         room.status_id = request.POST.get("status")
         room.company_id = request.POST.get("company")

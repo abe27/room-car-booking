@@ -6,12 +6,13 @@ from company_department.models import Company
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        fields = ["name", "detail", "remark", "sequence", "status", "company", "image"]
+        fields = ["name", "detail", "remark", "sequence", "maximum_capacity", "status", "company", "image"]
         labels = {
             "name": "ชื่อห้อง",
             "detail": "รายละเอียด",
             "remark": "หมายเหตุ",
             "sequence": "ลำดับห้องประชุม",
+            "maximum_capacity": "รองรับจำนวนผู้เข้าร่วมประชุม",
             "status": "สถานะ",
             "company": "บริษัท",
             "image": "ภาพห้องประชุม",
@@ -27,6 +28,7 @@ class RoomForm(forms.ModelForm):
             "sequence": forms.NumberInput(
                 attrs={"class": "form-control", "required": True}
             ),
+            "maximum_capacity": forms.TextInput(attrs={"class": "form-control", "required": True}),
             "status": forms.Select(attrs={"class": "form-select", "required": True}),
             "company": forms.Select(attrs={"class": "form-select", "required": True}),
             "image": forms.ClearableFileInput(

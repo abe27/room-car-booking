@@ -19,16 +19,19 @@
         <table class="table" id="bookingsTable">
           <thead>
             <tr>
-              <th scope="col">ชื่อห้อง</th>
-              <th scope="col">สถานะ</th>
               <th scope="col">ลำดับห้อง</th>
+              <th scope="col">ชื่อห้อง</th>
+              <th scope="col">จำนวนผู้เข้าร่วม</th>
+              <th scope="col">สถานะ</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
             {% for room in rooms %}
               <tr>
+                <td>{{ room.sequence }}</td>
                 <td>{{ room.name }}</td>
+                <td>{{ room.maximum_capacity }}</td>
                 <td>
                   {% if room.status.name == 'Active' %}
                     <span class="badge text-bg-success">{{ room.status.name }}</span>
@@ -36,11 +39,10 @@
                     <span class="badge text-bg-danger">{{ room.status.name }}</span>
                   {% endif %}
                 </td>
-                <td>{{ room.sequence }}</td>
                 <td>
                   <div class="d-flex gap-2">
-                    <button class="btn btn-primary view-btn" data-id="{{ room.id }}" data-name="{{ room.name }}" data-detail="{{ room.detail }}" data-remark="{{ room.remark }}" data-sequence="{{ room.sequence }}" data-status="{{ room.status.name }}" data-image="{{ room.image.url }}" data-bs-toggle="modal" data-bs-target="#modalView">View</button>
-                    <button class="btn btn-warning edit-btn" data-id="{{ room.id }}" data-name="{{ room.name }}" data-detail="{{ room.detail }}" data-remark="{{ room.remark }}" data-sequence="{{ room.sequence }}" data-status="{{ room.status.id }}" data-image="{{ room.image.url }}" data-bs-toggle="modal" data-bs-target="#modalEdit">Edit</button>
+                    <button class="btn btn-primary view-btn" data-id="{{ room.id }}" data-name="{{ room.name }}" data-detail="{{ room.detail }}" data-remark="{{ room.remark }}" data-sequence="{{ room.sequence }}" data-status="{{ room.status.name }}" data-image="{{ room.image.url }}" data-capacity="{{ room.maximum_capacity }}" data-bs-toggle="modal" data-bs-target="#modalView">View</button>
+                    <button class="btn btn-warning edit-btn" data-id="{{ room.id }}" data-name="{{ room.name }}" data-detail="{{ room.detail }}" data-remark="{{ room.remark }}" data-sequence="{{ room.sequence }}" data-status="{{ room.status.id }}" data-image="{{ room.image.url }}" data-capacity="{{ room.maximum_capacity }}" data-bs-toggle="modal" data-bs-target="#modalEdit">Edit</button>
                     <button class="btn btn-danger delete-btn" data-id="{{ room.id }}" data-name="{{ room.name }}">Delete</button>
                   </div>
                 </td>
