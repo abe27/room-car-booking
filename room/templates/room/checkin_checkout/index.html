@@ -3,54 +3,39 @@
 {% block content %}
   <div id="main-content">
     <h1 class="text-center mb-3">เช็คอิน-เช็คเอาท์</h1>
-    <div class="card">
-      <div class="card-body table-responsive">
-        <table class="table" id="bookingsTable">
-          <thead>
-            <tr>
-              <th scope="col">Action</th>
-              <th scope="col">ID</th>
-              <th scope="col">ห้อง</th>
-              <th scope="col">สถานะ</th>
-              <th scope="col">หัวข้อ</th>
-              <th scope="col">ตั้งแต่เวลา</th>
-              <th scope="col">ถึงเวลา</th>
-              <th scope="col">เช็คอิน</th>
-              <th scope="col">เช็คเอาท์</th>
-              <th scope="col">หมายเหตุ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for booking in bookings %}
-              <tr>
-                <td>
-                  <div class="d-flex gap-1">
-                    {% comment %} <button class="btn btn-sm btn-primary view-btn" data-id="{{ booking.id }}" data-employee-id="{{ booking.employee.id }}" data-employee-name="{{ booking.employee.first_name }} {{ booking.employee.last_name }}" data-title="{{ booking.title }}" data-description="{{ booking.description }}" data-start="{{ booking.start_date|date:'d/m/Y, H:i' }}" data-end="{{ booking.end_date|date:'d/m/Y, H:i' }}" data-status="{{ booking.status }}" data-remark="{{ booking.remark }}" data-bs-toggle="modal" data-bs-target="#eventDetailModal">View</button> {% endcomment %}
-                    {% if booking.check_in == null %}
-                      {% if booking.start_date|date:'Y-m-d H:i' <= today|date:'Y-m-d H:i' %}
-                        <button class="btn btn-sm btn-success fw-bold check-in-btn" style="width: 100px;" data-id="{{ booking.id }}"><i class="bi bi-check-circle"></i> Check-in</button>
-                      {% endif %}
-                    {% else %}
-                      {% if booking.check_out == null %}
-                        <button class="btn btn-sm btn-danger fw-bold check-out-btn" style="width: 120px;" data-id="{{ booking.id }}"><i class="bi bi-box-arrow-right"></i> Check-out</button>
-                      {% endif %}
-                    {% endif %}
-                  </div>
-                </td>
-                <td>{{ booking.id }}</td>
-                <td>{{ booking.room }}</td>
-                <td>{{ booking.status }}</td>
-                <td>{{ booking.title }}</td>
-                <td>{{ booking.start_date|date:'d/m/Y, H:i' }}</td>
-                <td>{{ booking.end_date|date:'d/m/Y, H:i' }}</td>
-                <td>{{ booking.check_in|date:'d/m/Y, H:i' }}</td>
-                <td>{{ booking.check_out|date:'d/m/Y, H:i' }}</td>
-                <td>{{ booking.remark }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+    <div class="row row-cols-1 row-cols-md-4 g-2 mt-3">
+      {% for booking in bookings %}
+        <div class="col">
+          <div class="card">
+            <img class="card-img-top"
+              alt="{{ booking.room.name }}"
+              src="{% if booking.room.image %}
+                {{ booking.room.image.url }}
+              {% else %}
+            https://random-image-pepebigotes.vercel.app/api/random-image
+              {% endif %}"
+              style="height: 150px; object-fit: cover; width: 100%;" />
+            <div class="card-body">
+              <h5 class="card-title">{{ booking.room.name }}</h5>
+              <div>ตั้งแต่เวลา: {{ booking.start_date|date:'d/m/Y, H:i' }}</div>
+              <div>ถึงเวลา: {{ booking.end_date|date:'d/m/Y, H:i' }}</div>
+              <div class="text-success">เช็คอิน: {{ booking.check_in|date:'d/m/Y, H:i' }}</div>
+              <div class="text-danger">เช็คเอาท์: {{ booking.check_out|date:'d/m/Y, H:i' }}</div>
+              <div class="mt-2 d-flex gap-1 flex-wrap justify-content-center">
+                {% if booking.check_in == null %}
+                  {% if booking.start_date|date:'Y-m-d H:i' <= today|date:'Y-m-d H:i' %}
+                    <button class="btn btn-sm btn-success fw-bold check-in-btn" style="width: 100px;" data-id="{{ booking.id }}"><i class="bi bi-check-circle"></i> Check-in</button>
+                  {% endif %}
+                {% else %}
+                  {% if booking.check_out == null %}
+                    <button class="btn btn-sm btn-danger fw-bold check-out-btn" style="width: 120px;" data-id="{{ booking.id }}"><i class="bi bi-box-arrow-right"></i> Check-out</button>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
     </div>
   </div>
   {% include 'room/components/modal_detail.html' %}
