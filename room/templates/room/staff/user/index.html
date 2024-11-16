@@ -1,0 +1,55 @@
+{% extends 'room/base.html' %}
+
+{% block content %}
+  <div id="main-content">
+    <h1 class="text-center mb-3">จัดการผู้ใช้</h1>
+    {% if messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+          {{ message }}
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+    <div class="card">
+      <div class="card-body table-responsive">
+        <table class="table" id="usersTable">
+          <thead>
+            <tr>
+              <th scope="col">รหัสพนักงาน</th>
+              <th scope="col">Username</th>
+              <th scope="col">ชื่อจริง</th>
+              <th scope="col">นามสกุล</th>
+              <th scope="col">เบอร์โทร</th>
+              <th scope="col">สถานะ</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+              <tr>
+                <td>{{ user.emp_id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.firstname }}</td>
+                <td>{{ user.lastname }}</td>
+                <td>{{ user.tel }}</td>
+                <td>
+                  {% if user.is_active %}
+                    <input type="checkbox" class="form-check-input" checked data-user-id="{{ user.id }}" onchange="updateStatus(this)" />
+                  {% else %}
+                    <input type="checkbox" class="form-check-input" data-user-id="{{ user.id }}" onchange="updateStatus(this)" />
+                  {% endif %}
+                </td>
+                <td>
+                  <button class="btn btn-warning btn-sm" data-user-id="{{ user.id }}" onclick="openResetPasswordModal(this)">รีเซ็ตรหัสผ่าน</button>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% include './modal_reset_password.html' %}
+  {% include './script.html' %}
+{% endblock %}

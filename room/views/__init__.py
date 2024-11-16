@@ -7,3 +7,4 @@ from . import edit_booking
 from . import room_staff
 from . import confirm_booking
 from . import checkin_checkout
+from . import user_staff

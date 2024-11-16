@@ -1,0 +1,98 @@
+<!-- Include DataTables JS and CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  $(document).ready(function () {
+    // Initialize DataTable
+    var table = $('#usersTable').DataTable({
+      order: [[0, 'desc']]
+    })
+  })
+  
+  function updateStatus(checkbox) {
+    const userId = checkbox.getAttribute('data-user-id')
+    const isActive = checkbox.checked
+  
+    // ส่งคำขอ AJAX
+    $.ajax({
+      url: '{% url "update_user_status" %}',
+      method: 'POST',
+      data: {
+        user_id: userId,
+        is_active: isActive,
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: function (response) {
+        Swal.fire({
+          icon: 'success',
+          title: 'สำเร็จ',
+          text: response.message,
+          timer: 2000,
+          showConfirmButton: false
+        })
+      },
+      error: function (xhr) {
+        Swal.fire({
+          icon: 'error',
+          title: 'ข้อผิดพลาด',
+          text: xhr.responseJSON.message || 'เกิดข้อผิดพลาด'
+        })
+  
+        // ย้อนกลับสถานะเช็คบ็อกซ์
+        checkbox.checked = !isActive
+      }
+    })
+  }
+</script>
+
+<script>
+  function openResetPasswordModal(button) {
+    const userId = button.getAttribute('data-user-id')
+    $('#resetUserId').val(userId) // กำหนดค่า ID ผู้ใช้ในฟอร์ม
+    $('#resetPasswordModal').modal('show') // เปิด Modal
+  }
+  
+  function submitResetPassword() {
+    const userId = $('#resetUserId').val()
+    const newPassword = $('#newPassword').val()
+    const confirmPassword = $('#confirmPassword').val()
+  
+    if (newPassword !== confirmPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'ข้อผิดพลาด',
+        text: 'รหัสผ่านไม่ตรงกัน'
+      })
+      return
+    }
+  
+    $.ajax({
+      url: '{% url "reset_password" %}',
+      method: 'POST',
+      data: {
+        user_id: userId,
+        new_password: newPassword,
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: function (response) {
+        Swal.fire({
+          icon: 'success',
+          title: 'สำเร็จ',
+          text: response.message
+        })
+        $('#resetPasswordModal').modal('hide') // ปิด Modal
+      },
+      error: function (xhr) {
+        Swal.fire({
+          icon: 'error',
+          title: 'ข้อผิดพลาด',
+          text: xhr.responseJSON.message || 'เกิดข้อผิดพลาด'
+        })
+      }
+    })
+  }
+</script>

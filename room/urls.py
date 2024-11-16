@@ -20,4 +20,5 @@ urlpatterns = [
     path("checkin_checkout/", views.checkin_checkout.index, name="checkin_checkout"),
     path("check_in/<int:booking_id>/", views.checkin_checkout.check_in, name="room_check_in"),
     path("check_out/<int:booking_id>/", views.checkin_checkout.check_out, name="room_check_out"),
+    path("user/staff/", views.user_staff.index, name="user_staff"),
 ]
