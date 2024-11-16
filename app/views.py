@@ -63,7 +63,8 @@ def sign_up(request):
             firstname = request.POST.get("firstname")
             lastname = request.POST.get("lastname")
             emp_id = request.POST.get("emp_id")
-            username = request.POST.get("username")
+            # username = request.POST.get("username")
+            username = f"{firstname.lower()}.{lastname[:3].lower()}"
             email = request.POST.get("email")
             tel = request.POST.get("tel")
             password = request.POST.get("password")
