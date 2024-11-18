@@ -3,6 +3,9 @@
 {% block content %}
   <div id="main-content">
     <h1 class="text-center mb-3">จัดการผู้ใช้</h1>
+    <div class="mx-auto mb-3">
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">เพิ่มผู้ใช้</button>
+    </div>
     {% if messages %}
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         {% for message in messages %}
@@ -21,6 +24,7 @@
               <th scope="col">ชื่อจริง</th>
               <th scope="col">นามสกุล</th>
               <th scope="col">เบอร์โทร</th>
+              <th scope="col">แผนก</th>
               <th scope="col">สถานะ</th>
               <th scope="col">Action</th>
             </tr>
@@ -33,6 +37,7 @@
                 <td>{{ user.firstname }}</td>
                 <td>{{ user.lastname }}</td>
                 <td>{{ user.tel }}</td>
+                <td>{{ user.fcdept.fcname }}</td>
                 <td>
                   {% if user.is_active %}
                     <input type="checkbox" class="form-check-input" checked data-user-id="{{ user.id }}" onchange="updateStatus(this)" />
@@ -41,7 +46,18 @@
                   {% endif %}
                 </td>
                 <td>
-                  <button class="btn btn-warning btn-sm" data-user-id="{{ user.id }}" onclick="openResetPasswordModal(this)">รีเซ็ตรหัสผ่าน</button>
+                  <button class="btn btn-warning btn-sm" 
+                    data-user-id="{{ user.id }}" 
+                    data-emp-id="{{ user.emp_id }}" 
+                    data-username="{{ user.username }}" 
+                    data-firstname="{{ user.firstname }}" 
+                    data-lastname="{{ user.lastname }}"
+                    data-tel="{{ user.tel }}"
+                    data-fcdept="{{ user.fcdept.id }}" 
+                    onclick="openEditUserModal(this)">
+                    แก้ไข
+                  </button>
+                  <button class="btn btn-danger btn-sm" data-user-id="{{ user.id }}" onclick="openResetPasswordModal(this)">รีเซ็ตรหัสผ่าน</button>
                 </td>
               </tr>
             {% endfor %}
@@ -50,6 +66,7 @@
       </div>
     </div>
   </div>
+  {% include './modal_add.html' %}
   {% include './modal_reset_password.html' %}
   {% include './script.html' %}
 {% endblock %}
