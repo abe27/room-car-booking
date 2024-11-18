@@ -25,7 +25,6 @@ def index(request):
     else:
         return redirect("/")
 
-
 def update_status(request):
     if (
         request.method == "POST"

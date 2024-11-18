@@ -1,0 +1,70 @@
+<!-- Include DataTables JS and CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  $(document).ready(function () {
+    // Initialize DataTable
+    var table = $('#departmentsTable').DataTable({
+      order: [[0, 'desc']]
+    })
+  })
+</script>
+
+<script>
+  function openEditModal(button) {
+    const departmentId = button.getAttribute('data-department-id')
+    const departmentName = button.getAttribute('data-department-name')
+  
+    document.getElementById('editDepartmentForm').setAttribute('action', `/room/department/staff/edit/${departmentId}/`)
+    document.getElementById('editFcname').value = departmentName
+  
+    const editModal = new bootstrap.Modal(document.getElementById('editDepartmentModal'))
+    editModal.show()
+  }
+</script>
+
+<script>
+  function deleteDepartment(button) {
+    const departmentId = button.getAttribute('data-department-id')
+  
+    Swal.fire({
+      title: 'คุณแน่ใจหรือไม่?',
+      text: 'ข้อมูลแผนกนี้จะถูกลบและไม่สามารถกู้คืนได้!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'ลบ',
+      cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // ส่งคำขอลบไปยังเซิร์ฟเวอร์ด้วย Fetch API
+        fetch(`/room/department/staff/delete/${departmentId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          }
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              Swal.fire('ลบสำเร็จ!', 'แผนกถูกลบเรียบร้อยแล้ว', 'success')
+              setTimeout(function () {
+                location.reload()
+              }, 1500)
+            } else {
+              Swal.fire('ผิดพลาด!', data.error || 'ไม่สามารถลบแผนกได้', 'error')
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error)
+            Swal.fire('ผิดพลาด!', 'เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์', 'error')
+          })
+      }
+    })
+  }
+</script>

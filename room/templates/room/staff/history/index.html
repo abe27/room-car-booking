@@ -82,7 +82,7 @@
                 <td>{{ booking.remark }}</td>
                 <td>
                   <div class="d-flex justify-content-between">
-                    <button class="btn btn-primary view-btn"
+                    <button class="btn btn-primary view-btn btn-sm"
                       data-id="{{ booking.id }}"
                       data-employee-id="{{ booking.employee.id }}"
                       data-employee-name="{{ booking.employee.first_name }} {{ booking.employee.last_name }}"
@@ -96,7 +96,7 @@
                       data-bs-target="#eventDetailModal">
                       View
                     </button>
-                    <button class="btn btn-danger edit-btn" 
+                    <button class="btn btn-danger edit-btn btn-sm" 
                       data-id="{{ booking.id }}"
                       data-status="{{ booking.status.id }}"
                       data-remark="{{ booking.remark }}"

@@ -21,4 +21,8 @@ urlpatterns = [
     path("check_in/<int:booking_id>/", views.checkin_checkout.check_in, name="room_check_in"),
     path("check_out/<int:booking_id>/", views.checkin_checkout.check_out, name="room_check_out"),
     path("user/staff/", views.user_staff.index, name="user_staff"),
+    path("department/staff/", views.department_staff.index, name="department_staff"),
+    path("department/staff/add/", views.department_staff.add_department, name="add_department"),
+    path("department/staff/edit/<int:pk>/", views.department_staff.edit_department, name="edit_department"),
+    path("department/staff/delete/<int:pk>/", views.department_staff.delete_department, name="delete_department"),
 ]

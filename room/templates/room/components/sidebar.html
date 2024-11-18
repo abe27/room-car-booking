@@ -82,6 +82,13 @@
               <span>จัดการผู้ใช้</span>
             </a>
           </li>
+
+          <li class="sidebar-item {% if url == 'department_staff' %}active{% endif %}">
+            <a href="{% url 'department_staff' %}" class="sidebar-link">
+              <i class="bi bi-grid-fill"></i>
+              <span>จัดการแผนก</span>
+            </a>
+          </li>
         </ul>
       {% endif %}
     </div>
