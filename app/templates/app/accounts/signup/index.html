@@ -16,7 +16,7 @@
           <div class="card card-registration my-4">
             <div class="row g-0">
               <div class="col-xl-6 d-none d-xl-flex align-items-center justify-content-center">
-                <img src="https://img.freepik.com/free-vector/happy-workers-sharing-ideas_52683-28614.jpg?t=st=1731244225~exp=1731247825~hmac=615362f497071dd682be63df73af3b3a38c027156ab9151a87cca8875e9d25ba&w=1060" alt="Sample photo" class="img-fluid"/>
+                <img src="https://img.freepik.com/free-vector/happy-workers-sharing-ideas_52683-28614.jpg?t=st=1731244225~exp=1731247825~hmac=615362f497071dd682be63df73af3b3a38c027156ab9151a87cca8875e9d25ba&w=1060" alt="Sample photo" class="img-fluid" />
               </div>
               <div class="col-xl-6">
                 <div class="card-body p-md-5 text-black">
@@ -141,19 +141,39 @@
       const fccorpSelect = $('#id_fccorp')
       const fcdeptSelect = $('#id_fcdept')
     
+      // Disable the department field initially
+      fcdeptSelect.prop('disabled', true)
+    
       fccorpSelect.on('change', function () {
         const fccorpId = $(this).val()
     
-        $.ajax({
-          url: `/user/filter/dept/?fccorp=${fccorpId}`,
-          method: 'GET',
-          success: function (data) {
-            fcdeptSelect.empty()
-            data.forEach(function (department) {
-              fcdeptSelect.append(new Option(department.fcname, department.id))
-            })
-          }
-        })
+        if (fccorpId) {
+          // Enable the department field when a company is selected
+          fcdeptSelect.prop('disabled', false)
+    
+          // Fetch departments for the selected company
+          $.ajax({
+            url: `/user/filter/dept/?fccorp=${fccorpId}`,
+            method: 'GET',
+            success: function (data) {
+              fcdeptSelect.empty()
+              fcdeptSelect.append(new Option('เลือกแผนก', '', true, true))
+              data.forEach(function (department) {
+                fcdeptSelect.append(new Option(department.fcname, department.id))
+              })
+            },
+            error: function () {
+              fcdeptSelect.empty()
+              fcdeptSelect.append(new Option('ไม่สามารถโหลดข้อมูลแผนกได้', '', true, true))
+              fcdeptSelect.prop('disabled', true)
+            }
+          })
+        } else {
+          // Disable and clear the department field if no company is selected
+          fcdeptSelect.empty()
+          fcdeptSelect.append(new Option('เลือกแผนก', '', true, true))
+          fcdeptSelect.prop('disabled', true)
+        }
       })
     })
   </script>
