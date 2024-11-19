@@ -96,3 +96,75 @@
     })
   }
 </script>
+
+<script>
+  $(document).ready(function () {
+    $('.edit-btn').on('click', function () {
+      var user_id = $(this).data('user-id')
+      var emp_id = $(this).data('emp-id')
+      var email = $(this).data('email')
+      var username = $(this).data('username')
+      var first_name = $(this).data('firstname')
+      var last_name = $(this).data('lastname')
+      var tel = $(this).data('tel')
+      var department = $(this).data('department')
+  
+      // ตั้งค่าข้อมูลในฟอร์ม
+      $('#user_id').val(user_id)
+      $('#emp_id').val(emp_id)
+      $('#email').val(email)
+      $('#username').val(username)
+      $('#first_name').val(first_name)
+      $('#last_name').val(last_name)
+      $('#tel').val(tel)
+      $('#department').val(department)
+  
+      $('#modalEdit').modal('show')
+    })
+  })
+</script>
+
+<script>
+  // เปิด SweetAlert2 เมื่อผู้ใช้คลิกปุ่ม Delete
+  $('.delete-btn').click(function () {
+    const user_id = $(this).data('id')
+    const username = $(this).data('username')
+  
+    Swal.fire({
+      title: 'คุณแน่ใจหรือไม่?',
+      text: `คุณต้องการลบผู้ใช้ "${username}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'ลบ',
+      cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // ส่งคำขอ AJAX เพื่อลบห้องประชุม
+        $.ajax({
+          url: "{% url 'delete_user' %}",
+          type: 'POST',
+          data: {
+            user_id: user_id,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function (response) {
+            if (response.success) {
+              Swal.fire('ลบสำเร็จ!', 'ผู้ใช้ได้ถูกลบเรียบร้อยแล้ว.', 'success').then(() => {
+                setInterval(function () {
+                  location.reload()
+                }, 1500)
+              })
+            } else {
+              Swal.fire('เกิดข้อผิดพลาด!', response.message, 'error')
+            }
+          },
+          error: function (xhr, status, error) {
+            Swal.fire('เกิดข้อผิดพลาด!', 'ไม่สามารถลบผู้ใช้ได้', 'error')
+          }
+        })
+      }
+    })
+  })
+</script>

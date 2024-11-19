@@ -20,7 +20,8 @@
           <thead>
             <tr>
               <th scope="col">รหัสพนักงาน</th>
-              <th scope="col">Username</th>
+              <th scope="col">อีเมล</th>
+              <th scope="col">ชื่อผู้ใช้</th>
               <th scope="col">ชื่อจริง</th>
               <th scope="col">นามสกุล</th>
               <th scope="col">เบอร์โทร</th>
@@ -33,6 +34,7 @@
             {% for user in users %}
               <tr>
                 <td>{{ user.emp_id }}</td>
+                <td>{{ user.email }}</td>
                 <td>{{ user.username }}</td>
                 <td>{{ user.first_name }}</td>
                 <td>{{ user.last_name }}</td>
@@ -46,18 +48,21 @@
                   {% endif %}
                 </td>
                 <td>
-                  <button class="btn btn-warning btn-sm" 
+                  <button class="btn btn-primary btn-sm edit-btn" 
                     data-user-id="{{ user.id }}" 
-                    data-emp-id="{{ user.emp_id }}" 
+                    data-emp-id="{{ user.emp_id }}"
+                    data-email="{{ user.email }}" 
                     data-username="{{ user.username }}" 
                     data-firstname="{{ user.first_name }}" 
                     data-lastname="{{ user.last_name }}"
                     data-tel="{{ user.tel }}"
-                    data-fcdept="{{ user.fcdept.id }}" 
-                    onclick="openEditUserModal(this)">
+                    data-department="{{ user.fcdept.id }}" 
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalEdit">
                     แก้ไข
                   </button>
-                  <button class="btn btn-danger btn-sm" data-user-id="{{ user.id }}" onclick="openResetPasswordModal(this)">รีเซ็ตรหัสผ่าน</button>
+                  <button class="btn btn-warning btn-sm" data-user-id="{{ user.id }}" onclick="openResetPasswordModal(this)">รีเซ็ตรหัสผ่าน</button>
+                  <button class="btn btn-danger delete-btn btn-sm" data-id="{{ user.id }}" data-username="{{ user.username }}">Delete</button>
                 </td>
               </tr>
             {% endfor %}
@@ -67,6 +72,7 @@
     </div>
   </div>
   {% include './modal_add.html' %}
+  {% include './modal_edit.html' %}
   {% include './modal_reset_password.html' %}
   {% include './script.html' %}
 {% endblock %}
