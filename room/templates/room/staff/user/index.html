@@ -34,8 +34,8 @@
               <tr>
                 <td>{{ user.emp_id }}</td>
                 <td>{{ user.username }}</td>
-                <td>{{ user.firstname }}</td>
-                <td>{{ user.lastname }}</td>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.last_name }}</td>
                 <td>{{ user.tel }}</td>
                 <td>{{ user.fcdept.fcname }}</td>
                 <td>
@@ -50,8 +50,8 @@
                     data-user-id="{{ user.id }}" 
                     data-emp-id="{{ user.emp_id }}" 
                     data-username="{{ user.username }}" 
-                    data-firstname="{{ user.firstname }}" 
-                    data-lastname="{{ user.lastname }}"
+                    data-firstname="{{ user.first_name }}" 
+                    data-lastname="{{ user.last_name }}"
                     data-tel="{{ user.tel }}"
                     data-fcdept="{{ user.fcdept.id }}" 
                     onclick="openEditUserModal(this)">

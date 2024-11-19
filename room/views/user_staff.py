@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404  # type: ignore
 from user.models import Employee
 from django.contrib import messages  # type: ignore
 from django.http import JsonResponse
+from room.forms import UserForm
 
 
 def index(request):
@@ -16,9 +17,20 @@ def index(request):
 
     if request.user.is_authenticated and request.user.is_staff:
         users = Employee.objects.filter(fccorp=request.user.fccorp)
+        if request.method == "POST":
+            form = UserForm(
+                request.POST, user=request.user
+            )  # ส่ง request.user ใน POST
+            if form.is_valid():
+                form.save()
+                messages.success(request, "เพิ่มผู้ใช้สำเร็จ!")  # เพิ่มข้อความแจ้งเตือน
+                return redirect("user_staff")
+        else:
+            form = UserForm(user=request.user)  # ส่ง request.user ใน GET
         context.update(
             {
                 "users": users,
+                "form": form
             }
         )
         return render(request, "room/staff/user/index.html", context)

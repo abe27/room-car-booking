@@ -5,30 +5,14 @@
         <h5 class="modal-title" id="addUserModalLabel">เพิ่มผู้ใช้</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <form id="addUserForm">
-          <div class="mb-3">
-            <label for="addUsername" class="form-label">Username</label>
-            <input type="text" class="form-control" id="addUsername" name="username" required />
-          </div>
-          <div class="mb-3">
-            <label for="addFirstname" class="form-label">ชื่อจริง</label>
-            <input type="text" class="form-control" id="addFirstname" name="firstname" required />
-          </div>
-          <div class="mb-3">
-            <label for="addLastname" class="form-label">นามสกุล</label>
-            <input type="text" class="form-control" id="addLastname" name="lastname" required />
-          </div>
-          <div class="mb-3">
-            <label for="addTel" class="form-label">เบอร์โทร</label>
-            <input type="tel" class="form-control" id="addTel" name="tel" required />
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-        <button type="button" class="btn btn-primary" onclick="submitAddUser()">บันทึก</button>
-      </div>
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body">{{ form.as_p }}</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+          <button type="submit" class="btn btn-primary">บันทึก</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
