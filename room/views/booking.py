@@ -44,7 +44,7 @@ def booking(request):
             # Query for rooms that are not booked during the specified time range
             booked_rooms = (
                 # sequence 0 = Waiting, sequence 2 = Rejected, sequence 3 = Canceled
-                Booking.objects.exclude(status__sequence__in=[0, 2, 3])
+                Booking.objects.exclude(status__sequence__in=[0, 2, 3, 5])
                 .filter(start_date__lt=end_datetime, end_date__gt=start_datetime)
                 .values_list("room_id", flat=True)
             )
