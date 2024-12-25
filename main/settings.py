@@ -29,8 +29,8 @@ SECRET_KEY = "django-insecure-==zjf7m(=@gt$b18^#@+3gyhm(ofk3fw89pf^5lw^qjsgn648d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "booking.edi-vcst.in.th"]
-CSRF_TRUSTED_ORIGINS = ["localhost", "127.0.0.1", "booking.edi-vcst.in.th"]
+ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ["*"]
 
 
 # Application definition
