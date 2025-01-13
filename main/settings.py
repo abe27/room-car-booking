@@ -34,6 +34,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "192.168.20.16",
     "booking.edi-vcst.in.th",
 ]
 CSRF_TRUSTED_ORIGINS = [
