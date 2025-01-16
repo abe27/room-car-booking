@@ -77,7 +77,8 @@
       calendar.removeAllEvents()
   
       // Add new events
-      var bookings = JSON.parse('{{ bookings|safe }}')
+      var bookings = JSON.parse('{{ bookings|escapejs }}');
+
       //console.log(bookings)
       calendar.addEventSource(
         bookings.map(function (booking) {
