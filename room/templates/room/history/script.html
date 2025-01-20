@@ -10,7 +10,8 @@
   $(document).ready(function () {
     // Initialize DataTable
     var table = $('#bookingsTable').DataTable({
-      order: [[1, 'desc']]
+      order: [[1, 'desc']],
+      paging: false
     })
   
     // Filter by status

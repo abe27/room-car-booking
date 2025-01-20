@@ -9,7 +9,8 @@
   $(document).ready(function () {
     // Initialize DataTable
     var table = $('#usersTable').DataTable({
-      order: [[0, 'desc']]
+      order: [[0, 'desc']],
+      paging: false
     })
   })
   
@@ -99,7 +100,7 @@
 
 <script>
   $(document).ready(function () {
-    $('.edit-btn').on('click', function () {
+    $('.edit-btn').click(function () {
       var user_id = $(this).data('user-id')
       var emp_id = $(this).data('emp-id')
       var email = $(this).data('email')

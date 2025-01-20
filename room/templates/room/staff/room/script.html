@@ -9,7 +9,8 @@
   $(document).ready(function () {
     // Initialize DataTable
     var table = $('#bookingsTable').DataTable({
-      order: [[0, 'desc']]
+      order: [[0, 'desc']],
+      paging: false
     })
   
     // เมื่อปุ่ม view-btn ถูกกด
