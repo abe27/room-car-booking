@@ -27,4 +27,7 @@ urlpatterns = [
     path("department/staff/add/", views.department_staff.add_department, name="add_department"),
     path("department/staff/edit/<int:pk>/", views.department_staff.edit_department, name="edit_department"),
     path("department/staff/delete/<int:pk>/", views.department_staff.delete_department, name="delete_department"),
+
+    path("show", views.calendar.index, name="show_room"),
+    path("show/<int:id>", views.calendar.detail, name="calendar_show"),
 ]

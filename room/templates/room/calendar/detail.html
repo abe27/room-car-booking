@@ -1,0 +1,31 @@
+{% extends 'room/calendar/base.html' %}
+
+{% block content %}
+  <div class="p-3">
+    <div class="card">
+      <div class="row g-0">
+        {% comment %} <div class="col-md-4">
+          <img class="img-fluid rounded-start"
+            alt="{{ room.name }}"
+            src="{% if room.image %}
+              {{ room.image.url }}
+            {% else %}  
+            https://random-image-pepebigotes.vercel.app/api/random-image
+            {% endif %}" />
+        </div> {% endcomment %}
+        <div class="col">
+          <div class="card-body">
+            <h5 class="card-title text-center">{{ room.name }}</h5>
+            {% comment %} <p class="card-text text-primary">รองรับผู้เข้าร่วมประชุม 1-{{ room.maximum_capacity }} คน</p> {% endcomment %}
+            {% comment %} <p class="card-text text-danger">{{ room.remark }}</p> {% endcomment %}
+            <div class="fw-semibold mb-1">รายละเอียด</div>
+            <p class="card-text">{{ room.detail|linebreaksbr }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="calendar" class="mb-3"></div>
+  </div>
+  {% include 'room/components/modal_detail.html' %}
+  {% include './script.html' %}
+{% endblock %}
