@@ -1,6 +1,8 @@
 from room.models import Room, Booking
 from django.shortcuts import render, get_object_or_404
 import json
+from django.http import JsonResponse
+from django.core.cache import cache
 
 
 def index(request):
@@ -42,3 +44,12 @@ def detail(request, id):
         "bookings": json.dumps(bookings_data),
     }
     return render(request, "room/calendar/detail.html", context)
+
+def check_booking_update(request):
+    """
+    ตรวจสอบว่ามีการเปลี่ยนแปลงใน Booking หรือไม่
+    """
+    if cache.get("booking_updated"):
+        cache.delete("booking_updated")  # ลบค่า cache หลังแจ้งเตือน
+        return JsonResponse({"updated": True})  # แจ้งว่า booking มีการเปลี่ยนแปลง
+    return JsonResponse({"updated": False})  # ไม่มีการเปลี่ยนแปลง

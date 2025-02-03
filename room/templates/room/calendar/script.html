@@ -39,7 +39,7 @@
           $('#eventDetailEnd').text(info.event.end ? info.event.end.toLocaleString('th-TH') : 'N/A') // Format the end date
           $('#eventDetailStatus').text(info.event.extendedProps.status)
           $('#eventDetailRemark').html(info.event.extendedProps.remark)
-
+  
           // แสดงปุ่ม Cancel ถ้า emp_id ตรงกับ ID ของผู้ใช้ปัจจุบัน
           if (info.event.extendedProps.emp_id == currentUserEmpId) {
             $('#cancelBookingBtn').show()
@@ -60,7 +60,7 @@
       calendar.removeAllEvents()
   
       // Add new events
-      var bookings = JSON.parse('{{ bookings|escapejs }}');
+      var bookings = JSON.parse('{{ bookings|escapejs }}')
       //console.log(bookings)
       calendar.addEventSource(
         bookings.map(function (booking) {
@@ -76,7 +76,7 @@
               lastname: booking.last_name,
               description: booking.description,
               status: booking.status,
-              remark: booking.remark,
+              remark: booking.remark
             }
           }
         })
@@ -84,5 +84,26 @@
     }
     initializeCalendar()
     updateCalendarEvents()
+  
+    function checkBookingUpdate() {
+      console.log('Checking booking updates')
+      $.ajax({
+        url: "{% url 'check_booking_update' %}",
+        type: 'GET',
+        success: function (response) {
+          if (response.updated) {
+            console.log('Booking updates detected')
+            //updateCalendarEvents()
+            window.location.reload()
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error('Error checking booking updates:', error)
+        }
+      })
+    }
+  
+    // ตรวจสอบการเปลี่ยนแปลงทุกๆ 5 วินาที
+    setInterval(checkBookingUpdate, 5000)
   })
 </script>

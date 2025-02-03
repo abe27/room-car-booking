@@ -1,6 +1,9 @@
 from django.db import models
 from company_department.models import Company
 from user.models import Employee
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from django.core.cache import cache
 
 
 # Create your models here.
@@ -86,3 +89,13 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+
+@receiver(post_save, sender=Booking)
+@receiver(post_delete, sender=Booking)
+def booking_updated(sender, instance, **kwargs):
+    print("Booking updated event")
+    """
+    เมื่อมีการสร้าง แก้ไข หรือ ลบ booking ให้ตั้งค่า cache 
+    เพื่อใช้ตรวจสอบว่ามีการเปลี่ยนแปลงเกิดขึ้น
+    """
+    cache.set("booking_updated", True, timeout=10)  # ตั้งค่า cache ไว้ 10 วินาที
