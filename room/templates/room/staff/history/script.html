@@ -35,16 +35,42 @@
     })
   
     // Filter by date
-    $('#date').on('change', function () {
-      var selectedDate = $(this).val()
-      if (selectedDate) {
-        // Format the selected date to match the format in the table
-        var formattedDate = moment(selectedDate).format('DD/MM/YYYY')
-        table.column(4).search(formattedDate).draw() // Adjust column index as needed
-      } else {
-        table.column(4).search('').draw() // Clear the search if no date is selected
+    //$('#date').on('change', function () {
+    ///  var selectedDate = $(this).val()
+    //  if (selectedDate) {
+    //    // Format the selected date to match the format in the table
+    //    var formattedDate = moment(selectedDate).format('DD/MM/YYYY')
+    //    table.column(4).search(formattedDate).draw() // Adjust column index as needed
+    //  } else {
+    //    table.column(4).search('').draw() // Clear the search if no date is selected
+    //  }
+    //})
+  
+    // Filter by start_date and end_date
+    $('#start_date, #end_date').on('change', function () {
+      var startDate = $('#start_date').val();
+      var endDate = $('#end_date').val();
+    
+      // ล้างตัวกรองทั้งหมดก่อน
+      $.fn.dataTable.ext.search.length = 0;
+    
+      if (startDate && endDate) {
+        var formattedStartDate = moment(startDate, 'YYYY-MM-DD').format('DD/MM/YYYY');
+        var formattedEndDate = moment(endDate, 'YYYY-MM-DD').format('DD/MM/YYYY');
+    
+        $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+          var bookingDateStr = data[4]; // คอลัมน์วันที่จอง
+    
+          if (!bookingDateStr) return false;
+    
+          var bookingDate = moment(bookingDateStr, 'DD/MM/YYYY, HH:mm').format('DD/MM/YYYY');
+    
+          return bookingDate >= formattedStartDate && bookingDate <= formattedEndDate;
+        });
       }
-    })
+    
+      table.draw();
+    });    
   
     // Show event details in modal when View button is clicked
     $('.view-btn').on('click', function () {
@@ -69,25 +95,85 @@
       $('#eventDetailStatus').text(status)
       $('#eventDetailRemark').html(remark)
     })
-  
   })
 </script>
 
 <script>
-  $(document).ready(function() {
+  $(document).ready(function () {
     // เมื่อกดปุ่ม Edit
-    $('.edit-btn').on('click', function() {
+    $('.edit-btn').on('click', function () {
       // ดึงค่าจาก data-* attributes ของปุ่มที่ถูกคลิก
-      var bookingId = $(this).data('id');
-      var bookingStatus = $(this).data('status');
-      var bookingRemark = $(this).data('remark');
-
+      var bookingId = $(this).data('id')
+      var bookingStatus = $(this).data('status')
+      var bookingRemark = $(this).data('remark')
+  
       // นำค่าไปใส่ในฟอร์มภายใน modal
-      $('#editBookingId').val(bookingId);
-      $('#editStatus').val(bookingStatus); // อาจต้องตรวจสอบว่า value นี้ตรงกับ option ที่อยู่ใน select หรือไม่
-      $('#editRemark').val(bookingRemark);
-
+      $('#editBookingId').val(bookingId)
+      $('#editStatus').val(bookingStatus) // อาจต้องตรวจสอบว่า value นี้ตรงกับ option ที่อยู่ใน select หรือไม่
+      $('#editRemark').val(bookingRemark)
+  
       // เปิด modal ขึ้นมา (ไม่จำเป็นต้องใส่ใน script เพราะมี data-bs-toggle อยู่แล้ว)
+    })
+  })
+</script>
+
+<!-- SheetJS (xlsx) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+//  $(document).ready(function () {
+//    $("#exportExcel").click(function () {
+//      var table = document.getElementById("bookingsTable").cloneNode(true); // คัดลอกตาราง
+      
+      // ลบคอลัมน์ Action
+//      $(table).find("th:last-child, td:last-child").remove();
+
+//      var wb = XLSX.utils.book_new();
+//      var ws = XLSX.utils.table_to_sheet(table);
+
+//      XLSX.utils.book_append_sheet(wb, ws, "Bookings");
+//      XLSX.writeFile(wb, "bookings.xlsx");
+//    });
+//  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    $("#exportExcel").click(function () {
+      var table = document.getElementById("bookingsTable").cloneNode(true); // คัดลอกตาราง
+
+      // ลบคอลัมน์ Action
+      $(table).find("th:last-child, td:last-child").remove();
+
+      var wb = XLSX.utils.book_new();
+      var ws1 = XLSX.utils.table_to_sheet(table);
+      XLSX.utils.book_append_sheet(wb, ws1, "Bookings");
+
+      // นับจำนวนการจองของแต่ละห้องที่มี status = "Check-out"
+      var roomCounts = {};
+      $("#bookingsTable tbody tr").each(function () {
+        var room = $(this).find("td:nth-child(2)").text().trim();
+        var status = $(this).find("td:nth-child(3)").text().trim();
+
+        if (status === "Check-out") {
+          if (!roomCounts[room]) {
+            roomCounts[room] = 0;
+          }
+          roomCounts[room]++;
+        }
+      });
+
+      // สร้างข้อมูลสำหรับชีตใหม่
+      var summaryData = [["ห้องประชุม", "จำนวนการจอง"]];
+      for (var room in roomCounts) {
+        summaryData.push([room, roomCounts[room]]);
+      }
+
+      var ws2 = XLSX.utils.aoa_to_sheet(summaryData);
+      XLSX.utils.book_append_sheet(wb, ws2, "Check-out Summary");
+
+      // บันทึกไฟล์ Excel
+      XLSX.writeFile(wb, "bookings.xlsx");
     });
   });
 </script>

@@ -23,8 +23,6 @@
               {% endfor %}
             </select>
           </div>
-        </div>
-        <div class="row">
           <div class="col">
             <label for="status" class="form-label">สถานะ</label>
             <select class="form-select" aria-label="Default select status" name="status" id="status">
@@ -34,12 +32,21 @@
               {% endfor %}
             </select>
           </div>
+        </div>
+        <div class="row mt-3">
           <div class="col">
-            <label for="date" class="form-label">วันที่</label>
-            <input type="date" class="form-control" name="date" id="date" />
+            <label for="start_date" class="form-label">เริ่มต้น</label>
+            <input type="date" class="form-control" id="start_date" />
+          </div>
+          <div class="col">
+            <label for="end_date" class="form-label">สิ้นสุด</label>
+            <input type="date" class="form-control" id="end_date" />
           </div>
         </div>
       </div>
+    </div>
+    <div>
+      <button id="exportExcel" class="btn btn-success mb-3">Export to Excel</button>
     </div>
     <div class="card">
       <div class="card-body table-responsive">
@@ -50,6 +57,7 @@
               <th scope="col">ห้อง</th>
               <th scope="col">สถานะ</th>
               <th scope="col">หัวข้อ</th>
+              <th scope="col">วันที่</th>
               <th scope="col">ตั้งแต่เวลา</th>
               <th scope="col">ถึงเวลา</th>
               <th scope="col">เช็คอิน</th>
@@ -75,41 +83,17 @@
                   {% endif %}
                 </td>
                 <td>{{ booking.title }}</td>
-                <td>{{ booking.start_date|date:'d/m/Y, H:i' }}</td>
-                <td>{{ booking.end_date|date:'d/m/Y, H:i' }}</td>
-                <td>{{ booking.check_in|date:'d/m/Y, H:i' }}</td>
-                <td>{{ booking.check_out|date:'d/m/Y, H:i' }}</td>
+                <td>{{ booking.start_date|date:'d/m/Y' }}</td>
+                <td>{{ booking.start_date|date:'H:i' }}</td>
+                <td>{{ booking.end_date|date:'H:i' }}</td>
+                <td>{{ booking.check_in|date:'H:i' }}</td>
+                <td>{{ booking.check_out|date:'H:i' }}</td>
                 <td>{{ booking.remark }}</td>
                 <td>
                   <div class="d-flex justify-content-between gap-1">
-                    <button class="btn btn-primary view-btn btn-sm"
-                      data-id="{{ booking.id }}"
-                      data-employee-id="{{ booking.employee.id }}"
-                      data-employee-name="{{ booking.employee.first_name }} {{ booking.employee.last_name }}"
-                      data-title="{{ booking.title }}"
-                      data-description="{{ booking.description }}"
-                      data-start="{{ booking.start_date|date:'d/m/Y, H:i' }}"
-                      data-end="{{ booking.end_date|date:'d/m/Y, H:i' }}"
-                      data-status="{{ booking.status }}"
-                      data-remark="{{ booking.remark }}"
-                      data-bs-toggle="modal" 
-                      data-bs-target="#eventDetailModal">
-                      View
-                    </button>
-                    <button class="btn btn-danger edit-btn btn-sm" 
-                      data-id="{{ booking.id }}"
-                      data-status="{{ booking.status.id }}"
-                      data-remark="{{ booking.remark }}"
-                      data-bs-toggle="modal" 
-                      data-bs-target="#editBookingModal"
-                    >
-                      Edit
-                    </button>
-                    {% comment %} <button class="btn btn-danger edit-btn">
-                      <a href="{% url 'admin:room_booking_change' booking.id %}" style="color:white;">
-                        Edit
-                      </a>
-                    </button> {% endcomment %}
+                    <button class="btn btn-primary view-btn btn-sm" data-id="{{ booking.id }}" data-employee-id="{{ booking.employee.id }}" data-employee-name="{{ booking.employee.first_name }} {{ booking.employee.last_name }}" data-title="{{ booking.title }}" data-description="{{ booking.description }}" data-start="{{ booking.start_date|date:'d/m/Y, H:i' }}" data-end="{{ booking.end_date|date:'d/m/Y, H:i' }}" data-status="{{ booking.status }}" data-remark="{{ booking.remark }}" data-bs-toggle="modal" data-bs-target="#eventDetailModal">View</button>
+                    <button class="btn btn-danger edit-btn btn-sm" data-id="{{ booking.id }}" data-status="{{ booking.status.id }}" data-remark="{{ booking.remark }}" data-bs-toggle="modal" data-bs-target="#editBookingModal">Edit</button>
+                    {% comment %} <button class="btn btn-danger edit-btn"><a href="{% url 'admin:room_booking_change' booking.id %}" style="color:white;">Edit</a></button> {% endcomment %}
                   </div>
                 </td>
               </tr>
@@ -119,7 +103,7 @@
       </div>
     </div>
   </div>
-  {% include "room/components/modal_detail.html" %}
-  {% include "./modal_edit.html" %}
+  {% include 'room/components/modal_detail.html' %}
+  {% include './modal_edit.html' %}
   {% include './script.html' %}
 {% endblock %}
