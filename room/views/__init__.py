@@ -10,3 +10,4 @@ from . import checkin_checkout
 from . import user_staff
 from . import department_staff
 from . import calendar
+from . import room

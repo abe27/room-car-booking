@@ -31,4 +31,5 @@ urlpatterns = [
     path("show", views.calendar.index, name="show_room"),
     path("show/<int:id>", views.calendar.detail, name="calendar_show"),
     path("check-booking-update", views.calendar.check_booking_update, name="check_booking_update"),
+    path("", views.room.index, name="room"),
 ]
