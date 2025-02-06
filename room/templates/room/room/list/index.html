@@ -1,18 +1,19 @@
 {% extends 'room/calendar/base.html' %}
 
 {% block content %}
-  <div class="container mt-4">
-    <h2 class="text-center mb-4 fw-bold text-4xl">📅 รายการจองห้องประชุมวันนี้</h2>
+  <div class="mt-4 p-5">
+    <h2 class="text-center mb-4 fw-bold text-6xl">📅 รายการจองห้องประชุมวันนี้</h2>
 
     {% if bookings %}
       <div class="card shadow-lg border-0 rounded-4">
         <div class="card-body p-4">
           <div class="table-responsive">
             <table class="table table-hover align-middle text-center border table-striped">
-              <thead class="text-white" style="background: linear-gradient(45deg, #007bff, #6610f2);">
+              <thead class="text-white text-4xl" style="background: linear-gradient(45deg, #007bff, #6610f2);">
                 <tr>
                   <th class="py-3 text-white">🏢 ชื่อห้อง</th>
                   <th class="py-3 text-white">📌 หัวข้อ</th>
+                  <th class="py-3 text-white">📅 วันที่</th>
                   <th class="py-3 text-white">🕒 ตั้งแต่เวลา</th>
                   <th class="py-3 text-white">🕒 ถึงเวลา</th>
                   <th class="py-3 text-white">✅ สถานะ</th>
@@ -20,31 +21,27 @@
               </thead>
               <tbody>
                 {% for booking in bookings %}
-                  <tr class="fw-semibold">
-                    <td class="py-2">{{ booking.room.name }}</td>
-                    <td class="py-2">{{ booking.title }}</td>
+                  <tr class="fw-semibold text-4xl">
+                    <td class="py-2 text-start">{{ booking.room.name }}</td>
+                    <td class="py-2 text-start">{{ booking.title }}</td>
+                    <td class="py-2">{{ booking.start_date|date:'d/m/Y' }}</td>
                     <td class="py-2">{{ booking.start_date|time:'H:i' }}</td>
                     <td class="py-2">{{ booking.end_date|time:'H:i' }}</td>
                     <td class="py-2">
                       <span class="badge rounded-pill px-3 py-2 
                     {% if booking.status.name == 'Approved' %}
                            bg-primary
-
                         {% elif booking.status.name == 'Check-in' %}
                            bg-success
-
                         {% elif booking.status.name == 'Check-out' %}
                            bg-warning
-
                         {% elif booking.status.name == 'Cancelled' %}
                            bg-secondary
-
                         {% else %}
                            bg-danger
-
                         {% endif %}">
                         {% if booking.status.name == 'Approved' %}
-                          ✅ อนุมัติแล้ว
+                          ✅ จองแล้ว
                         {% elif booking.status.name == 'Check-in' %}
                           ⏳ กำลังใช้งาน
                         {% elif booking.status.name == 'Check-out' %}

@@ -1,0 +1,109 @@
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    var calendar
+  
+    function initializeCalendar() {
+      var calendarEl = document.getElementById('calendar')
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        dayMaxEvents: true,
+        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        views: {
+          dayGridMonth: {
+            titleFormat: { year: 'numeric', month: 'long' } // Month in Thai format
+          },
+          timeGridWeek: {
+            titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
+          },
+          timeGridDay: {
+            titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
+          }
+        },
+        eventClick: function (info) {
+          let currentUserEmpId = '{{ request.user.emp_id }}' // ID ของผู้ใช้ปัจจุบัน
+          // Set event details in the modal
+          $('#eventDetailId').text(info.event.extendedProps.id)
+          $('#eventDetailEmployeeId').text(info.event.extendedProps.emp_id)
+          $('#eventDetailEmployeeName').text(info.event.extendedProps.firstname + ' ' + info.event.extendedProps.lastname)
+          $('#eventDetailTitle').text(info.event.title)
+          $('#eventDetailDescription').html(info.event.extendedProps.description)
+          $('#eventDetailStart').text(info.event.start.toLocaleString('th-TH')) // Format the start date
+          $('#eventDetailEnd').text(info.event.end ? info.event.end.toLocaleString('th-TH') : 'N/A') // Format the end date
+          $('#eventDetailStatus').text(info.event.extendedProps.status)
+          $('#eventDetailRemark').html(info.event.extendedProps.remark)
+  
+          // แสดงปุ่ม Cancel ถ้า emp_id ตรงกับ ID ของผู้ใช้ปัจจุบัน
+          if (info.event.extendedProps.emp_id == currentUserEmpId) {
+            $('#cancelBookingBtn').show()
+          } else {
+            $('#cancelBookingBtn').hide()
+          }
+          // Show the modal
+          $('#eventDetailModal').modal('show')
+        }
+      })
+      calendar.render()
+    }
+  
+    function updateCalendarEvents() {
+      //console.log('Updating calendar events')
+  
+      // Clear existing events
+      calendar.removeAllEvents()
+  
+      // Add new events
+      var bookings = JSON.parse('{{ bookings|escapejs }}')
+      //console.log(bookings)
+      calendar.addEventSource(
+        bookings.map(function (booking) {
+          return {
+            title: booking.title,
+            start: booking.start_date,
+            end: booking.end_date,
+            color: booking.color,
+            extendedProps: {
+              id: booking.id,
+              emp_id: booking.emp_id,
+              firstname: booking.first_name,
+              lastname: booking.last_name,
+              description: booking.description,
+              status: booking.status,
+              remark: booking.remark
+            }
+          }
+        })
+      )
+    }
+    initializeCalendar()
+    updateCalendarEvents()
+  
+    function checkBookingUpdate() {
+      console.log('Checking booking updates')
+      $.ajax({
+        url: "{% url 'check_booking_update' %}",
+        type: 'GET',
+        success: function (response) {
+          if (response.updated) {
+            console.log('Booking updates detected')
+            //updateCalendarEvents()
+            window.location.reload()
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error('Error checking booking updates:', error)
+        }
+      })
+    }
+  
+    // ตรวจสอบการเปลี่ยนแปลงทุกๆ 5 วินาที
+    setInterval(checkBookingUpdate, 5000)
+  })
+</script>
