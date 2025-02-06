@@ -2,7 +2,7 @@
 
 {% block content %}
   <div class="p-5">
-    <h1 class="text-center mb-4" style="font-size: 3rem;">📅 รายการจองห้องประชุมวันนี้</h1>
+    <h1 class="text-center mb-4" style="font-size: 3rem;">📅 รายการจองห้องประชุม <span id="currentDateTime"></span></h1>
 
     {% if bookings %}
       <div class="row row-cols-1 row-cols-md-3 g-4">

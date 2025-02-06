@@ -25,3 +25,16 @@
     setInterval(checkBookingUpdate, 5000)
   })
 </script>
+
+
+<script>
+  function updateDateTime() {
+    const now = new Date();
+    const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+    const formattedDateTime = now.toLocaleDateString('th-TH', options).replace(',', ' 🕒');
+    document.getElementById("currentDateTime").textContent = formattedDateTime;
+  }
+
+  updateDateTime(); // แสดงค่าทันทีเมื่อโหลดหน้า
+  setInterval(updateDateTime, 1000); // อัปเดตทุก 1 วินาที
+</script>
