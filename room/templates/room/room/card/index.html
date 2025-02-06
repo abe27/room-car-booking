@@ -1,60 +1,57 @@
 {% extends 'room/calendar/base.html' %}
 
 {% block content %}
-  <section class="">
-    <div class="container py-2">
-      <div class="h1 text-center text-dark" id="pageHeaderTitle">📅 รายการจองห้องประชุมวันนี้</div>
+  <div class="p-5">
+    <h1 class="text-center mb-4" style="font-size: 3rem;">📅 รายการจองห้องประชุมวันนี้</h1>
 
-      {% if bookings %}
-        <div class="row">
-          {% for booking in bookings %}
-            {% if forloop.counter|divisibleby:2 %}
-              <article class="postcard blue shadow-lg bg-white col-12">
-                <img class="postcard__img" src="{{ booking.room.image.url }}" alt="Image Title" />
-                {% comment %} <img class="postcard__img" src="https://picsum.photos/1000/1000" alt="Image Title" /> {% endcomment %}
-                <div class="postcard__text t-dark">
-                  <h1 class="postcard__title blue">{{ booking.title }}</h1>
-                  <div class="postcard__subtitle">{{ booking.room.name }}</div>
-                  <div class="postcard__bar"></div>
-                  <div class="postcard__preview-txt">{{ booking.description }}</div>
-                  <ul class="postcard__tagbox">
-                    <li class="tag__item bg-primary text-white">
-                      <i class="fas fa-tag mr-2"></i>👤 ผู้จอง: {{ booking.employee.first_name }} {{ booking.employee.last_name }}
-                    </li>
-                    <li class="tag__item bg-success text-white">
-                      <i class="fas fa-clock mr-2"></i>🕒 เวลา: {{ booking.start_date|time:'H:i' }} - {{ booking.end_date|time:'H:i' }}
-                    </li>
-                  </ul>
-                </div>
-              </article>
-            {% else %}
-              <article class="postcard red shadow-lg bg-white col-12">
-                <img class="postcard__img" src="{{ booking.room.image.url }}" alt="Image Title" />
-                <div class="postcard__text t-dark">
-                  <h1 class="postcard__title red">{{ booking.title }}</h1>
-                  <div class="postcard__subtitle">{{ booking.room.name }}</div>
-                  <div class="postcard__bar"></div>
-                  <div class="postcard__preview-txt">{{ booking.description }}</div>
-                  <ul class="postcard__tagbox">
-                    <li class="tag__item bg-primary text-white">
-                      <i class="fas fa-tag mr-2"></i>👤 ผู้จอง: {{ booking.employee.first_name }} {{ booking.employee.last_name }}
-                    </li>
-                    <li class="tag__item bg-success text-white">
-                      <i class="fas fa-clock mr-2"></i>🕒 เวลา: {{ booking.start_date|time:'H:i' }} - {{ booking.end_date|time:'H:i' }}
-                    </li>
-                  </ul>
-                </div>
-              </article>
-            {% endif %}
-          {% endfor %}
-          {% else %}
-          <div class="text-center">
-            <img src="https://cdn-icons-png.flaticon.com/512/2748/2748558.png" alt="No Booking" width="150" class="mb-3" />
-            <p class="fs-5 text-muted">ไม่พบการจองห้องประชุมในวันนี้</p>
+    {% if bookings %}
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for booking in bookings %}
+          <div class="col">
+            <div class="card shadow-sm h-100 border-0">
+              <div class="card-body">
+                <h4 class="card-title text-primary fw-bold">{{ booking.title }}</h4>
+                <p class="card-text text-xl">
+                  <strong>🏢 ห้อง:</strong> {{ booking.room.name }}<br />
+                  <strong>🕒 เวลา:</strong> {{ booking.start_date|time:'H:i' }} - {{ booking.end_date|time:'H:i' }}<br />
+                  <strong>👤 ผู้จอง:</strong> {{ booking.employee.first_name }} {{ booking.employee.last_name }}<br />
+                  <strong>📢 สถานะ:</strong>
+                  <span class="badge rounded
+                  {% if booking.status.name == 'Approved' %}
+                         bg-primary
+                    {% elif booking.status.name == 'Check-in' %}
+                         bg-success
+                    {% elif booking.status.name == 'Check-out' %}
+                         bg-warning
+                    {% elif booking.status.name == 'Cancelled' %}
+                         bg-secondary
+                    {% else %}
+                         bg-danger
+                    {% endif %}">
+                    {% if booking.status.name == 'Approved' %}
+                      ✅ รอ Check-in
+                    {% elif booking.status.name == 'Check-in' %}
+                      ⏳ กำลังใช้งาน
+                    {% elif booking.status.name == 'Check-out' %}
+                      🚪 ออกจากห้อง
+                    {% elif booking.status.name == 'Cancelled' %}
+                      ❌ ยกเลิก
+                    {% else %}
+                      ❌ ไม่อนุมัติ
+                    {% endif %}
+                  </span>
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-      {% endif %}
-    </div>
-  </section>
-  {% include 'room/room/card/style.html' %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center">
+        <img src="https://cdn-icons-png.flaticon.com/512/2748/2748558.png" alt="No Booking" width="150" class="mb-3" />
+        <p class="fs-5 text-muted">ไม่พบการจองห้องประชุมในวันนี้</p>
+      </div>
+    {% endif %}
+  </div>
+  {% include './script.html' %}
 {% endblock %}

@@ -1,0 +1,27 @@
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    function checkBookingUpdate() {
+      console.log('Checking booking updates')
+      $.ajax({
+        url: "{% url 'check_booking_update' %}",
+        type: 'GET',
+        success: function (response) {
+          if (response.updated) {
+            console.log('Booking updates detected')
+            //updateCalendarEvents()
+            window.location.reload()
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error('Error checking booking updates:', error)
+        }
+      })
+    }
+  
+    // ตรวจสอบการเปลี่ยนแปลงทุกๆ 5 วินาที
+    setInterval(checkBookingUpdate, 5000)
+  })
+</script>
