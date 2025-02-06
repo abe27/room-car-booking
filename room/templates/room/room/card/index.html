@@ -12,9 +12,9 @@
                <img class="postcard__img" src={{booking.room.image.url}} alt="Image Title" />
               {% comment %} <img class="postcard__img" src="https://picsum.photos/1000/1000" alt="Image Title" /> {% endcomment %}
               <div class="postcard__text t-dark">
-                <h1 class="postcard__title blue"><a href="#">{{ booking.title }}</a></h1>
+                <h1 class="postcard__title blue">{{ booking.title }}</h1>
                 <div class="postcard__subtitle small">
-                  <time datetime="{{ booking.end_date }}"><i class="fas fa-calendar-alt mr-2"></i>{{ booking.end_date|date:'d/m/Y' }}</time>
+                  {{booking.room.name}}
                 </div>
                 <div class="postcard__bar"></div>
                 <div class="postcard__preview-txt">{{ booking.description }}</div>
@@ -32,7 +32,7 @@
             <article class="postcard light red">
               <img class="postcard__img" src={{booking.room.image.url}} alt="Image Title" />
               <div class="postcard__text t-dark">
-                <h1 class="postcard__title red"><a href="#">{{ booking.title }}</a></h1>
+                <h1 class="postcard__title red">{{ booking.title }}</h1>
                 <div class="postcard__subtitle small">
                   <time datetime="{{ booking.end_date }}"><i class="fas fa-calendar-alt mr-2"></i>{{ booking.end_date|date:'d/m/Y' }}</time>
                 </div>
