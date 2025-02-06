@@ -1,36 +1,62 @@
 {% extends 'room/calendar/base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="text-center mb-4">📅 รายการจองห้องประชุมวันนี้</h2>
-    
-    {% if bookings %}
-        <div class="row">
-            {% for booking in bookings %}
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <h5 class="card-title text-primary fw-bold">
-                            🏢 {{ booking.room.name }}
-                        </h5>
-                        <p class="card-text">
-                            <strong>👤 ผู้จอง:</strong> {{ booking.employee.username }}<br>
-                            <strong>📌 หัวข้อ:</strong> {{ booking.title }}<br>
-                            <strong>🕒 เวลา:</strong> {{ booking.start_date|time:"H:i" }} - {{ booking.end_date|time:"H:i" }}
-                        </p>
-                        <span class="badge bg-success">
-                            {{ booking.status.name|default:"รออนุมัติ" }}
-                        </span>
-                    </div>
+  <section class="light">
+    <div class="container py-2">
+      <div class="h1 text-center text-dark" id="pageHeaderTitle">📅 รายการจองห้องประชุมวันนี้</div>
+
+      {% if bookings %}
+        {% for booking in bookings %}
+          {% if forloop.counter|divisibleby:2 %}
+            <article class="postcard light blue">
+               <img class="postcard__img" src={{booking.room.image.url}} alt="Image Title" />
+              {% comment %} <img class="postcard__img" src="https://picsum.photos/1000/1000" alt="Image Title" /> {% endcomment %}
+              <div class="postcard__text t-dark">
+                <h1 class="postcard__title blue"><a href="#">{{ booking.title }}</a></h1>
+                <div class="postcard__subtitle small">
+                  <time datetime="{{ booking.end_date }}"><i class="fas fa-calendar-alt mr-2"></i>{{ booking.end_date|date:'d/m/Y' }}</time>
                 </div>
-            </div>
-            {% endfor %}
-        </div>
-    {% else %}
+                <div class="postcard__bar"></div>
+                <div class="postcard__preview-txt">{{ booking.description }}</div>
+                <ul class="postcard__tagbox">
+                  <li class="tag__item bg-primary text-white">
+                    <i class="fas fa-tag mr-2"></i>👤 ผู้จอง: {{ booking.employee.first_name }} {{ booking.employee.last_name }}
+                  </li>
+                  <li class="tag__item bg-success text-white">
+                    <i class="fas fa-clock mr-2"></i>🕒 เวลา: {{ booking.start_date|time:'H:i' }} - {{ booking.end_date|time:'H:i' }}
+                  </li>
+                </ul>
+              </div>
+            </article>
+          {% else %}
+            <article class="postcard light red">
+              <img class="postcard__img" src={{booking.room.image.url}} alt="Image Title" />
+              <div class="postcard__text t-dark">
+                <h1 class="postcard__title red"><a href="#">{{ booking.title }}</a></h1>
+                <div class="postcard__subtitle small">
+                  <time datetime="{{ booking.end_date }}"><i class="fas fa-calendar-alt mr-2"></i>{{ booking.end_date|date:'d/m/Y' }}</time>
+                </div>
+                <div class="postcard__bar"></div>
+                <div class="postcard__preview-txt">{{ booking.description }}</div>
+                <ul class="postcard__tagbox">
+                  <li class="tag__item bg-primary text-white">
+                    <i class="fas fa-tag mr-2"></i>👤 ผู้จอง: {{ booking.employee.first_name }} {{ booking.employee.last_name }}
+                  </li>
+                  <li class="tag__item bg-success text-white">
+                    <i class="fas fa-clock mr-2"></i>🕒 เวลา: {{ booking.start_date|time:'H:i' }} - {{ booking.end_date|time:'H:i' }}
+                  </li>
+                </ul>
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+      {% else %}
         <div class="text-center">
-            <img src="https://cdn-icons-png.flaticon.com/512/2748/2748558.png" alt="No Booking" width="150" class="mb-3">
-            <p class="fs-5 text-muted">ไม่พบการจองห้องประชุมในวันนี้</p>
+          <img src="https://cdn-icons-png.flaticon.com/512/2748/2748558.png" alt="No Booking" width="150" class="mb-3" />
+          <p class="fs-5 text-muted">ไม่พบการจองห้องประชุมในวันนี้</p>
         </div>
-    {% endif %}
-</div>
+      {% endif %}
+    </div>
+  </section>
+  {% include 'room/room/card/style.html' %}
 {% endblock %}

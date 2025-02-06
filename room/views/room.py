@@ -18,8 +18,7 @@ def card(request):
     bookings = Booking.objects.filter(
         room__company=request.user.fccorp,
         status__sequence__in=[1, 4],
-        start_date__date__gte=today  # Filter bookings starting today or later
-        # start_date__date=today  # Filter bookings starting today
+        start_date__date=today  # Filter bookings starting today
     ).order_by("start_date")[:15]
     context = {"bookings": bookings}
     return render(request, "room/room/card/index.html", context)
