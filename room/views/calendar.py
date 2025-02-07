@@ -23,6 +23,7 @@ def index(request):
 
 
 def detail(request, id):
+    loop = [0,1,2,3,4,5]
     room = get_object_or_404(Room, id=id)
     bookings = Booking.objects.filter(
         room=id,
@@ -51,6 +52,7 @@ def detail(request, id):
             }
         )
     context = {
+        "loop": loop,
         "room": room,
         "bookings": json.dumps(bookings_data),
     }

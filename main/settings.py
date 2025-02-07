@@ -36,7 +36,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "192.168.20.16",
     "booking.edi-vcst.in.th",
-    "192.168.23.56",
+    "192.168.28.125",
 ]
 CSRF_TRUSTED_ORIGINS = [
     "https://booking.edi-vcst.in.th",

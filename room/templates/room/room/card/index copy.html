@@ -5,16 +5,14 @@
     <h1 class="text-center mb-4" style="font-size: 3rem;">📅 รายการจองห้องประชุม <span id="currentDateTime"></span></h1>
 
     {% if bookings %}
-      <div class="row row-cols-1 row-cols-md-2 g-4">
+      <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for booking in bookings %}
           <div class="col">
-            <article class="postcard light blue h-100 mb-0">
-              <a class="postcard__img_link" href="#"><img class="postcard__img" src="https://picsum.photos/1000/1000" alt="Image Title" /></a>
-              <div class="postcard__text t-dark">
-                <h1 class="postcard__title blue" style="font-size: 3rem;">{{ booking.title }}</h1>
-                <div class="postcard__subtitle fs-2">{{ booking.room.name }}</div>
-                <div class="postcard__bar"></div>
-                <div class="postcard__preview-txt fs-3">
+            <div class="card shadow-sm h-100 border-0 mb-0">
+              <div class="card-body">
+                <h4 class="card-title text-primary fw-bold">{{ booking.title }}</h4>
+                <p class="card-text text-xl">
+                  <strong>🏢 ห้อง:</strong> {{ booking.room.name }}<br />
                   <strong>🕒 เวลา:</strong> {{ booking.start_date|time:'H:i' }} - {{ booking.end_date|time:'H:i' }}<br />
                   <strong>👤 ผู้จอง:</strong> {{ booking.employee.first_name }} {{ booking.employee.last_name }}<br />
                   <strong>💼 แผนก:</strong> {{ booking.employee.fcdept.fcname }}<br />
@@ -43,30 +41,9 @@
                       ❌ ไม่อนุมัติ
                     {% endif %}
                   </span>
-                  {% comment %} {{ booking.description }} {% endcomment %}
-                </div>
-                {% comment %} <ul class="postcard__tagbox fs-4">
-                  <li class="tag__item">💼 {{ booking.employee.fcdept.fcname }}</li>
-                  <li class="tag__item">👤 {{ booking.employee.first_name }} {{ booking.employee.last_name }}</li>
-                </ul>
-                <ul class="postcard__tagbox fs-4 m-0">
-                  <li class="tag__item">🕒 {{ booking.start_date|time:'H:i' }} - {{ booking.end_date|time:'H:i' }}</li>
-                  <li class="tag__item">
-                    {% if booking.status.name == 'Approved' %}
-                      ✅ รอ Check-in
-                    {% elif booking.status.name == 'Check-in' %}
-                      ⏳ กำลังใช้งาน
-                    {% elif booking.status.name == 'Check-out' %}
-                      🚪 ออกจากห้อง
-                    {% elif booking.status.name == 'Cancelled' %}
-                      ❌ ยกเลิก
-                    {% else %}
-                      ❌ ไม่อนุมัติ
-                    {% endif %}
-                  </li>
-                </ul> {% endcomment %}
+                </p>
               </div>
-            </article>
+            </div>
           </div>
         {% endfor %}
       </div>
@@ -78,5 +55,4 @@
     {% endif %}
   </div>
   {% include './script.html' %}
-  {% include './style.html' %}
 {% endblock %}
