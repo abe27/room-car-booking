@@ -1,4 +1,5 @@
 from room.models import Room, Booking
+from company_department.models import Company
 from django.shortcuts import render, get_object_or_404
 import json
 from django.http import JsonResponse
@@ -6,8 +7,18 @@ from django.core.cache import cache
 
 
 def index(request):
-    rooms = Room.objects.filter(company=request.user.fccorp)
-    context = {"rooms": rooms}
+    companies = Company.objects.all()
+    company_id = request.GET.get("company")
+
+    if company_id:
+        rooms = Room.objects.filter(company_id=company_id)
+    else:
+        rooms = ""
+
+    context = {
+        "companies": companies,
+        "rooms": rooms,
+    }
     return render(request, "room/calendar/index.html", context)
 
 
@@ -44,6 +55,7 @@ def detail(request, id):
         "bookings": json.dumps(bookings_data),
     }
     return render(request, "room/calendar/detail.html", context)
+
 
 def check_booking_update(request):
     """

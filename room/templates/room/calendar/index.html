@@ -1,30 +1,50 @@
 {% extends 'room/calendar/base.html' %}
 
 {% block content %}
-  <div class="row row-cols-1 row-cols-md-3 p-4">
-    {% for room in rooms %}
-      <div class="col">
-        <div class="card">
-          <img class="card-img-top"
-            alt="{{ room.name }}"
-            src="{% if room.image %}
-              {{ room.image.url }}
-            {% else %}
-                  https://random-image-pepebigotes.vercel.app/api/random-image
-            {% endif %}"
-            style="height: 150px; object-fit: cover; width: 100%;" />
-          <div class="card-body">
-            <h5 class="card-title">{{ room.name }}</h5>
-            <div class="mb-1 text-primary">รองรับผู้เข้าร่วม 1-{{ room.maximum_capacity }} คน</div>
-            <div class="card-text text-danger">{{ room.remark }}</div>
-            <div class="mt-2 d-flex gap-1 flex-wrap justify-content-center">
-              <a class="btn btn-sm btn-primary view-room-btn" href="{% url 'calendar_show' id=room.id %}">View</a>
+  <div class="p-5">
+    <h1 class="text-center">ห้องประชุม</h1>
+    <div class="mx-auto py-3">
+      <select class="form-select" aria-label="Default select example" id="companySelect">
+        <option value="" {% if not request.GET.company %}selected{% endif %}>กรุณาเลือกบริษัท</option>
+        {% for company in companies %}
+          <option value="{{ company.id }}" {% if request.GET.company == company.id|stringformat:"s" %}selected{% endif %}>
+            {{ company.fcname }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      {% for room in rooms %}
+        <div class="col">
+          <div class="card shadow-sm h-100 border-0 mb-0">
+            <img class="card-img-top"
+              alt="{{ room.name }}"
+              src="{% if room.image %}
+                {{ room.image.url }}
+              {% else %}
+                https://random-image-pepebigotes.vercel.app/api/random-image
+              {% endif %}"
+              style="height: 150px; object-fit: cover; width: 100%;" />
+            <div class="card-body">
+              <h5 class="card-title">{{ room.name }}</h5>
+              <div class="mb-1 text-primary">รองรับผู้เข้าร่วม 1-{{ room.maximum_capacity }} คน</div>
+              <div class="card-text text-danger">{{ room.remark }}</div>
+              <div class="mt-2 d-flex gap-1 flex-wrap justify-content-center">
+                <a class="btn btn-sm btn-primary view-room-btn" href="{% url 'calendar_show' id=room.id %}">View</a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    {% empty %}
-      <p class="text-center">No rooms available for the selected time.</p>
-    {% endfor %}
+      {% empty %}
+        <p class="text-center mx-auto">No rooms available for the selected time.</p>
+      {% endfor %}
+    </div>
   </div>
+
+  <script>
+    const companySelect = document.querySelector('select')
+    companySelect.addEventListener('change', function () {
+      location.href = `?company=${this.value}`
+    })
+  </script>
 {% endblock %}
