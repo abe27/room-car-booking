@@ -4,78 +4,57 @@
   <div class="p-5">
     <h1 class="text-center mb-4" style="font-size: 3rem;">📅 รายการจองห้องประชุม <span id="currentDateTime"></span></h1>
 
-    {% if bookings %}
-      <div class="row row-cols-1 row-cols-md-2 g-4">
-        {% for booking in bookings %}
-          <div class="col">
-            <article class="postcard light blue h-100 mb-0">
-              <a class="postcard__img_link" href="#"><img class="postcard__img" src="https://picsum.photos/1000/1000" alt="Image Title" /></a>
-              <div class="postcard__text t-dark">
-                <h1 class="postcard__title blue" style="font-size: 3rem;">{{ booking.title }}</h1>
-                <div class="postcard__subtitle fs-2">{{ booking.room.name }}</div>
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      {% for room_card in room_cards %}
+        <div class="col">
+          <article class="postcard light blue h-100 mb-0">
+            <img class="postcard__img"
+              src="{% if room_card.room.image %}
+                {{ room_card.room.image.url }}
+              {% else %}
+                https://random-image-pepebigotes.vercel.app/api/random-image
+              {% endif %}"
+              alt="Image Title" />
+            <div class="postcard__text t-dark">
+              {% if room_card.booking %}
+                <h1 class="postcard__title blue">{{ room_card.booking.title }}</h1>
+                <div class="postcard__subtitle">{{ room_card.room.name }}</div>
                 <div class="postcard__bar"></div>
-                <div class="postcard__preview-txt fs-3">
-                  <strong>🕒 เวลา:</strong> {{ booking.start_date|time:'H:i' }} - {{ booking.end_date|time:'H:i' }}<br />
-                  <strong>👤 ผู้จอง:</strong> {{ booking.employee.first_name }} {{ booking.employee.last_name }}<br />
-                  <strong>💼 แผนก:</strong> {{ booking.employee.fcdept.fcname }}<br />
+                <div class="postcard__preview-txt">
+                  <strong>🕒 เวลา:</strong> {{ room_card.booking.start_date|time:'H:i' }} - {{ room_card.booking.end_date|time:'H:i' }}<br />
+                  <strong>👤 ผู้จอง:</strong> {{ room_card.booking.employee.first_name }} {{ room_card.booking.employee.last_name }}<br />
+                  <strong>💼 แผนก:</strong> {{ room_card.booking.employee.fcdept.fcname }}<br />
                   <strong>📢 สถานะ:</strong>
                   <span class="badge rounded
-                  {% if booking.status.name == 'Approved' %}
+                  {% if room_card.booking.status.name == 'Approved' %}
                          bg-primary
-                    {% elif booking.status.name == 'Check-in' %}
+                    {% elif room_card.booking.status.name == 'Check-in' %}
                          bg-success
-                    {% elif booking.status.name == 'Check-out' %}
-                         bg-warning
-                    {% elif booking.status.name == 'Cancelled' %}
-                         bg-secondary
-                    {% else %}
-                         bg-danger
                     {% endif %}">
-                    {% if booking.status.name == 'Approved' %}
+                    {% if room_card.booking.status.name == 'Approved' %}
                       ✅ รอ Check-in
-                    {% elif booking.status.name == 'Check-in' %}
+                    {% elif room_card.booking.status.name == 'Check-in' %}
                       ⏳ กำลังใช้งาน
-                    {% elif booking.status.name == 'Check-out' %}
-                      🚪 ออกจากห้อง
-                    {% elif booking.status.name == 'Cancelled' %}
-                      ❌ ยกเลิก
-                    {% else %}
-                      ❌ ไม่อนุมัติ
                     {% endif %}
                   </span>
-                  {% comment %} {{ booking.description }} {% endcomment %}
                 </div>
-                {% comment %} <ul class="postcard__tagbox fs-4">
-                  <li class="tag__item">💼 {{ booking.employee.fcdept.fcname }}</li>
-                  <li class="tag__item">👤 {{ booking.employee.first_name }} {{ booking.employee.last_name }}</li>
-                </ul>
-                <ul class="postcard__tagbox fs-4 m-0">
-                  <li class="tag__item">🕒 {{ booking.start_date|time:'H:i' }} - {{ booking.end_date|time:'H:i' }}</li>
-                  <li class="tag__item">
-                    {% if booking.status.name == 'Approved' %}
-                      ✅ รอ Check-in
-                    {% elif booking.status.name == 'Check-in' %}
-                      ⏳ กำลังใช้งาน
-                    {% elif booking.status.name == 'Check-out' %}
-                      🚪 ออกจากห้อง
-                    {% elif booking.status.name == 'Cancelled' %}
-                      ❌ ยกเลิก
-                    {% else %}
-                      ❌ ไม่อนุมัติ
-                    {% endif %}
-                  </li>
-                </ul> {% endcomment %}
-              </div>
-            </article>
-          </div>
-        {% endfor %}
-      </div>
-    {% else %}
-      <div class="text-center">
-        <img src="https://cdn-icons-png.flaticon.com/512/2748/2748558.png" alt="No Booking" width="150" class="mb-3" />
-        <p class="fs-5 text-muted">ไม่พบการจองห้องประชุมในวันนี้</p>
-      </div>
-    {% endif %}
+              {% else %}
+                <h1 class="postcard__title blue">ไม่พบข้อมูลการประชุม</h1>
+                <div class="postcard__subtitle">{{ room_card.room.name }}</div>
+                <div class="postcard__bar"></div>
+                <div class="postcard__preview-txt">
+                  <strong>🕒 เวลา:</strong> - <br />
+                  <strong>👤 ผู้จอง:</strong> - <br />
+                  <strong>💼 แผนก:</strong> - <br />
+                  <strong>📢 สถานะ:</strong>
+                  <span class="badge rounded bg-primary">ห้องว่าง</span>
+                </div>
+              {% endif %}
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
   </div>
   {% include './script.html' %}
   {% include './style.html' %}
