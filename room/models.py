@@ -98,4 +98,4 @@ def booking_updated(sender, instance, **kwargs):
     เมื่อมีการสร้าง แก้ไข หรือ ลบ booking ให้ตั้งค่า cache 
     เพื่อใช้ตรวจสอบว่ามีการเปลี่ยนแปลงเกิดขึ้น
     """
-    cache.set("booking_updated", True, timeout=10)  # ตั้งค่า cache ไว้ 10 วินาที
+    cache.set("booking_updated", True, timeout=120)  # ตั้งค่า cache ไว้ 120 วินาที
