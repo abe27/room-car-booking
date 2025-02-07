@@ -8,13 +8,14 @@
       <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for booking in bookings %}
           <div class="col">
-            <div class="card shadow-sm h-100 border-0">
+            <div class="card shadow-sm h-100 border-0 mb-0">
               <div class="card-body">
                 <h4 class="card-title text-primary fw-bold">{{ booking.title }}</h4>
                 <p class="card-text text-xl">
                   <strong>🏢 ห้อง:</strong> {{ booking.room.name }}<br />
                   <strong>🕒 เวลา:</strong> {{ booking.start_date|time:'H:i' }} - {{ booking.end_date|time:'H:i' }}<br />
                   <strong>👤 ผู้จอง:</strong> {{ booking.employee.first_name }} {{ booking.employee.last_name }}<br />
+                  <strong>💼 แผนก:</strong> {{ booking.employee.fcdept.fcname }}<br />
                   <strong>📢 สถานะ:</strong>
                   <span class="badge rounded
                   {% if booking.status.name == 'Approved' %}
