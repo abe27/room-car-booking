@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 import json
 from django.http import JsonResponse
 from django.core.cache import cache
+from django.utils import timezone
 
 
 def index(request):
@@ -23,8 +24,18 @@ def index(request):
 
 
 def detail(request, id):
-    loop = [0,1,2,3,4,5]
+    today = timezone.now().date()  # Get today's date
     room = get_object_or_404(Room, id=id)
+    current_booking = (
+        Booking.objects.filter(
+            room=id,
+            status__sequence__in=[1, 4],
+            start_date__date=today,  # Filter bookings starting today
+        )
+        .order_by("start_date", "end_date")
+        .first()
+    )
+
     bookings = Booking.objects.filter(
         room=id,
         status__sequence__in=[1, 4, 5],
@@ -52,8 +63,8 @@ def detail(request, id):
             }
         )
     context = {
-        "loop": loop,
         "room": room,
+        "current_booking": current_booking,
         "bookings": json.dumps(bookings_data),
     }
     return render(request, "room/calendar/detail.html", context)

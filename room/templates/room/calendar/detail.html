@@ -4,50 +4,51 @@
   <div class="p-3">
     <section class="pb-5" style="height: 100vh;">
       <div class="py-2">
-        <div class="h1 text-center" id="pageHeaderTitle">My Cards Light</div>
-        {% comment %} <article class="postcard dark blue h-100">
-          <a class="postcard__img_link" href="#"><img class="postcard__img" src="https://picsum.photos/1000/1000" alt="Image Title" /></a>
-          <div class="postcard__text">
-            <h1 class="postcard__title text-white"><a href="#">Podcast Title</a></h1>
-            <div class="postcard__subtitle small">
-              <time datetime="2020-05-25 12:00:00"><i class="fas fa-calendar-alt mr-2"></i>Mon, May 25th 2020</time>
-            </div>
-            <div class="postcard__bar"></div>
-            <div class="postcard__preview-txt">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi, fugiat asperiores inventore beatae accusamus odit minima enim, commodi quia, doloribus eius! Ducimus nemo accusantium maiores velit corrupti tempora reiciendis molestiae repellat vero. Eveniet ipsam adipisci illo iusto quibusdam, sunt neque nulla unde ipsum dolores nobis enim quidem excepturi, illum quos!</div>
-            <ul class="postcard__tagbox">
-              <li class="tag__item">
-                <i class="fas fa-tag mr-2"></i>Podcast
-              </li>
-              <li class="tag__item">
-                <i class="fas fa-clock mr-2"></i>55 mins.
-              </li>
-              <li class="tag__item play blue">
-                <a href="#"><i class="fas fa-play mr-2"></i>Play Episode</a>
-              </li>
-            </ul>
-          </div>
-        </article> {% endcomment %}
+        <div class="h1 text-center" id="pageHeaderTitle">{{ room.name }}</div>
 
-        <article class="postcard light blue">
-          <a class="postcard__img_link" href="#"><img class="postcard__img" src="https://picsum.photos/1000/1000" alt="Image Title" /></a>
-          <div class="postcard__text t-dark">
-            <h1 class="postcard__title blue"><a href="#">Podcast Title</a></h1>
-            <div class="postcard__subtitle small">
-              <time datetime="2020-05-25 12:00:00"><i class="fas fa-calendar-alt mr-2"></i>Mon, May 25th 2020</time>
-            </div>
+        <article class="postcard light blue mb-0">
+          <img class="postcard__img"
+            src="{% if room.image %}
+              {{ room.image.url }}
+            {% else %}
+          https://random-image-pepebigotes.vercel.app/api/random-image
+            {% endif %}"
+            alt="Image Title" />
+          <div class="postcard__text t-dark text-truncate text-wrap">
+            <h1 class="postcard__title blue" style="font-size: 3rem;">{{ current_booking.title|default:'ไม่พบข้อมูลการประชุม' }}</h1>
+            {% comment %} <div class="postcard__subtitle fs-2">{{ current_booking.room.name }}</div> {% endcomment %}
             <div class="postcard__bar"></div>
-            <div class="postcard__preview-txt">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi, fugiat asperiores inventore beatae accusamus odit minima enim, commodi quia, doloribus eius! Ducimus nemo accusantium maiores velit corrupti tempora reiciendis molestiae repellat vero. Eveniet ipsam adipisci illo iusto quibusdam, sunt neque nulla unde ipsum dolores nobis enim quidem excepturi, illum quos!</div>
-            <ul class="postcard__tagbox">
-              <li class="tag__item">
-                <i class="fas fa-tag mr-2"></i>Podcast
-              </li>
-              <li class="tag__item">
-                <i class="fas fa-clock mr-2"></i>55 mins.
-              </li>
-              <li class="tag__item play blue">
-                <a href="#"><i class="fas fa-play mr-2"></i>Play Episode</a>
-              </li>
-            </ul>
+            <div class="postcard__preview-txt fs-3">
+              {{ current_booking.description|default:'-' }}<br />
+              <strong>🕒 เวลา:</strong> {{ current_booking.start_date|time:'H:i' }} - {{ current_booking.end_date|time:'H:i' }}<br />
+              <strong>👤 ผู้จอง:</strong> {{ current_booking.employee.first_name|default:'-' }} {{ current_booking.employee.last_name }}<br />
+              <strong>💼 แผนก:</strong> {{ current_booking.employee.fcdept.fcname|default:'-' }}<br />
+              <strong>📢 สถานะ:</strong>
+              <span class="badge rounded
+              {% if current_booking.status.name == 'Approved' %}
+                     bg-primary
+                {% elif current_booking.status.name == 'Check-in' %}
+                     bg-success
+                {% elif current_booking.status.name == 'Check-out' %}
+                     bg-warning
+                {% elif current_booking.status.name == 'Cancelled' %}
+                     bg-secondary
+                {% else %}
+                     bg-primary
+                {% endif %}">
+                {% if current_booking.status.name == 'Approved' %}
+                  ✅ รอ Check-in
+                {% elif current_booking.status.name == 'Check-in' %}
+                  ⏳ กำลังใช้งาน
+                {% elif current_booking.status.name == 'Check-out' %}
+                  🚪 ออกจากห้อง
+                {% elif current_booking.status.name == 'Cancelled' %}
+                  ❌ ยกเลิก
+                {% else %}
+                ห้องว่าง
+                {% endif %}
+              </span>
+            </div>
           </div>
         </article>
       </div>
