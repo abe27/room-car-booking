@@ -5,11 +5,17 @@
     <h1 class="text-center">ห้องประชุม</h1>
     <div class="mx-auto py-3">
       <select class="form-select" aria-label="Default select example" id="companySelect">
-        <option value="" {% if not request.GET.company %}selected{% endif %}>กรุณาเลือกบริษัท</option>
+        {% if request.GET.company %}
+          <option value="" selected>กรุณาเลือกบริษัท</option>
+        {% else %}
+          <option value="">กรุณาเลือกบริษัท</option>
+        {% endif %}
         {% for company in companies %}
-          <option value="{{ company.id }}" {% if request.GET.company == company.id|stringformat:"s" %}selected{% endif %}>
-            {{ company.fcname }}
-          </option>
+          {% if request.GET.company == company.id|stringformat:'s' %}
+            <option value="{{ company.id }}" selected>{{ company.fcname }}</option>
+          {% else %}
+            <option value="{{ company.id }}">{{ company.fcname }}</option>
+          {% endif %}
         {% endfor %}
       </select>
     </div>
