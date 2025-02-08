@@ -1,0 +1,28 @@
+{% extends 'room/calendar/base.html' %}
+
+{% block content %}
+  <div class="p-5">
+    <h1 class="text-center">รายชื่อบริษัท</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      {% for company in companies %}
+        <div class="col">
+          <a class="card h-100 shadow-sm mb-0 text-decoration-none" href="/room/card/{{company.id}}">
+            <img src="{% if company.image %}
+                {{ company.image.url }}
+              {% else %}
+          https://random-image-pepebigotes.vercel.app/api/random-image
+              {% endif %}"
+              class="card-img-top img-fluid object-fit-contain "
+              alt="..."
+              style="max-height: 200px;" />
+            <div class="card-body">
+              <h5 class="card-title text-center">{{ company.fcname }}</h5>
+            </div>
+          </a>
+        </div>
+      {% empty %}
+        <p class="text-center mx-auto">No rooms available for the selected time.</p>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
