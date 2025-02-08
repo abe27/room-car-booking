@@ -14,9 +14,9 @@ def sign_out(request):
 
 def index(request):
     if request.user.is_authenticated:
-        return render(request, "app/home/index.html")
+        return render(request, "app/index/index.html")
     else:
-        return redirect("signin")
+        return redirect("home")
 
 
 def sign_in(request):
@@ -121,3 +121,6 @@ def profile(request):
         return render(request, "app/accounts/profile/index.html")
     else:
         return redirect("/")
+
+def home(request):
+    return render(request, "app/home/index.html")
