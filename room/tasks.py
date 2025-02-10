@@ -100,9 +100,9 @@ def update_booking_status():
     bookings_approved = Booking.objects.filter(
         status__sequence=1, start_date__lte=now - timedelta(hours=1)
     )
-    # ดึงข้อมูล bookings ที่มี status__sequence เท่ากับ 4 และมี end_date เลยเวลาไปแล้ว 1 ชั่วโมง
+    # ดึงข้อมูล bookings ที่มี status__sequence เท่ากับ 4 และมี end_date เลยเวลาไปแล้ว 30 นาที
     bookings_check_in = Booking.objects.filter(
-        status__sequence=4, end_date__lte=now - timedelta(hours=1)
+        status__sequence=4, end_date__lte=now - timedelta(minutes=30)
     )
 
     print(f"Update Booking Status Approved: {len(bookings_approved)} bookings")
@@ -119,7 +119,7 @@ def update_booking_status():
         booking.remark = remark_rejected
         booking.save()
         
-    # อัพเดทสถานะ Check-in เป็น Check-out เมื่อสถานะของ Check-in เลยเวลา end ไป 1 ชม.
+    # อัพเดทสถานะ Check-in เป็น Check-out เมื่อสถานะของ Check-in เลยเวลา end ไป 30 นาที
     # ดึง status ที่มี sequence 5 = Check-out
     check_out_status = Status.objects.get(sequence=5)
     remark_check_out = "ถูก Check-out โดยระบบ"

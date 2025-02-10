@@ -51,7 +51,7 @@ def card(request, id):
         room__company=id,
         status__sequence__in=[1, 4],
         start_date__date=today,
-    ).order_by("start_date", "end_date")
+    ).order_by("-start_date", "-end_date")
 
     # สร้าง mapping ระหว่างห้องกับการจอง
     room_booking_map = {booking.room.id: booking for booking in bookings}
