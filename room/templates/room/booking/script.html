@@ -78,7 +78,31 @@
 </script>
 
 <script>
-  $(document).ready(function() {
-    $('#helpToast').toast('show');
-  });
+  $(document).ready(function () {
+    $('#helpToast').toast('show')
+  })
+</script>
+
+<script>
+  $(document).ready(function () {
+    // ตั้งค่าวันที่ปัจจุบันเป็นค่าเริ่มต้น
+    var today = new Date().toISOString().split('T')[0]
+    $('#date').val(today)
+  
+    // ตั้งค่าเวลาปัจจุบันเป็นค่าเริ่มต้นของ start_time และเวลาสิ้นสุดเป็น +1 ชั่วโมง
+    var now = new Date()
+    var currentHour = now.getHours()
+    var currentMinute = now.getMinutes()
+  
+    // ทำให้เวลาเป็นรูปแบบ HH:MM (2 หลัก)
+    function formatTime(hour, minute) {
+      return ('0' + hour).slice(-2) + ':' + ('0' + minute).slice(-2)
+    }
+  
+    var startTime = formatTime(currentHour, currentMinute)
+    var endTime = formatTime(currentHour + 1, currentMinute) // +1 ชั่วโมง
+  
+    $('#start_time').val(startTime)
+    $('#end_time').val(endTime)
+  })
 </script>

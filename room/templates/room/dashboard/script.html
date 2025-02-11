@@ -21,7 +21,7 @@
 <script>
   $(document).ready(function () {
     var calendar
-
+  
     function getInitialView() {
       return window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth'
     }
@@ -63,7 +63,7 @@
           $('#eventDetailEnd').text(info.event.end ? info.event.end.toLocaleString('th-TH') : 'N/A') // Format the end date
           $('#eventDetailStatus').text(info.event.extendedProps.status)
           $('#eventDetailRemark').html(info.event.extendedProps.remark)
-
+  
           // แสดงปุ่ม Cancel ถ้า emp_id ตรงกับ ID ของผู้ใช้ปัจจุบัน
           if (info.event.extendedProps.emp_id == currentUserEmpId) {
             $('#cancelBookingBtn').show()
@@ -84,8 +84,8 @@
       calendar.removeAllEvents()
   
       // Add new events
-      var bookings = JSON.parse('{{ bookings|escapejs }}');
-
+      var bookings = JSON.parse('{{ bookings|escapejs }}')
+  
       //console.log(bookings)
       calendar.addEventSource(
         bookings.map(function (booking) {
@@ -101,7 +101,7 @@
               lastname: booking.last_name,
               description: booking.description,
               status: booking.status,
-              remark: booking.remark,
+              remark: booking.remark
             }
           }
         })
@@ -112,11 +112,11 @@
       if ($('#room_id').val() === null) {
         event.preventDefault()
         $('#alertPlaceholder').html(`
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-              <strong>กรุณาเลือกห้องประชุม!</strong> คุณต้องเลือกห้องประชุมก่อนค้นหา.
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-          `)
+              <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>กรุณาเลือกห้องประชุม!</strong> คุณต้องเลือกห้องประชุมก่อนค้นหา.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            `)
       } else {
         // Initialize calendar if not already done
         if (!calendar) {
@@ -133,22 +133,22 @@
     if ('{{selectedRoom}}') {
       //remove disabled attribute from room select
       select_room_id.removeAttribute('disabled')
-      const capacitySelect = document.getElementById("capacity");
-      const roomSelect = document.getElementById("room_id");
-      const selectedCapacity = capacitySelect.options[capacitySelect.selectedIndex];
-      const startCapacity = parseInt(selectedCapacity.getAttribute("data-start"));
-      const endCapacity = selectedCapacity.getAttribute("data-end") ? parseInt(selectedCapacity.getAttribute("data-end")) : null;
-
+      const capacitySelect = document.getElementById('capacity')
+      const roomSelect = document.getElementById('room_id')
+      const selectedCapacity = capacitySelect.options[capacitySelect.selectedIndex]
+      const startCapacity = parseInt(selectedCapacity.getAttribute('data-start'))
+      const endCapacity = selectedCapacity.getAttribute('data-end') ? parseInt(selectedCapacity.getAttribute('data-end')) : null
+  
       // Enable room select only if a capacity is selected
-      roomSelect.disabled = !selectedCapacity;
-
+      roomSelect.disabled = !selectedCapacity
+  
       // Filter rooms based on selected capacity
       for (const option of roomSelect.options) {
-        if (option.hasAttribute("data-capacity")) {
-          const roomCapacity = parseInt(option.getAttribute("data-capacity"));
-          const isWithinCapacity = endCapacity ? (roomCapacity >= startCapacity && roomCapacity <= endCapacity) : roomCapacity >= startCapacity;
-
-          option.style.display = isWithinCapacity ? "block" : "none";
+        if (option.hasAttribute('data-capacity')) {
+          const roomCapacity = parseInt(option.getAttribute('data-capacity'))
+          const isWithinCapacity = endCapacity ? roomCapacity >= startCapacity && roomCapacity <= endCapacity : roomCapacity >= startCapacity
+  
+          option.style.display = isWithinCapacity ? 'block' : 'none'
         }
       }
       initializeCalendar()
@@ -159,26 +159,50 @@
 
 <script>
   function filterRooms() {
-    const capacitySelect = document.getElementById("capacity");
-    const roomSelect = document.getElementById("room_id");
-    const selectedCapacity = capacitySelect.options[capacitySelect.selectedIndex];
-    const startCapacity = parseInt(selectedCapacity.getAttribute("data-start"));
-    const endCapacity = selectedCapacity.getAttribute("data-end") ? parseInt(selectedCapacity.getAttribute("data-end")) : null;
-
+    const capacitySelect = document.getElementById('capacity')
+    const roomSelect = document.getElementById('room_id')
+    const selectedCapacity = capacitySelect.options[capacitySelect.selectedIndex]
+    const startCapacity = parseInt(selectedCapacity.getAttribute('data-start'))
+    const endCapacity = selectedCapacity.getAttribute('data-end') ? parseInt(selectedCapacity.getAttribute('data-end')) : null
+  
     // Enable room select only if a capacity is selected
-    roomSelect.disabled = !selectedCapacity;
-
+    roomSelect.disabled = !selectedCapacity
+  
     // Clear previous room selection
-    roomSelect.selectedIndex = 0;
-
+    roomSelect.selectedIndex = 0
+  
     // Filter rooms based on selected capacity
     for (const option of roomSelect.options) {
-      if (option.hasAttribute("data-capacity")) {
-        const roomCapacity = parseInt(option.getAttribute("data-capacity"));
-        const isWithinCapacity = endCapacity ? (roomCapacity >= startCapacity && roomCapacity <= endCapacity) : roomCapacity >= startCapacity;
-
-        option.style.display = isWithinCapacity ? "block" : "none";
+      if (option.hasAttribute('data-capacity')) {
+        const roomCapacity = parseInt(option.getAttribute('data-capacity'))
+        const isWithinCapacity = endCapacity ? roomCapacity >= startCapacity && roomCapacity <= endCapacity : roomCapacity >= startCapacity
+  
+        option.style.display = isWithinCapacity ? 'block' : 'none'
       }
     }
   }
+</script>
+
+<script>
+  $(document).ready(function () {
+    // ตั้งค่าวันที่ปัจจุบันเป็นค่าเริ่มต้น
+    var today = new Date().toISOString().split('T')[0]
+    $('#date_event').val(today)
+  
+    // ตั้งค่าเวลาปัจจุบันเป็นค่าเริ่มต้นของ start_time และเวลาสิ้นสุดเป็น +1 ชั่วโมง
+    var now = new Date()
+    var currentHour = now.getHours()
+    var currentMinute = now.getMinutes()
+  
+    // ทำให้เวลาเป็นรูปแบบ HH:MM (2 หลัก)
+    function formatTime(hour, minute) {
+      return ('0' + hour).slice(-2) + ':' + ('0' + minute).slice(-2)
+    }
+  
+    var startTime = formatTime(currentHour, currentMinute)
+    var endTime = formatTime(currentHour + 1, currentMinute) // +1 ชั่วโมง
+  
+    $('#start_time_event').val(startTime)
+    $('#end_time_event').val(endTime)
+  })
 </script>
