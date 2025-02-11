@@ -20,31 +20,64 @@
       </select>
     </div>
     <div id="calendar" class="mb-3"></div>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-      {% for room in rooms %}
-        <div class="col">
-          <div class="card shadow-sm h-100 border-0 mb-0">
-            <img class="card-img-top"
-              alt="{{ room.name }}"
-              src="{% if room.image %}
-                {{ room.image.url }}
-              {% else %}
-                https://random-image-pepebigotes.vercel.app/api/random-image
-              {% endif %}"
-              style="height: 150px; object-fit: cover; width: 100%;" />
-            <div class="card-body">
-              <h5 class="card-title">{{ room.name }}</h5>
-              <div class="mb-1 text-primary">รองรับผู้เข้าร่วม 1-{{ room.maximum_capacity }} คน</div>
-              <div class="card-text text-danger">{{ room.remark }}</div>
-              <div class="mt-2 d-flex gap-1 flex-wrap justify-content-center">
-                <a class="btn btn-sm btn-primary view-room-btn" href="{% url 'calendar_show' id=room.id %}">View</a>
+    <div class="mt-5">
+      <h1 class="text-center mb-4">📅 Meeting Board <span id="currentDateTime"></span></h1>
+      <div class="row row-cols-1 g-4 
+      {% if room_cards|length > 6 %}
+      row-cols-md-3
+        {% else %}
+      row-cols-md-2
+        {% endif %}">
+        {% for room_card in room_cards %}
+          <div class="col">
+            <article class="postcard light blue h-100 mb-0">
+              <img class="postcard__img"
+                src="{% if room_card.room.image %}
+                  {{ room_card.room.image.url }}
+                {% else %}
+                  https://random-image-pepebigotes.vercel.app/api/random-image
+                {% endif %}"
+                alt="Image Title" />
+              <div class="postcard__text t-dark">
+                {% if room_card.booking %}
+                  <h1 class="postcard__title blue">{{ room_card.booking.title }}</h1>
+                  <div class="postcard__subtitle">{{ room_card.room.name }}</div>
+                  <div class="postcard__bar"></div>
+                  <div class="postcard__preview-txt">
+                    <strong>🕒 เวลา:</strong> {{ room_card.booking.start_date|time:'H:i' }} - {{ room_card.booking.end_date|time:'H:i' }}<br />
+                    <strong>👤 ผู้จอง:</strong> {{ room_card.booking.employee.first_name }} {{ room_card.booking.employee.last_name }}<br />
+                    <strong>💼 แผนก:</strong> {{ room_card.booking.employee.fcdept.fcname }}<br />
+                    <strong>📢 สถานะ:</strong>
+                    <span class="badge rounded
+                    {% if room_card.booking.status.name == 'Approved' %}
+                           bg-primary
+                      {% elif room_card.booking.status.name == 'Check-in' %}
+                           bg-success
+                      {% endif %}">
+                      {% if room_card.booking.status.name == 'Approved' %}
+                        ✅ รอ Check-in
+                      {% elif room_card.booking.status.name == 'Check-in' %}
+                        ⏳ กำลังใช้งาน
+                      {% endif %}
+                    </span>
+                  </div>
+                {% else %}
+                  <h1 class="postcard__title blue">ห้องว่าง</h1>
+                  <div class="postcard__subtitle">{{ room_card.room.name }}</div>
+                  <div class="postcard__bar"></div>
+                  <div class="postcard__preview-txt">
+                    <strong>🕒 เวลา:</strong> - <br />
+                    <strong>👤 ผู้จอง:</strong> - <br />
+                    <strong>💼 แผนก:</strong> - <br />
+                    <strong>📢 สถานะ:</strong>
+                    <span class="badge rounded bg-primary">ห้องว่าง</span>
+                  </div>
+                {% endif %}
               </div>
-            </div>
+            </article>
           </div>
-        </div>
-      {% empty %}
-        <p class="text-center mx-auto">No rooms available for the selected time.</p>
-      {% endfor %}
+        {% endfor %}
+      </div>
     </div>
   </div>
 
@@ -57,5 +90,6 @@
 
   {% include 'room/components/modal_detail.html' %}
   {% include './script.html' %}
-  {% include './style.html' %}
+  {% include 'room/room/card/script.html' %}
+  {% include 'room/room/card/style.html' %}
 {% endblock %}
