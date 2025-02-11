@@ -63,6 +63,7 @@
           $('#eventDetailEnd').text(info.event.end ? info.event.end.toLocaleString('th-TH') : 'N/A') // Format the end date
           $('#eventDetailStatus').text(info.event.extendedProps.status)
           $('#eventDetailRemark').html(info.event.extendedProps.remark)
+          $('#eventDetailRoom').text(info.event.extendedProps.room)
   
           // แสดงปุ่ม Cancel ถ้า emp_id ตรงกับ ID ของผู้ใช้ปัจจุบัน
           if (info.event.extendedProps.emp_id == currentUserEmpId) {
@@ -101,7 +102,8 @@
               lastname: booking.last_name,
               description: booking.description,
               status: booking.status,
-              remark: booking.remark
+              remark: booking.remark,
+              room: booking.room
             }
           }
         })

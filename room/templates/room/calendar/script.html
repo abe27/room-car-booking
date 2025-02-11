@@ -45,6 +45,7 @@
           $('#eventDetailEnd').text(info.event.end ? info.event.end.toLocaleString('th-TH') : 'N/A')
           $('#eventDetailStatus').text(info.event.extendedProps.status)
           $('#eventDetailRemark').html(info.event.extendedProps.remark)
+          $('#eventDetailRoom').text(info.event.extendedProps.room)
   
           if (info.event.extendedProps.emp_id == currentUserEmpId) {
             $('#cancelBookingBtn').show()
@@ -74,7 +75,8 @@
               lastname: booking.last_name,
               description: booking.description,
               status: booking.status,
-              remark: booking.remark
+              remark: booking.remark,
+              room: booking.room
             }
           }
         })

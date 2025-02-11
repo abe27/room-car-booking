@@ -38,6 +38,7 @@ def index(request):
                     "remark": booking.remark.replace("\r\n", "<br>").replace(
                         "\n", "<br>"
                     ),  # แปลง \r\n และ \n เป็น <br>,
+                    "room": booking.room.name
                 }
             )
 
@@ -125,6 +126,7 @@ def detail(request, id):
                 "remark": booking.remark.replace("\r\n", "<br>").replace(
                     "\n", "<br>"
                 ),  # แปลง \r\n และ \n เป็น <br>,
+                "room": booking.room.name
             }
         )
     context = {
