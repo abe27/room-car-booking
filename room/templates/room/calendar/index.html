@@ -19,6 +19,7 @@
         {% endfor %}
       </select>
     </div>
+    <div id="calendar" class="mb-3"></div>
     <div class="row row-cols-1 row-cols-md-3 g-4">
       {% for room in rooms %}
         <div class="col">
@@ -53,4 +54,8 @@
       location.href = `?company=${this.value}`
     })
   </script>
+
+  {% include 'room/components/modal_detail.html' %}
+  {% include './script.html' %}
+  {% include './style.html' %}
 {% endblock %}
