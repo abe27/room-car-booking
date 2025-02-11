@@ -1,6 +1,34 @@
 {% extends 'room/base.html' %}
 
 {% block content %}
+  <style>
+    @media (max-width: 768px) {
+      #calendar {
+        max-width: 100%;
+        height: auto !important;
+      }
+    
+      .fc-toolbar {
+        flex-direction: column;
+        align-items: center;
+      }
+    
+      .fc-header-toolbar {
+        flex-wrap: wrap;
+      }
+    
+      .fc-toolbar-chunk {
+        margin-bottom: 5px;
+      }
+    
+      .fc-dayGridMonth-view .fc-day {
+        min-height: 50px; /* เพิ่มความสูงของแต่ละวันให้พอดีกับมือถือ */
+      }
+
+
+    }
+  </style>
+
   <div id="main-content">
     <h1 class="text-center mb-3">สถานะห้องประชุม</h1>
     <div class="card">
@@ -9,7 +37,7 @@
         <form id="searchRoom" method="POST" action="{% url 'room_dashboard' %}">
           {% csrf_token %}
           <div class="row">
-            <div class="row row-cols-2">
+            <div class="row row-cols-1 row-cols-md-2 g-2">
               <div class="col">
                 <label for="">จำนวนผู้เข้าร่วมประชุม</label>
                 <select class="form-select mt-2" aria-label="Default select capacity" id="capacity" name="capacity" onchange="filterRooms()">
@@ -79,7 +107,7 @@
           </button>
         </div>
     {% endif %}
-    <div id="calendar" class="mb-3"></div>
+    <div id="calendar" class="my-3"></div>
   </div>
   {% include 'room/components/modal_detail.html' %}
   {% include './script.html' %}

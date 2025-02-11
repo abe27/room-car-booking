@@ -21,17 +21,21 @@
 <script>
   $(document).ready(function () {
     var calendar
+
+    function getInitialView() {
+      return window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth'
+    }
   
     function initializeCalendar() {
       var calendarEl = document.getElementById('calendar')
       calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
+        initialView: getInitialView(),
         dayMaxEvents: true,
         eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
         headerToolbar: {
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          right: window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth,timeGridWeek,timeGridDay'
         },
         views: {
           dayGridMonth: {
@@ -41,6 +45,9 @@
             titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
           },
           timeGridDay: {
+            titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
+          },
+          listWeek: {
             titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
           }
         },
