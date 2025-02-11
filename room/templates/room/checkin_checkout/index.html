@@ -6,7 +6,7 @@
     <div class="row row-cols-1 row-cols-md-4 g-2 mt-3">
       {% for booking in bookings %}
         <div class="col">
-          <div class="card">
+          <div class="card shadow-sm">
             <img class="card-img-top"
               alt="{{ booking.room.name }}"
               src="{% if booking.room.image %}

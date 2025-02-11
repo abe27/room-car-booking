@@ -6,7 +6,7 @@
 
     <form id="searchForm" method="POST" action="{% url 'room_booking' %}">
       {% csrf_token %}
-      <div class="card">
+      <div class="card shadow-sm">
         <div class="card-body">
           <div id="alertMessage"></div>
           <div class="row">
@@ -35,7 +35,7 @@
     <div class="row row-cols-1 row-cols-md-4 g-2 mt-3">
       {% for room in rooms %}
         <div class="col">
-          <div class="card">
+          <div class="card shadow-sm">
             <img class="card-img-top"
               alt="{{ room.name }}"
               src="{% if room.image %}

@@ -29,7 +29,7 @@
 
   <div id="main-content">
     <h1 class="text-center mb-3">สถานะห้องประชุม</h1>
-    <div class="card">
+    <div class="card shadow-sm">
       <div class="card-body">
         <div id="alertPlaceholder"></div> <!-- สำหรับแสดงข้อความแจ้งเตือน -->
         <form id="searchRoom" method="POST" action="{% url 'room_dashboard' %}">
@@ -73,7 +73,7 @@
       </div>
     </div>
     {% if selectedRoom %}
-      <div class="card mt-3 mb-3">
+      <div class="card shadow-sm mt-3 mb-3">
         <div class="row g-0">
           <div class="col-md-4">
             <img class="img-fluid rounded-start"
