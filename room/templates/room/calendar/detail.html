@@ -1,6 +1,31 @@
 {% extends 'room/calendar/base.html' %}
 
 {% block content %}
+  <style>
+    @media (max-width: 768px) {
+      #calendar {
+        max-width: 100%;
+        height: auto !important;
+      }
+    
+      .fc-toolbar {
+        flex-direction: column;
+        align-items: center;
+      }
+    
+      .fc-header-toolbar {
+        flex-wrap: wrap;
+      }
+    
+      .fc-toolbar-chunk {
+        margin-bottom: 5px;
+      }
+    
+      .fc-dayGridMonth-view .fc-day {
+        min-height: 50px; /* เพิ่มความสูงของแต่ละวันให้พอดีกับมือถือ */
+      }
+    }
+  </style>
   <div class="p-3">
     <section class="pb-5">
       <div class="py-2">
