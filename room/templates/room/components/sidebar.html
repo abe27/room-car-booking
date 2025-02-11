@@ -89,6 +89,13 @@
               <span>จัดการแผนก</span>
             </a>
           </li>
+
+          <li class="sidebar-item {% if url == 'room_company' %}active{% endif %}">
+            <a href="{% url 'room_company' %}" class="sidebar-link">
+              <i class="bi bi-grid-fill"></i>
+              <span>Monitor</span>
+            </a>
+          </li>
         </ul>
       {% endif %}
     </div>
