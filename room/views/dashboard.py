@@ -60,28 +60,29 @@ def dashboard(request):
 
             bookings_data = []
             for booking in bookings:
-                bookings_data.append(
-                    {
-                        "id": booking.pk,
-                        "emp_id": booking.employee.emp_id,
-                        "first_name": booking.employee.first_name,
-                        "last_name": booking.employee.last_name,
-                        "title": booking.title,
-                        "start_date": booking.start_date.isoformat(),
-                        "end_date": booking.end_date.isoformat(),
-                        "description": booking.description.replace(
-                            "\r\n", "<br>"
-                        ).replace(
-                            "\n", "<br>"
-                        ),  # แปลง \r\n และ \n เป็น <br>
-                        "status": booking.status.name,
-                        "color": booking.status.color,
-                        "remark": booking.remark.replace("\r\n", "<br>").replace(
-                            "\n", "<br>"
-                        ),  # แปลง \r\n และ \n เป็น <br>,
-                        "room": booking.room.name
-                    }
-                )
+                if booking.employee:
+                    bookings_data.append(
+                        {
+                            "id": booking.pk,
+                            "emp_id": booking.employee.emp_id,
+                            "first_name": booking.employee.first_name,
+                            "last_name": booking.employee.last_name,
+                            "title": booking.title,
+                            "start_date": booking.start_date.isoformat(),
+                            "end_date": booking.end_date.isoformat(),
+                            "description": booking.description.replace(
+                                "\r\n", "<br>"
+                            ).replace(
+                                "\n", "<br>"
+                            ),  # แปลง \r\n และ \n เป็น <br>
+                            "status": booking.status.name,
+                            "color": booking.status.color,
+                            "remark": booking.remark.replace("\r\n", "<br>").replace(
+                                "\n", "<br>"
+                            ),  # แปลง \r\n และ \n เป็น <br>,
+                            "room": booking.room.name
+                        }
+                    )           
 
             # Update context with selected room, its bookings, and serialized bookings data
             context.update(
