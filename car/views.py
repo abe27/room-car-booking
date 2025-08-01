@@ -145,37 +145,37 @@ def save_booking(request):
             status=status,
         )
 
-        # Send Line Notify
-        line_notify_token = request.user.fccorp.line_notify_car
-        line_notify_url = "https://notify-api.line.me/api/notify"
-        headers = {"Authorization": f"Bearer {line_notify_token}"}
-        # Assuming booking.start_date and booking.end_date are in ISO format strings
-        start_date_obj = datetime.fromisoformat(booking.start_date)
-        end_date_obj = datetime.fromisoformat(booking.end_date)
-        message = (
-            f"\nBooking ID: {booking.id}\n"
-            f"Title: {booking.title}\n"
-            f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
-            f"Location: {booking.location.name}\n"
-            f"Description: {booking.description}\n"
-            f"Tel: {booking.employee.tel}\n"
-            f"Start: {start_date_obj.strftime('%d/%m/%Y %H:%M')}\n"
-            f"End: {end_date_obj.strftime('%d/%m/%Y %H:%M')}\n"
-            f"Status: {booking.status.name}"
-        )
-        payload = {"message": message}
+        # # Send Line Notify
+        # line_notify_token = request.user.fccorp.line_notify_car
+        # line_notify_url = "https://notify-api.line.me/api/notify"
+        # headers = {"Authorization": f"Bearer {line_notify_token}"}
+        # # Assuming booking.start_date and booking.end_date are in ISO format strings
+        # start_date_obj = datetime.fromisoformat(booking.start_date)
+        # end_date_obj = datetime.fromisoformat(booking.end_date)
+        # message = (
+        #     f"\nBooking ID: {booking.id}\n"
+        #     f"Title: {booking.title}\n"
+        #     f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
+        #     f"Location: {booking.location.name}\n"
+        #     f"Description: {booking.description}\n"
+        #     f"Tel: {booking.employee.tel}\n"
+        #     f"Start: {start_date_obj.strftime('%d/%m/%Y %H:%M')}\n"
+        #     f"End: {end_date_obj.strftime('%d/%m/%Y %H:%M')}\n"
+        #     f"Status: {booking.status.name}"
+        # )
+        # payload = {"message": message}
 
-        response = requests.post(line_notify_url, headers=headers, data=payload)
-        if response.status_code != 200:
-            return JsonResponse(
-                {"status": "Booking saved, but failed to send Line notification."},
-                status=200,
-            )
-        else:
-            return JsonResponse(
-                {"status": "Booking saved and Line notification sent successfully!"},
-                status=200,
-            )
+        # response = requests.post(line_notify_url, headers=headers, data=payload)
+        # if response.status_code != 200:
+        #     return JsonResponse(
+        #         {"status": "Booking saved, but failed to send Line notification."},
+        #         status=200,
+        #     )
+        # else:
+        return JsonResponse(
+            {"status": "Booking saved and Line notification sent successfully!"},
+            status=200,
+        )
 
     return JsonResponse({"status": "Invalid request"}, status=400)
 
@@ -247,36 +247,36 @@ def approve_booking(request, booking_id):
         booking.remark = remark
         booking.save()
 
-        # Send Line Notify
-        line_notify_token = request.user.fccorp.line_notify_car
-        line_notify_url = "https://notify-api.line.me/api/notify"
-        headers = {"Authorization": f"Bearer {line_notify_token}"}
-        message = (
-            f"\nBooking ID: {booking.id}\n"
-            f"Car: {booking.car.name}\n"
-            f"Title: {booking.title}\n"
-            f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
-            f"Location: {booking.location.name}\n"
-            f"Description: {booking.description}\n"
-            f"Tel: {booking.employee.tel}\n"
-            f"Start: {booking.start_date.strftime('%d/%m/%Y %H:%M')}\n"
-            f"End: {booking.end_date.strftime('%d/%m/%Y %H:%M')}\n"
-            f"Remark: {booking.remark}\n"
-            f"Status: {booking.status.name}"
-        )
-        payload = {"message": message}
+        # # Send Line Notify
+        # line_notify_token = request.user.fccorp.line_notify_car
+        # line_notify_url = "https://notify-api.line.me/api/notify"
+        # headers = {"Authorization": f"Bearer {line_notify_token}"}
+        # message = (
+        #     f"\nBooking ID: {booking.id}\n"
+        #     f"Car: {booking.car.name}\n"
+        #     f"Title: {booking.title}\n"
+        #     f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
+        #     f"Location: {booking.location.name}\n"
+        #     f"Description: {booking.description}\n"
+        #     f"Tel: {booking.employee.tel}\n"
+        #     f"Start: {booking.start_date.strftime('%d/%m/%Y %H:%M')}\n"
+        #     f"End: {booking.end_date.strftime('%d/%m/%Y %H:%M')}\n"
+        #     f"Remark: {booking.remark}\n"
+        #     f"Status: {booking.status.name}"
+        # )
+        # payload = {"message": message}
 
-        response = requests.post(line_notify_url, headers=headers, data=payload)
-        if response.status_code != 200:
-            return JsonResponse(
-                {"status": "Booking approved, but failed to send Line notification."},
-                status=200,
-            )
-        else:
-            return JsonResponse(
-                {"status": "Booking approved and Line notification sent successfully!"},
-                status=200,
-            )
+        # response = requests.post(line_notify_url, headers=headers, data=payload)
+        # if response.status_code != 200:
+        #     return JsonResponse(
+        #         {"status": "Booking approved, but failed to send Line notification."},
+        #         status=200,
+        #     )
+        # else:
+        return JsonResponse(
+            {"status": "Booking approved and Line notification sent successfully!"},
+            status=200,
+        )
     else:
         return HttpResponseBadRequest("Invalid request method")
 
@@ -302,35 +302,35 @@ def reject_bookings(request, booking_id):
         booking.remark = remark
         booking.save()
 
-        # Send Line Notify
-        line_notify_token = request.user.fccorp.line_notify_car
-        line_notify_url = "https://notify-api.line.me/api/notify"
-        headers = {"Authorization": f"Bearer {line_notify_token}"}
-        message = (
-            f"\nBooking ID: {booking.id}\n"
-            f"Title: {booking.title}\n"
-            f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
-            f"Location: {booking.location.name}\n"
-            f"Description: {booking.description}\n"
-            f"Tel: {booking.employee.tel}\n"
-            f"Start: {booking.start_date.strftime('%d/%m/%Y %H:%M')}\n"
-            f"End: {booking.end_date.strftime('%d/%m/%Y %H:%M')}\n"
-            f"Remark: {booking.remark}\n"
-            f"Status: {booking.status.name}"
-        )
-        payload = {"message": message}
+        # # Send Line Notify
+        # line_notify_token = request.user.fccorp.line_notify_car
+        # line_notify_url = "https://notify-api.line.me/api/notify"
+        # headers = {"Authorization": f"Bearer {line_notify_token}"}
+        # message = (
+        #     f"\nBooking ID: {booking.id}\n"
+        #     f"Title: {booking.title}\n"
+        #     f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
+        #     f"Location: {booking.location.name}\n"
+        #     f"Description: {booking.description}\n"
+        #     f"Tel: {booking.employee.tel}\n"
+        #     f"Start: {booking.start_date.strftime('%d/%m/%Y %H:%M')}\n"
+        #     f"End: {booking.end_date.strftime('%d/%m/%Y %H:%M')}\n"
+        #     f"Remark: {booking.remark}\n"
+        #     f"Status: {booking.status.name}"
+        # )
+        # payload = {"message": message}
 
-        response = requests.post(line_notify_url, headers=headers, data=payload)
-        if response.status_code != 200:
-            return JsonResponse(
-                {"status": "Booking rejected, but failed to send Line notification."},
-                status=200,
-            )
-        else:
-            return JsonResponse(
-                {"status": "Booking rejected and Line notification sent successfully!"},
-                status=200,
-            )
+        # response = requests.post(line_notify_url, headers=headers, data=payload)
+        # if response.status_code != 200:
+        #     return JsonResponse(
+        #         {"status": "Booking rejected, but failed to send Line notification."},
+        #         status=200,
+        #     )
+        # else:
+        return JsonResponse(
+            {"status": "Booking rejected and Line notification sent successfully!"},
+            status=200,
+        )
 
     return JsonResponse({"status": "Invalid request method."}, status=405)
 
@@ -356,36 +356,36 @@ def staff_cancel_bookings(request, booking_id):
         booking.remark = remark
         booking.save()
 
-        # Send Line Notify
-        line_notify_token = request.user.fccorp.line_notify_car
-        line_notify_url = "https://notify-api.line.me/api/notify"
-        headers = {"Authorization": f"Bearer {line_notify_token}"}
-        message = (
-            f"\nBooking ID: {booking.id}\n"
-            f"Car: {booking.car.name}\n"
-            f"Title: {booking.title}\n"
-            f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
-            f"Location: {booking.location.name}\n"
-            f"Description: {booking.description}\n"
-            f"Tel: {booking.employee.tel}\n"
-            f"Start: {booking.start_date.strftime('%d/%m/%Y %H:%M')}\n"
-            f"End: {booking.end_date.strftime('%d/%m/%Y %H:%M')}\n"
-            f"Remark: {booking.remark}\n"
-            f"Status: {booking.status.name}"
-        )
-        payload = {"message": message}
+        # # Send Line Notify
+        # line_notify_token = request.user.fccorp.line_notify_car
+        # line_notify_url = "https://notify-api.line.me/api/notify"
+        # headers = {"Authorization": f"Bearer {line_notify_token}"}
+        # message = (
+        #     f"\nBooking ID: {booking.id}\n"
+        #     f"Car: {booking.car.name}\n"
+        #     f"Title: {booking.title}\n"
+        #     f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
+        #     f"Location: {booking.location.name}\n"
+        #     f"Description: {booking.description}\n"
+        #     f"Tel: {booking.employee.tel}\n"
+        #     f"Start: {booking.start_date.strftime('%d/%m/%Y %H:%M')}\n"
+        #     f"End: {booking.end_date.strftime('%d/%m/%Y %H:%M')}\n"
+        #     f"Remark: {booking.remark}\n"
+        #     f"Status: {booking.status.name}"
+        # )
+        # payload = {"message": message}
 
-        response = requests.post(line_notify_url, headers=headers, data=payload)
-        if response.status_code != 200:
-            return JsonResponse(
-                {"status": "Booking canceled, but failed to send Line notification."},
-                status=200,
-            )
-        else:
-            return JsonResponse(
-                {"status": "Booking canceled and Line notification sent successfully!"},
-                status=200,
-            )
+        # response = requests.post(line_notify_url, headers=headers, data=payload)
+        # if response.status_code != 200:
+        #     return JsonResponse(
+        #         {"status": "Booking canceled, but failed to send Line notification."},
+        #         status=200,
+        #     )
+        # else:
+        return JsonResponse(
+            {"status": "Booking canceled and Line notification sent successfully!"},
+            status=200,
+        )
 
     return JsonResponse({"status": "Invalid request method."}, status=405)
 

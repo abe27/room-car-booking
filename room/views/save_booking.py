@@ -76,37 +76,37 @@ def save_booking(request):
                 status=status,
             )
 
-            # Send Line Notify
-            line_notify_token = request.user.fccorp.line_notify_room
-            line_notify_url = "https://notify-api.line.me/api/notify"
-            headers = {"Authorization": f"Bearer {line_notify_token}"}
+            # # Send Line Notify
+            # line_notify_token = request.user.fccorp.line_notify_room
+            # line_notify_url = "https://notify-api.line.me/api/notify"
+            # headers = {"Authorization": f"Bearer {line_notify_token}"}
 
-            message = (
-                f"\nBooking ID: {booking.id}\n"
-                f"Room: {booking.room.name}\n"
-                f"Title: {booking.title}\n"
-                f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
-                f"Description: {booking.description}\n"
-                f"Tel: {booking.employee.tel}\n"
-                f"Start: {booking.start_date.strftime('%d/%m/%Y %H:%M')}\n"
-                f"End: {booking.end_date.strftime('%d/%m/%Y %H:%M')}\n"
-                f"Status: {booking.status.name}"
+            # message = (
+            #     f"\nBooking ID: {booking.id}\n"
+            #     f"Room: {booking.room.name}\n"
+            #     f"Title: {booking.title}\n"
+            #     f"Requester: {booking.employee.first_name} {booking.employee.last_name}\n"
+            #     f"Description: {booking.description}\n"
+            #     f"Tel: {booking.employee.tel}\n"
+            #     f"Start: {booking.start_date.strftime('%d/%m/%Y %H:%M')}\n"
+            #     f"End: {booking.end_date.strftime('%d/%m/%Y %H:%M')}\n"
+            #     f"Status: {booking.status.name}"
+            # )
+            # payload = {"message": message}
+
+            # response = requests.post(line_notify_url, headers=headers, data=payload)
+            # if response.status_code != 200:
+            #     return JsonResponse(
+            #         {"status": "Booking saved, but failed to send Line notification."},
+            #         status=200,
+            #     )
+            # else:
+            return JsonResponse(
+                {
+                    "status": "Booking saved and Line notification sent successfully!"
+                },
+                status=200,
             )
-            payload = {"message": message}
-
-            response = requests.post(line_notify_url, headers=headers, data=payload)
-            if response.status_code != 200:
-                return JsonResponse(
-                    {"status": "Booking saved, but failed to send Line notification."},
-                    status=200,
-                )
-            else:
-                return JsonResponse(
-                    {
-                        "status": "Booking saved and Line notification sent successfully!"
-                    },
-                    status=200,
-                )
 
         except Exception as e:
             print(f"Unexpected error: {e}")

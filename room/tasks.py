@@ -63,32 +63,34 @@ def notify_upcoming_bookings():
             )
             # print(title)
 
-        message = (
-            f"{title}"
-            f"ห้อง: {booking.room.name}\n"
-            f"หัวข้อ: {booking.title}\n"
-            f"ผู้จอง: {booking.employee.first_name} {booking.employee.last_name}\n"
-            f"คำอธิบาย: {booking.description}\n"
-            f"เบอร์โทร: {booking.employee.tel}\n"
-            f"เริ่ม: {local_start.strftime('%d/%m/%Y %H:%M')}\n"
-            f"สิ้นสุด: {local_end.strftime('%d/%m/%Y %H:%M')}\n"
-            f"สถานะ: {booking.status.name}\n"
-            f"\nโปรดกดลิ้งค์ด้านล่างนี้เพื่อยืนยันการเข้าห้องประชุม\n"
-            f"{confirm_url}\n"
-        )
+        # message = (
+            # f"{title}"
+            # f"ห้อง: {booking.room.name}\n"
+            # f"หัวข้อ: {booking.title}\n"
+            # f"ผู้จอง: {booking.employee.first_name} {booking.employee.last_name}\n"
+            # f"คำอธิบาย: {booking.description}\n"
+            # f"เบอร์โทร: {booking.employee.tel}\n"
+            # f"เริ่ม: {local_start.strftime('%d/%m/%Y %H:%M')}\n"
+            # f"สิ้นสุด: {local_end.strftime('%d/%m/%Y %H:%M')}\n"
+            # f"สถานะ: {booking.status.name}\n"
+            # f"\nโปรดกดลิ้งค์ด้านล่างนี้เพื่อยืนยันการเข้าห้องประชุม\n"
+            # f"{confirm_url}\n"
+        # )
 
-        payload = {"message": message}
-        line_notify_token = booking.employee.fccorp.line_notify_room
-        line_notify_url = "https://notify-api.line.me/api/notify"
-        headers = {"Authorization": f"Bearer {line_notify_token}"}
-        response = requests.post(line_notify_url, headers=headers, data=payload)
+        # payload = {"message": message}
+        # line_notify_token = booking.employee.fccorp.line_notify_room
+        # line_notify_url = "https://notify-api.line.me/api/notify"
+        # headers = {"Authorization": f"Bearer {line_notify_token}"}
+        # response = requests.post(line_notify_url, headers=headers, data=payload)
 
-        if response.status_code == 200:
+        # if response.status_code == 200:
             # If the notification is successfully sent, update the message status
-            booking.message = 1
-            booking.save()
-        else:
-            print(f"Failed to send Line notification for booking {booking.id}")
+            # booking.message = 1
+            # booking.save()
+        # else:
+            # print(f"Failed to send Line notification for booking {booking.id}")
+        booking.message = 1
+        booking.save()
 
 
 def update_booking_status():
