@@ -60,7 +60,11 @@
         <article class="postcard light blue h-100 mb-0">
           <img
             class="postcard__img"
-            src="{{room_card.room.image.url|default:'https://random-image-pepebigotes.vercel.app/api/random-image'}}"
+            src="{% if room_card.room.image %}
+                  {{ room_card.room.image.url }}
+                {% else %}
+                  https://random-image-pepebigotes.vercel.app/api/random-image
+                {% endif %}"
             alt="Image Title"
           />
           <div class="postcard__text t-dark">
