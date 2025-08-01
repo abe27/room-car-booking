@@ -1,4 +1,5 @@
-{% extends 'room/calendar/base.html' %} {% block content %}
+{% extends 'room/calendar/base.html' %}
+{% block content %}
 <div class="p-5">
   <h1 class="text-center mb-4" style="font-size: 3rem">
     📅 Meeting Board <span id="currentDateTime"></span>
@@ -22,12 +23,9 @@
           <div class="postcard__subtitle fs-2">{{ room_card.room.name }}</div>
           <div class="postcard__bar"></div>
           <div class="postcard__preview-txt fs-3">
-            <strong>🕒 เวลา:</strong> {{ room_card.booking.start_date|time:'H:i'
-            }} - {{ room_card.booking.end_date|time:'H:i' }}<br />
-            <strong>👤 ผู้จอง:</strong> {{ room_card.booking.employee.first_name
-            }} {{ room_card.booking.employee.last_name }}<br />
-            <strong>💼 แผนก:</strong> {{
-            room_card.booking.employee.fcdept.fcname }}<br />
+            <strong>🕒 เวลา:</strong> {{ room_card.booking.start_date|time:'H:i'}} - {{ room_card.booking.end_date|time:'H:i' }}<br />
+            <strong>👤 ผู้จอง:</strong> {{ room_card.booking.employee.first_name}} {{ room_card.booking.employee.last_name }}<br />
+            <strong>💼 แผนก:</strong> {{room_card.booking.employee.fcdept.fcname }}<br />
             <strong>📢 สถานะ:</strong>
             <span
               class="badge rounded {% if room_card.booking.status.name == 'Approved' %} bg-primary {% elif room_card.booking.status.name == 'Check-in' %} bg-success {% endif %}"
@@ -55,4 +53,6 @@
     {% endfor %}
   </div>
 </div>
-{% include './script.html' %} {% include './style.html' %} {% endblock %}
+{% include './script.html' %}
+{% include './style.html' %}
+{% endblock %}
