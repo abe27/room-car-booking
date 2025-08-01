@@ -1,121 +1,118 @@
-{% extends 'room/calendar/base.html' %}
-
-{% block content %}
-  <style>
-    @media (max-width: 768px) {
-      #calendar {
-        max-width: 100%;
-        height: auto !important;
-      }
-    
-      .fc-toolbar {
-        flex-direction: column;
-        align-items: center;
-      }
-    
-      .fc-header-toolbar {
-        flex-wrap: wrap;
-      }
-    
-      .fc-toolbar-chunk {
-        margin-bottom: 5px;
-      }
-    
-      .fc-dayGridMonth-view .fc-day {
-        min-height: 50px; /* เพิ่มความสูงของแต่ละวันให้พอดีกับมือถือ */
-      }
+{% extends 'room/calendar/base.html' %} {% block content %}
+<style>
+  @media (max-width: 768px) {
+    #calendar {
+      max-width: 100%;
+      height: auto !important;
     }
-  </style>
 
-  <div class="p-4">
-    <h1 class="text-center">📅 Meeting Board <span id="currentDateTime"></span></h1>
-    <div class="mx-auto py-3">
-      <select class="form-select" aria-label="Default select example" id="companySelect">
-        {% if request.GET.company %}
-          <option value="" selected>กรุณาเลือกบริษัท</option>
-        {% else %}
-          <option value="">กรุณาเลือกบริษัท</option>
-        {% endif %}
-        {% for company in companies %}
-          {% if request.GET.company == company.id|stringformat:'s' %}
-            <option value="{{ company.id }}" selected>{{ company.fcname }}</option>
-          {% else %}
-            <option value="{{ company.id }}">{{ company.fcname }}</option>
-          {% endif %}
-        {% endfor %}
-      </select>
-    </div>
-    <div id="calendar" class="mb-3"></div>
-    <div class="mt-5">
-      <h1 class="text-center mb-4">📅 Meeting Board <span id="currentDateTime2"></span></h1>
-      <div class="row row-cols-1 g-4 
-      {% if room_cards|length > 6 %}
-      row-cols-md-2 row-cols-lg-3
-        {% else %}
-      row-cols-md-2
-        {% endif %}">
-        {% for room_card in room_cards %}
-          <a class="col" href="{% url 'calendar_show' room_card.room.id %}">
-            <article class="postcard light blue h-100 mb-0">
-              <img class="postcard__img"
-                src="{% if room_card.room.image %}
-                  {{ room_card.room.image.url }}
-                {% else %}
-                  https://random-image-pepebigotes.vercel.app/api/random-image
-                {% endif %}"
-                alt="Image Title" />
-              <div class="postcard__text t-dark">
-                {% if room_card.booking %}
-                  <h1 class="postcard__title blue">{{ room_card.booking.title }}</h1>
-                  <div class="postcard__subtitle">{{ room_card.room.name }}</div>
-                  <div class="postcard__bar"></div>
-                  <div class="postcard__preview-txt">
-                    <strong>🕒 เวลา:</strong> {{ room_card.booking.start_date|time:'H:i' }} - {{ room_card.booking.end_date|time:'H:i' }}<br />
-                    <strong>👤 ผู้จอง:</strong> {{ room_card.booking.employee.first_name }} {{ room_card.booking.employee.last_name }}<br />
-                    <strong>💼 แผนก:</strong> {{ room_card.booking.employee.fcdept.fcname }}<br />
-                    <strong>📢 สถานะ:</strong>
-                    <span class="badge rounded
-                    {% if room_card.booking.status.name == 'Approved' %}
-                           bg-primary
-                      {% elif room_card.booking.status.name == 'Check-in' %}
-                           bg-success
-                      {% endif %}">
-                      {% if room_card.booking.status.name == 'Approved' %}
-                        ✅ รอ Check-in
-                      {% elif room_card.booking.status.name == 'Check-in' %}
-                        ⏳ กำลังใช้งาน
-                      {% endif %}
-                    </span>
-                  </div>
-                {% else %}
-                  <h1 class="postcard__title blue">ห้องว่าง</h1>
-                  <div class="postcard__subtitle">{{ room_card.room.name }}</div>
-                  <div class="postcard__bar"></div>
-                  <div class="postcard__preview-txt">
-                    <strong>🕒 เวลา:</strong> - <br />
-                    <strong>👤 ผู้จอง:</strong> - <br />
-                    <strong>💼 แผนก:</strong> - <br />
-                    <strong>📢 สถานะ:</strong>
-                    <span class="badge rounded bg-primary">ห้องว่าง</span>
-                  </div>
-                {% endif %}
-              </div>
-            </article>
-          </a>
-        {% endfor %}
-      </div>
+    .fc-toolbar {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .fc-header-toolbar {
+      flex-wrap: wrap;
+    }
+
+    .fc-toolbar-chunk {
+      margin-bottom: 5px;
+    }
+
+    .fc-dayGridMonth-view .fc-day {
+      min-height: 50px; /* เพิ่มความสูงของแต่ละวันให้พอดีกับมือถือ */
+    }
+  }
+</style>
+
+<div class="p-4">
+  <h1 class="text-center">
+    📅 Meeting Board <span id="currentDateTime"></span>
+  </h1>
+  <div class="mx-auto py-3">
+    <select
+      class="form-select"
+      aria-label="Default select example"
+      id="companySelect"
+    >
+      {% if request.GET.company %}
+      <option value="" selected>กรุณาเลือกบริษัท</option>
+      {% else %}
+      <option value="">กรุณาเลือกบริษัท</option>
+      {% endif %} {% for company in companies %} {% if request.GET.company ==
+      company.id|stringformat:'s' %}
+      <option value="{{ company.id }}" selected>{{ company.fcname }}</option>
+      {% else %}
+      <option value="{{ company.id }}">{{ company.fcname }}</option>
+      {% endif %} {% endfor %}
+    </select>
+  </div>
+  <div id="calendar" class="mb-3"></div>
+  <div class="mt-5">
+    <h1 class="text-center mb-4">
+      📅 Meeting Board <span id="currentDateTime2"></span>
+    </h1>
+    <div
+      class="row row-cols-1 g-4 {% if room_cards|length > 6 %} row-cols-md-2 row-cols-lg-3 {% else %} row-cols-md-2 {% endif %}"
+    >
+      {% for room_card in room_cards %}
+      <a class="col" href="{% url 'calendar_show' room_card.room.id %}">
+        <article class="postcard light blue h-100 mb-0">
+          <img
+            class="postcard__img"
+            src="{{room_card.room.image.url|default:'https://random-image-pepebigotes.vercel.app/api/random-image'}}"
+            alt="Image Title"
+          />
+          <div class="postcard__text t-dark">
+            {% if room_card.booking %}
+            <h1 class="postcard__title blue">{{ room_card.booking.title }}</h1>
+            <div class="postcard__subtitle">{{ room_card.room.name }}</div>
+            <div class="postcard__bar"></div>
+            <div class="postcard__preview-txt">
+              <strong>🕒 เวลา:</strong> {{
+              room_card.booking.start_date|time:'H:i' }} - {{
+              room_card.booking.end_date|time:'H:i' }}<br />
+              <strong>👤 ผู้จอง:</strong> {{
+              room_card.booking.employee.first_name }} {{
+              room_card.booking.employee.last_name }}<br />
+              <strong>💼 แผนก:</strong> {{
+              room_card.booking.employee.fcdept.fcname }}<br />
+              <strong>📢 สถานะ:</strong>
+              <span
+                class="badge rounded {% if room_card.booking.status.name == 'Approved' %} bg-primary {% elif room_card.booking.status.name == 'Check-in' %} bg-success {% endif %}"
+              >
+                {% if room_card.booking.status.name == 'Approved' %} ✅ รอ
+                Check-in {% elif room_card.booking.status.name == 'Check-in' %}
+                ⏳ กำลังใช้งาน {% endif %}
+              </span>
+            </div>
+            {% else %}
+            <h1 class="postcard__title blue">ห้องว่าง</h1>
+            <div class="postcard__subtitle">{{ room_card.room.name }}</div>
+            <div class="postcard__bar"></div>
+            <div class="postcard__preview-txt">
+              <strong>🕒 เวลา:</strong> - <br />
+              <strong>👤 ผู้จอง:</strong> - <br />
+              <strong>💼 แผนก:</strong> - <br />
+              <strong>📢 สถานะ:</strong>
+              <span class="badge rounded bg-primary">ห้องว่าง</span>
+            </div>
+            {% endif %}
+          </div>
+        </article>
+      </a>
+      {% endfor %}
     </div>
   </div>
+</div>
 
-  <script>
-    const companySelect = document.querySelector('select')
-    companySelect.addEventListener('change', function () {
-      location.href = `?company=${this.value}`
-    })
-  </script>
+<script>
+  const companySelect = document.querySelector("select");
+  companySelect.addEventListener("change", function () {
+    location.href = `?company=${this.value}`;
+  });
+</script>
 
-  {% include 'room/components/modal_detail.html' %}
-  {% include './script.html' %}
-  {% include 'room/room/card/script.html' %}
-  {% include 'room/room/card/style.html' %}
-{% endblock %}
+{% include 'room/components/modal_detail.html' %} {% include './script.html' %}
+{% include 'room/room/card/script.html' %} {% include
+'room/room/card/style.html' %} {% endblock %}

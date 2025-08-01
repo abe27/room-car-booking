@@ -163,3 +163,5 @@ media/company/images/
 media/icon/
 media/room/images/
 media/car/images/
+.DB_Store
+**/.DS_Store

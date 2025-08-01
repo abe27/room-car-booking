@@ -1,86 +1,75 @@
-{% extends 'room/calendar/base.html' %}
-
-{% block content %}
-  <style>
-    @media (max-width: 768px) {
-      #calendar {
-        max-width: 100%;
-        height: auto !important;
-      }
-    
-      .fc-toolbar {
-        flex-direction: column;
-        align-items: center;
-      }
-    
-      .fc-header-toolbar {
-        flex-wrap: wrap;
-      }
-    
-      .fc-toolbar-chunk {
-        margin-bottom: 5px;
-      }
-    
-      .fc-dayGridMonth-view .fc-day {
-        min-height: 50px; /* เพิ่มความสูงของแต่ละวันให้พอดีกับมือถือ */
-      }
+{% extends 'room/calendar/base.html' %} {% block content %}
+<style>
+  @media (max-width: 768px) {
+    #calendar {
+      max-width: 100%;
+      height: auto !important;
     }
-  </style>
-  <div class="p-3">
-    <section class="pb-5">
-      <div class="py-2">
-        <div class="h1 text-center" id="pageHeaderTitle">{{ room.name }}</div>
 
-        <article class="postcard light blue mb-0">
-          <img class="postcard__img"
-            src="{% if room.image %}
-              {{ room.image.url }}
-            {% else %}
-          https://random-image-pepebigotes.vercel.app/api/random-image
-            {% endif %}"
-            alt="Image Title" />
-          <div class="postcard__text t-dark text-truncate text-wrap">
-            <h1 class="postcard__title blue" style="font-size: 3rem;">{{ current_booking.title|default:'ไม่พบข้อมูลการประชุม' }}</h1>
-            {% comment %} <div class="postcard__subtitle fs-2">{{ current_booking.room.name }}</div> {% endcomment %}
-            <div class="postcard__bar"></div>
-            <div class="postcard__preview-txt fs-3">
-              {{ current_booking.description|default:'-' }}<br />
-              <strong>🕒 เวลา:</strong> {{ current_booking.start_date|time:'H:i' }} - {{ current_booking.end_date|time:'H:i' }}<br />
-              <strong>👤 ผู้จอง:</strong> {{ current_booking.employee.first_name|default:'-' }} {{ current_booking.employee.last_name }}<br />
-              <strong>💼 แผนก:</strong> {{ current_booking.employee.fcdept.fcname|default:'-' }}<br />
-              <strong>📢 สถานะ:</strong>
-              <span class="badge rounded
-              {% if current_booking.status.name == 'Approved' %}
-                     bg-primary
-                {% elif current_booking.status.name == 'Check-in' %}
-                     bg-success
-                {% elif current_booking.status.name == 'Check-out' %}
-                     bg-warning
-                {% elif current_booking.status.name == 'Cancelled' %}
-                     bg-secondary
-                {% else %}
-                     bg-primary
-                {% endif %}">
-                {% if current_booking.status.name == 'Approved' %}
-                  ✅ รอ Check-in
-                {% elif current_booking.status.name == 'Check-in' %}
-                  ⏳ กำลังใช้งาน
-                {% elif current_booking.status.name == 'Check-out' %}
-                  🚪 ออกจากห้อง
-                {% elif current_booking.status.name == 'Cancelled' %}
-                  ❌ ยกเลิก
-                {% else %}
-                ห้องว่าง
-                {% endif %}
-              </span>
-            </div>
+    .fc-toolbar {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .fc-header-toolbar {
+      flex-wrap: wrap;
+    }
+
+    .fc-toolbar-chunk {
+      margin-bottom: 5px;
+    }
+
+    .fc-dayGridMonth-view .fc-day {
+      min-height: 50px; /* เพิ่มความสูงของแต่ละวันให้พอดีกับมือถือ */
+    }
+  }
+</style>
+<div class="p-3">
+  <section class="pb-5">
+    <div class="py-2">
+      <div class="h1 text-center" id="pageHeaderTitle">{{ room.name }}</div>
+
+      <article class="postcard light blue mb-0">
+        <img
+          class="postcard__img"
+          src="{{room.image.url|default:'https://random-image-pepebigotes.vercel.app/api/random-image'}}"
+          alt="Image Title"
+        />
+        <div class="postcard__text t-dark text-truncate text-wrap">
+          <h1 class="postcard__title blue" style="font-size: 3rem">
+            {{ current_booking.title|default:'ไม่พบข้อมูลการประชุม' }}
+          </h1>
+          {% comment %}
+          <div class="postcard__subtitle fs-2">
+            {{ current_booking.room.name }}
           </div>
-        </article>
-      </div>
-    </section>
-    <div id="calendar" class="mb-3"></div>
-  </div>
-  {% include 'room/components/modal_detail.html' %}
-  {% include './script.html' %}
-  {% include './style.html' %}
-{% endblock %}
+          {% endcomment %}
+          <div class="postcard__bar"></div>
+          <div class="postcard__preview-txt fs-3">
+            {{ current_booking.description|default:'-' }}<br />
+            <strong>🕒 เวลา:</strong> {{ current_booking.start_date|time:'H:i'
+            }} - {{ current_booking.end_date|time:'H:i' }}<br />
+            <strong>👤 ผู้จอง:</strong> {{
+            current_booking.employee.first_name|default:'-' }} {{
+            current_booking.employee.last_name }}<br />
+            <strong>💼 แผนก:</strong> {{
+            current_booking.employee.fcdept.fcname|default:'-' }}<br />
+            <strong>📢 สถานะ:</strong>
+            <span
+              class="badge rounded {% if current_booking.status.name == 'Approved' %} bg-primary {% elif current_booking.status.name == 'Check-in' %} bg-success {% elif current_booking.status.name == 'Check-out' %} bg-warning {% elif current_booking.status.name == 'Cancelled' %} bg-secondary {% else %} bg-primary {% endif %}"
+            >
+              {% if current_booking.status.name == 'Approved' %} ✅ รอ Check-in
+              {% elif current_booking.status.name == 'Check-in' %} ⏳
+              กำลังใช้งาน {% elif current_booking.status.name == 'Check-out' %}
+              🚪 ออกจากห้อง {% elif current_booking.status.name == 'Cancelled'
+              %} ❌ ยกเลิก {% else %} ห้องว่าง {% endif %}
+            </span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+  <div id="calendar" class="mb-3"></div>
+</div>
+{% include 'room/components/modal_detail.html' %} {% include './script.html' %}
+{% include './style.html' %} {% endblock %}
