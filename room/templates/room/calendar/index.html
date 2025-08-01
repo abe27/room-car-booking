@@ -39,12 +39,14 @@
       <option value="" selected>กรุณาเลือกบริษัท</option>
       {% else %}
       <option value="">กรุณาเลือกบริษัท</option>
-      {% endif %} {% for company in companies %} {% if request.GET.company ==
-      company.id|stringformat:'s' %}
+      {% endif %}
+      {% for company in companies %} 
+      {% if request.GET.company == company.id|stringformat:'s' %}
       <option value="{{ company.id }}" selected>{{ company.fcname }}</option>
       {% else %}
       <option value="{{ company.id }}">{{ company.fcname }}</option>
-      {% endif %} {% endfor %}
+      {% endif %} 
+      {% endfor %}
     </select>
   </div>
   <div id="calendar" class="mb-3"></div>
@@ -117,6 +119,7 @@
   });
 </script>
 
-{% include 'room/components/modal_detail.html' %} {% include './script.html' %}
-{% include 'room/room/card/script.html' %} {% include
-'room/room/card/style.html' %} {% endblock %}
+{% include 'room/components/modal_detail.html' %} 
+{% include './script.html' %}
+{% include 'room/room/card/script.html' %} 
+{% include 'room/room/card/style.html' %} {% endblock %}
