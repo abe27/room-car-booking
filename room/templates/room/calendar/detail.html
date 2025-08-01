@@ -1,4 +1,5 @@
-{% extends 'room/calendar/base.html' %} {% block content %}
+{% extends 'room/calendar/base.html' %}
+{% block content %}
 <style>
   @media (max-width: 768px) {
     #calendar {
@@ -47,13 +48,9 @@
           <div class="postcard__bar"></div>
           <div class="postcard__preview-txt fs-3">
             {{ current_booking.description|default:'-' }}<br />
-            <strong>🕒 เวลา:</strong> {{ current_booking.start_date|time:'H:i'
-            }} - {{ current_booking.end_date|time:'H:i' }}<br />
-            <strong>👤 ผู้จอง:</strong> {{
-            current_booking.employee.first_name|default:'-' }} {{
-            current_booking.employee.last_name }}<br />
-            <strong>💼 แผนก:</strong> {{
-            current_booking.employee.fcdept.fcname|default:'-' }}<br />
+            <strong>🕒 เวลา:</strong> {{ current_booking.start_date|time:'H:i'}} - {{ current_booking.end_date|time:'H:i' }}<br />
+            <strong>👤 ผู้จอง:</strong> {{current_booking.employee.first_name|default:'-' }} {{current_booking.employee.last_name }}<br />
+            <strong>💼 แผนก:</strong> {{current_booking.employee.fcdept.fcname|default:'-' }}<br />
             <strong>📢 สถานะ:</strong>
             <span
               class="badge rounded {% if current_booking.status.name == 'Approved' %} bg-primary {% elif current_booking.status.name == 'Check-in' %} bg-success {% elif current_booking.status.name == 'Check-out' %} bg-warning {% elif current_booking.status.name == 'Cancelled' %} bg-secondary {% else %} bg-primary {% endif %}"
@@ -71,5 +68,7 @@
   </section>
   <div id="calendar" class="mb-3"></div>
 </div>
-{% include 'room/components/modal_detail.html' %} {% include './script.html' %}
-{% include './style.html' %} {% endblock %}
+{% include 'room/components/modal_detail.html' %} 
+{% include './script.html' %}
+{% include './style.html' %}
+{% endblock %}
