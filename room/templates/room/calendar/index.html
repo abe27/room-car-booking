@@ -1,4 +1,5 @@
-{% extends 'room/calendar/base.html' %} {% block content %}
+{% extends 'room/calendar/base.html' %}
+{% block content %}
 <style>
   @media (max-width: 768px) {
     #calendar {
@@ -62,11 +63,7 @@
         <article class="postcard light blue h-100 mb-0">
           <img
             class="postcard__img"
-            src="{% if room_card.room.image %}
-                  {{ room_card.room.image.url }}
-                {% else %}
-                  https://random-image-pepebigotes.vercel.app/api/random-image
-                {% endif %}"
+            src="{{ room_card.room.image.url|default:'https://random-image-pepebigotes.vercel.app/api/random-image'}}"
             alt="Image Title"
           />
           <div class="postcard__text t-dark">
@@ -75,21 +72,18 @@
             <div class="postcard__subtitle">{{ room_card.room.name }}</div>
             <div class="postcard__bar"></div>
             <div class="postcard__preview-txt">
-              <strong>🕒 เวลา:</strong> {{
-              room_card.booking.start_date|time:'H:i' }} - {{
-              room_card.booking.end_date|time:'H:i' }}<br />
-              <strong>👤 ผู้จอง:</strong> {{
-              room_card.booking.employee.first_name }} {{
-              room_card.booking.employee.last_name }}<br />
-              <strong>💼 แผนก:</strong> {{
-              room_card.booking.employee.fcdept.fcname }}<br />
+              <strong>🕒 เวลา:</strong> {{room_card.booking.start_date|time:'H:i' }} - {{room_card.booking.end_date|time:'H:i' }}<br />
+              <strong>👤 ผู้จอง:</strong> {{room_card.booking.employee.first_name }} {{room_card.booking.employee.last_name }}<br />
+              <strong>💼 แผนก:</strong> {{room_card.booking.employee.fcdept.fcname }}<br />
               <strong>📢 สถานะ:</strong>
               <span
                 class="badge rounded {% if room_card.booking.status.name == 'Approved' %} bg-primary {% elif room_card.booking.status.name == 'Check-in' %} bg-success {% endif %}"
               >
-                {% if room_card.booking.status.name == 'Approved' %} ✅ รอ
-                Check-in {% elif room_card.booking.status.name == 'Check-in' %}
-                ⏳ กำลังใช้งาน {% endif %}
+                {% if room_card.booking.status.name == 'Approved' %} 
+                ✅ รอ Check-in 
+                {% elif room_card.booking.status.name == 'Check-in' %}
+                ⏳ กำลังใช้งาน
+                {% endif %}
               </span>
             </div>
             {% else %}
