@@ -7,6 +7,7 @@ from django.core.cache import cache
 from django.utils import timezone
 
 
+@login_required
 def index(request):
     companies = Company.objects.all()
     company_id = request.GET.get("company")
@@ -88,7 +89,7 @@ def index(request):
     )
     return render(request, "room/calendar/index.html", context)
 
-
+@login_required
 def detail(request, id):
     today = timezone.now().date()  # Get today's date
     room = get_object_or_404(Room, id=id)
@@ -136,7 +137,7 @@ def detail(request, id):
     }
     return render(request, "room/calendar/detail.html", context)
 
-
+@login_required
 def check_booking_update(request):
     """
     ตรวจสอบว่ามีการเปลี่ยนแปลงใน Booking หรือไม่
