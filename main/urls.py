@@ -27,5 +27,4 @@ urlpatterns = [
     path("user/", include("user.urls")),  # Make sure this line is included
     path("room/", include("room.urls")),
     path("car/", include("car.urls")),
-    path('accounts/login/', LoginView.as_view(), name='login'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
