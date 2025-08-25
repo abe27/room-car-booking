@@ -5,6 +5,7 @@ import json
 from django.http import JsonResponse
 from django.core.cache import cache
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 
 @login_required
